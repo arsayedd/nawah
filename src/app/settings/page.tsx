@@ -88,8 +88,8 @@ export default function SettingsPage() {
                 ["Client", "None", "Portal only", "Pay / approve"],
               ].map((row) => (
                 <tr key={row[0]} className="border-t border-navy/6">
-                  {row.map((c) => (
-                    <td key={c} className="py-2">
+                  {row.map((c, i) => (
+                    <td key={`${row[0]}-${i}`} className="py-2">
                       {c}
                     </td>
                   ))}

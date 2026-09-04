@@ -124,7 +124,7 @@ export const copy = {
       catalog: "Catalog",
       contracts: "Contracts",
       retainers: "Retainers",
-      hr: "People",
+      hr: "HR",
       workload: "Workload",
       accounts: "Accounts",
       people: "People",

@@ -99,9 +99,8 @@ export default function CrmPage() {
               {grouped[stage]?.map((lead) => {
                 const owner = employees.find((e) => e.id === lead.ownerId);
                 return (
-                  <RecordChrome collection="leads" id={lead.id}>
+                  <RecordChrome key={lead.id} collection="leads" id={lead.id}>
                   <Card
-                    key={lead.id}
                     draggable
                     onDragStart={() => setDragging(lead.id)}
                     className="cursor-grab p-3 active:cursor-grabbing"
