@@ -1,18 +1,21 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
+import { quoteTotals, seed } from "@/data/seed";
+import { pickOsState } from "@/lib/os/payload";
+import type { OsState } from "@/lib/types";
 import { useOS } from "@/store/use-os";
-import { quoteTotals } from "@/data/seed";
 
-export function useKpis() {
-  const quotes = useOS((s) => s.quotes);
-  const invoices = useOS((s) => s.invoices);
-  const expenses = useOS((s) => s.expenses);
-  const leads = useOS((s) => s.leads);
-  const tasks = useOS((s) => s.tasks);
-  const projects = useOS((s) => s.projects);
+export function computeKpis(state: OsState) {
+  const quotes = state.quotes ?? [];
+  const invoices = state.invoices ?? [];
+  const expenses = state.expenses ?? [];
+  const leads = state.leads ?? [];
+  const tasks = state.tasks ?? [];
+  const projects = state.projects ?? [];
 
   const revenue = invoices
-    .filter((i) => i.issuedAt.startsWith("2026-09"))
+    .filter((i) => i.issuedAt?.startsWith("2026-09"))
     .reduce((s, i) => s + i.paidAmount, 0);
   const overdue = invoices
     .filter((i) => i.status === "overdue")
@@ -22,7 +25,7 @@ export function useKpis() {
   const pipeline = leads
     .filter((l) => !["won", "lost"].includes(l.stage))
     .reduce((s, l) => s + l.value * l.probability, 0);
-  const newLeads = leads.filter((l) => l.createdAt.startsWith("2026-09")).length;
+  const newLeads = leads.filter((l) => l.createdAt?.startsWith("2026-09")).length;
   const closed = leads.filter((l) => l.stage === "won" || l.stage === "lost");
   const winRate =
     closed.length === 0
@@ -34,16 +37,14 @@ export function useKpis() {
   const soldHours = tasks.filter((t) => t.billable).reduce((s, t) => s + t.estimateHours, 0);
   const usedHours = tasks.reduce((s, t) => s + t.actualHours, 0);
 
-  const pendingQuotes = quotes.filter((q) =>
-    ["sent", "viewed"].includes(q.status),
-  );
+  const pendingQuotes = quotes.filter((q) => ["sent", "viewed"].includes(q.status));
   const waitingClient = tasks.filter((t) => t.status === "client");
 
   const serviceProfit = quotes
     .filter((q) => q.status === "accepted")
     .map((q) => {
-      const t = quoteTotals(q.items, q.discount, q.taxRate);
-      return { name: q.titleAr, profit: t.profit, margin: t.margin };
+      const tot = quoteTotals(q.items, q.discount, q.taxRate);
+      return { name: q.titleAr, profit: tot.profit, margin: tot.margin };
     });
 
   return {
@@ -62,4 +63,18 @@ export function useKpis() {
     projects,
     serviceProfit,
   };
+}
+
+export function useWorkspace() {
+  return useOS(
+    useShallow((s) => {
+      const merged = pickOsState(s);
+      return merged.leads.length ? merged : pickOsState(seed);
+    }),
+  );
+}
+
+export function useKpis() {
+  const state = useWorkspace();
+  return computeKpis(state);
 }

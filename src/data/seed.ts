@@ -780,8 +780,8 @@ export const seed: OsState = {
       id: "d_wiki",
       title: "Company wiki",
       titleAr: "ويكي الشركة",
-      body: "How Masar Digital runs delivery, sales, and finance inside Nawah.",
-      bodyAr: "طريقة شغل مسار ديجيتال في البيع والتنفيذ والمالية داخل نواة.",
+      body: "How this agency runs delivery, sales, and finance inside Nawah.",
+      bodyAr: "طريقة شغل الأجنسي في البيع والتنفيذ والمالية داخل نواة.",
       kind: "wiki",
     },
     {

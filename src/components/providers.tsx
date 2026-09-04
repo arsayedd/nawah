@@ -4,48 +4,40 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { Toaster } from "sonner";
 import { AppShell } from "@/components/shell/app-shell";
-import { pickOsState } from "@/lib/os/payload";
+import { isSparseState, pickOsState } from "@/lib/os/payload";
 import { readStoredLocale } from "@/lib/locale";
 import { useOS } from "@/store/use-os";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const locale = useOS((s) => s.locale);
-  const hydrateFromRemote = useOS((s) => s.hydrateFromRemote);
   const setHydrated = useOS((s) => s.setHydrated);
   const setLocale = useOS((s) => s.setLocale);
   const persistReady = useRef(false);
 
   useEffect(() => {
     setLocale(readStoredLocale());
-  }, [setLocale]);
+    setHydrated(true);
+    persistReady.current = true;
+  }, [setLocale, setHydrated]);
 
   useEffect(() => {
-    const ac = new AbortController();
-    const timer = window.setTimeout(() => ac.abort(), 8000);
-
-    void fetch("/api/os", { signal: ac.signal })
+    void fetch("/api/os")
       .then(async (res) => {
-        if (!res.ok) throw new Error(await res.text());
+        if (!res.ok) return null;
         return res.json();
       })
       .then((data) => {
-        const next = pickOsState(data?.state);
-        persistReady.current = true;
-        hydrateFromRemote({ locale: readStoredLocale(), state: next });
+        if (data && isSparseState(data.state)) {
+          void fetch("/api/os/reset", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ locale: "en" }),
+          });
+        }
       })
-      .catch(() => {
-        setHydrated(true);
-      })
-      .finally(() => {
-        window.clearTimeout(timer);
-        persistReady.current = true;
-      });
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [hydrateFromRemote, setHydrated]);
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     let timer: number | undefined;

@@ -162,7 +162,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         {nav}
         <div className="border-t border-white/8 px-5 py-4">
-          <div className="text-[11px] font-medium text-white/55">Masar Digital</div>
+          <div className="text-[11px] font-medium text-white/55">Nawah</div>
           <div className="text-[11px] text-white/35">Agency workspace</div>
         </div>
       </aside>
@@ -248,7 +248,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <main className="px-4 py-7 md:px-8">
+        <main className="px-4 py-7 text-[#071B3A] md:px-8">
           <ErrorBoundary>{children}</ErrorBoundary>
         </main>
       </div>

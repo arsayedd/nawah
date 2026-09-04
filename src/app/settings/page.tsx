@@ -19,7 +19,7 @@ export default function SettingsPage() {
         <h2 className="font-semibold">
           {locale === "ar" ? "مساحة العمل" : "Workspace"}
         </h2>
-        <p className="mt-1 text-sm text-navy/55">Masar Digital · EGP · VAT 14%</p>
+        <p className="mt-1 text-sm text-navy/55">Nawah · EGP · VAT 14%</p>
         <p className="mt-2 text-sm text-navy/55">
           {locale === "ar"
             ? "الأدوار: Owner, Admin, Sales, Account Manager, PM, Team, Finance, HR, Freelancer, Client."

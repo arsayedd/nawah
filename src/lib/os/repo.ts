@@ -20,7 +20,7 @@ async function saveSnapshot(
   const payload = { locale, state: pickOsState(state) };
   const agency = await admin.from("agencies").upsert({
     id: AGENCY_ID,
-    name: "Masar Digital",
+    name: "Nawah",
     locale,
   });
   if (!agency.error) {

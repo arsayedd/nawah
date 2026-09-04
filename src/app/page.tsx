@@ -185,7 +185,7 @@ export default function MarketingHome() {
           <div className="overflow-hidden rounded-[22px] border border-white/15 bg-white text-navy shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
             <div className="flex items-center gap-2 border-b border-navy/8 bg-navy px-4 py-3">
               <NawahMark className="h-7 w-7" />
-              <span className="text-sm font-semibold text-white">Masar Digital</span>
+              <span className="text-sm font-semibold text-white">Nawah</span>
               <span className="ms-auto text-[11px] text-white/50">Owner home</span>
             </div>
             <div className="grid grid-cols-2 gap-2 p-4">
@@ -373,7 +373,7 @@ export default function MarketingHome() {
             Open the core and run the agency from here.
           </h2>
           <p className="mt-3 max-w-xl text-navy/60">
-            Demo workspace: Masar Digital. English first. Arabic toggle inside the OS.
+            Demo workspace for a modern agency. English first. Arabic toggle inside the OS.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/home" className="inline-flex h-12 items-center gap-2 rounded-[10px] bg-navy px-6 text-sm font-semibold text-white">

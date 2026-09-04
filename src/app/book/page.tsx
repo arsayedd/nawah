@@ -33,7 +33,7 @@ function BookInner() {
             Client booking
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-            Book time with Masar Digital
+            Book time with Nawah
           </h1>
           <p className="mt-2 text-sm text-navy/55">
             Pick an event type, then a slot. It lands on the agency calendar — no extra Calendly account.

@@ -14,7 +14,7 @@ import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
 import { t } from "@/lib/i18n";
 import { egp, pct } from "@/lib/utils";
-import { useKpis } from "@/store/selectors";
+import { useKpis, useWorkspace } from "@/store/selectors";
 import { useOS } from "@/store/use-os";
 
 const osLinks = [
@@ -46,19 +46,20 @@ const osLinks = [
 
 export default function HomePage() {
   const locale = useOS((s) => s.locale);
+  const ws = useWorkspace();
   const dict = t(locale);
-  const alerts = useOS((s) => s.alerts);
-  const employees = useOS((s) => s.employees);
-  const tasks = useOS((s) => s.tasks);
-  const clients = useOS((s) => s.clients);
-  const leads = useOS((s) => s.leads);
-  const quotes = useOS((s) => s.quotes);
-  const invoices = useOS((s) => s.invoices);
-  const contracts = useOS((s) => s.contracts);
-  const retainers = useOS((s) => s.retainers);
-  const meetings = useOS((s) => s.meetings);
-  const subscriptions = useOS((s) => s.subscriptions);
-  const catalog = useOS((s) => s.catalog);
+  const alerts = ws.alerts;
+  const employees = ws.employees;
+  const tasks = ws.tasks;
+  const clients = ws.clients;
+  const leads = ws.leads;
+  const quotes = ws.quotes;
+  const invoices = ws.invoices;
+  const contracts = ws.contracts;
+  const retainers = ws.retainers;
+  const meetings = ws.meetings;
+  const subscriptions = ws.subscriptions;
+  const catalog = ws.catalog;
   const k = useKpis();
 
   const kpis = [
@@ -95,7 +96,7 @@ export default function HomePage() {
     .sort((a, b) => a.paid - b.paid);
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-7 text-[#071B3A]" data-nawah-home="ready">
       <PageHeader
         kicker={dict.slogan}
         title={dict.greeting}
@@ -148,12 +149,14 @@ export default function HomePage() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((item) => (
-          <Card key={item.label} className="p-4">
-            <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-navy/45">
+          <Card key={item.label} className="p-4 text-[#071B3A]">
+            <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#071B3A]/55">
               {item.label}
             </div>
             <div className="mt-2 flex items-end justify-between gap-2">
-              <div className="text-[1.55rem] font-semibold tracking-tight">{item.value}</div>
+              <div className="text-[1.55rem] font-semibold tracking-tight text-[#071B3A]">
+                {item.value}
+              </div>
               {item.delta ? (
                 <span
                   className={`inline-flex items-center text-xs font-medium ${
