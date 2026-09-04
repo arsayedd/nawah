@@ -23,6 +23,7 @@ export default function Client360Page() {
   const employees = useOS((s) => s.employees);
   const activities = useOS((s) => s.activities.filter((a) => a.clientId === id));
   const contracts = useOS((s) => s.contracts.filter((c) => c.clientId === id));
+  const setAccountManager = useOS((s) => s.setAccountManager);
   const dict = t(locale);
 
   if (!client) {
@@ -148,7 +149,19 @@ export default function Client360Page() {
           {client.accountManagerId ? (
             <div className="mt-3 text-sm">
               Account manager:{" "}
-              {employees.find((e) => e.id === client.accountManagerId)?.name}
+              <select
+                className="ms-1 rounded-[8px] border border-navy/10 px-2 py-1 text-sm"
+                value={client.accountManagerId}
+                onChange={(e) => setAccountManager(client.id, e.target.value)}
+              >
+                {employees
+                  .filter((e) => e.role.toLowerCase().includes("account") || e.id === "u_sara" || e.id === "u_omar")
+                  .map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {e.name}
+                    </option>
+                  ))}
+              </select>
             </div>
           ) : null}
           {client.upsell ? (

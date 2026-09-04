@@ -78,6 +78,10 @@ type Store = OsState & {
   decideLeave: (id: string, status: "approved" | "denied") => void;
   generateRetainerMonth: (retainerId: string) => void;
   addSubtask: (parentId: string, title: string) => void;
+  addDoc: (title: string, kind?: "wiki" | "sop" | "brief" | "template" | "database") => string;
+  addDocComment: (docId: string, body: string) => void;
+  setAccountManager: (clientId: string, userId: string) => void;
+  addDocRow: (docId: string, values: Record<string, string>) => void;
 };
 
 function pickAssignee(employees: OsState["employees"], role: string, load: Record<string, number>) {
@@ -864,6 +868,52 @@ export const useOS = create<Store>()((set, get) => ({
           ],
         });
       },
+      addDoc: (title, kind = "wiki") => {
+        const id = uid("d");
+        set({
+          docs: [
+            {
+              id,
+              title,
+              titleAr: title,
+              body: kind === "database" ? "Linked database" : "",
+              bodyAr: "",
+              kind,
+              columns: kind === "database" ? ["Name", "Status", "Owner"] : undefined,
+              rows: kind === "database" ? [] : undefined,
+            },
+            ...get().docs,
+          ],
+        });
+        return id;
+      },
+      addDocComment: (docId, body) =>
+        set({
+          docComments: [
+            {
+              id: uid("dc"),
+              docId,
+              authorId: "u_ahmed",
+              body,
+              createdAt: new Date().toISOString(),
+            },
+            ...get().docComments,
+          ],
+        }),
+      setAccountManager: (clientId, userId) =>
+        set({
+          clients: get().clients.map((c) =>
+            c.id === clientId ? { ...c, accountManagerId: userId } : c,
+          ),
+        }),
+      addDocRow: (docId, values) =>
+        set({
+          docs: get().docs.map((d) =>
+            d.id === docId
+              ? { ...d, rows: [{ id: uid("r"), values }, ...(d.rows ?? [])] }
+              : d,
+          ),
+        }),
 }));
 
 export function useHydratedOS() {

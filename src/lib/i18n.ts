@@ -34,6 +34,7 @@ export const copy = {
       retainers: "الريتِينر",
       hr: "الموارد البشرية",
       workload: "الحمل",
+      accounts: "الحسابات",
     },
     kpi: {
       revenue: "إيراد هذا الشهر",
@@ -118,6 +119,7 @@ export const copy = {
       retainers: "Retainers",
       hr: "People",
       workload: "Workload",
+      accounts: "Accounts",
     },
     kpi: {
       revenue: "Revenue this month",

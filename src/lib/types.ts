@@ -196,6 +196,8 @@ export type Task = {
     | "approved"
     | "revision"
     | "delivered";
+  tags?: string[];
+  dependsOn?: string[];
 };
 
 export type Invoice = {
@@ -247,7 +249,9 @@ export type DocPage = {
   bodyAr: string;
   clientId?: string;
   projectId?: string;
-  kind?: "wiki" | "sop" | "brief" | "template" | "form";
+  kind?: "wiki" | "sop" | "brief" | "template" | "form" | "database";
+  columns?: string[];
+  rows?: { id: string; values: Record<string, string> }[];
 };
 
 export type Ticket = {
@@ -425,6 +429,23 @@ export type BookingSlot = {
   durationMin: number;
   bookedName?: string;
   clientId?: string;
+  typeId?: string;
+};
+
+export type BookingType = {
+  id: string;
+  name: string;
+  durationMin: number;
+  hostId: string;
+  description: string;
+};
+
+export type DocComment = {
+  id: string;
+  docId: string;
+  authorId: string;
+  body: string;
+  createdAt: string;
 };
 
 export type Activity = {
@@ -476,6 +497,8 @@ export type OsState = {
   attendance: AttendanceDay[];
   payroll: PayrollLine[];
   bookingSlots: BookingSlot[];
+  bookingTypes: BookingType[];
   activities: Activity[];
   audit: AuditEvent[];
+  docComments: DocComment[];
 };

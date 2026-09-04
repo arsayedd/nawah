@@ -111,6 +111,8 @@ export default function ProjectDetailPage() {
                       {task.milestone} · {locale === "ar" ? emp?.nameAr : emp?.name} ·{" "}
                       {task.actualHours}/{task.estimateHours}h · {egp(cost, locale)}{" "}
                       {locale === "ar" ? "تكلفة" : "cost"}
+                      {task.dependsOn?.length ? ` · waits on ${task.dependsOn.join(", ")}` : ""}
+                      {task.tags?.length ? ` · ${task.tags.join(", ")}` : ""}
                     </div>
                   </div>
                   <Badge

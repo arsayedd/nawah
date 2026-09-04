@@ -18,6 +18,8 @@ export default function ProjectsPage() {
   const clients = useOS((s) => s.clients);
   const dict = t(locale);
   const [view, setView] = useState<(typeof views)[number]>("board");
+  const [dragging, setDragging] = useState<string | null>(null);
+  const updateTaskStatus = useOS((s) => s.updateTaskStatus);
 
   const columns: TaskStatus[] = ["todo", "doing", "review", "client", "done"];
 
@@ -105,22 +107,36 @@ export default function ProjectsPage() {
       {view === "board" ? (
         <div className="flex gap-3 overflow-x-auto pb-2">
           {columns.map((col) => (
-            <div key={col} className="w-[240px] shrink-0">
+            <div
+              key={col}
+              className="w-[240px] shrink-0"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => {
+                if (dragging) updateTaskStatus(dragging, col);
+                setDragging(null);
+              }}
+            >
               <div className="mb-2 text-sm font-semibold">
                 {dict.taskStatus[col]}
               </div>
-              <div className="space-y-2 rounded-[14px] bg-navy/[0.03] p-2 min-h-40">
+              <div className="min-h-40 space-y-2 rounded-[14px] bg-navy/[0.03] p-2">
                 {grouped[col].map((task) => (
-                  <Link key={task.id} href={`/projects/${task.projectId}`}>
-                    <Card className="p-3">
+                  <Card
+                    key={task.id}
+                    draggable
+                    onDragStart={() => setDragging(task.id)}
+                    className="cursor-grab p-3 active:cursor-grabbing"
+                  >
+                    <Link href={`/projects/${task.projectId}`} className="block">
                       <div className="text-sm font-medium">
                         {locale === "ar" ? task.titleAr : task.title}
                       </div>
                       <div className="mt-1 text-[11px] text-navy/45">
                         {task.estimateHours}h · {task.priority}
+                        {task.tags?.length ? ` · ${task.tags[0]}` : ""}
                       </div>
-                    </Card>
-                  </Link>
+                    </Link>
+                  </Card>
                 ))}
               </div>
             </div>

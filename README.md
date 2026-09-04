@@ -10,7 +10,9 @@ Default language is **English** (LTR). Arabic is a header toggle inside the OS.
 
 - `/` — English marketing home (animated product story)
 - `/home` — executive workspace
-- `/book` — public meeting booking (Calendly-style, same calendar)
+- `/book` — public booking with event types (Calendly-style)
+- `/accounts` — account manager book
+- `/docs` — wiki tree, templates, linked databases
 
 ## Modules
 

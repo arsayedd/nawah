@@ -595,6 +595,7 @@ export const seed: OsState = {
       estimateHours: 6,
       actualHours: 5,
       billable: true,
+      tags: ["content", "lumin"],
       checklist: [
         { id: "c1", text: "Themes approved", done: true },
         { id: "c2", text: "Dates locked", done: true },
@@ -615,6 +616,8 @@ export const seed: OsState = {
       estimateHours: 16,
       actualHours: 9,
       billable: true,
+      tags: ["design", "batch"],
+      dependsOn: ["t_1"],
       checklist: [],
       revisionCount: 1,
       approvalStatus: "internal",
@@ -799,6 +802,37 @@ export const seed: OsState = {
       body: "Push dining sets. Tone: calm, premium, Arabic-first captions.",
       bodyAr: "التركيز على أطقم السفرة. النبرة هادية وفخمة. الكابشنز عربي أولاً.",
       kind: "brief",
+    },
+    {
+      id: "d_brand",
+      title: "Brand guidelines",
+      titleAr: "دليل الهوية",
+      parentId: "d_wiki",
+      body: "# Voice\nCalm, premium, Arabic-first.\n\n# Color\nNavy, cobalt, mint.\n\n- Never use stock smiles\n- Captions before visuals",
+      bodyAr: "الصوت هادي وفخم. عربي أولاً.",
+      kind: "wiki",
+    },
+    {
+      id: "d_tpl_kickoff",
+      title: "Template — Kickoff notes",
+      titleAr: "قالب — ملاحظات الكيك أوف",
+      body: "Goals\nStakeholders\nAccess\nTimeline\nRisks\nNext actions",
+      bodyAr: "الأهداف\nأصحاب القرار\nالصلاحيات\nالجدول\nالمخاطر\nالخطوات",
+      kind: "template",
+    },
+    {
+      id: "d_db_clients",
+      title: "Database — Client health",
+      titleAr: "قاعدة — صحة العملاء",
+      kind: "database",
+      body: "Linked to Client 360. Edit cells here; money still lives on invoices.",
+      bodyAr: "مرتبطة بصفحة العميل.",
+      columns: ["Client", "AM", "Health", "Renewal"],
+      rows: [
+        { id: "r1", values: { Client: "Lumin Home", AM: "Sara", Health: "86", Renewal: "2026-10-01" } },
+        { id: "r2", values: { Client: "Cairo Bites", AM: "Sara", Health: "42", Renewal: "—" } },
+        { id: "r3", values: { Client: "Northline Bank", AM: "Sara", Health: "74", Renewal: "2026-09-15" } },
+      ],
     },
   ],
   tickets: [
@@ -1063,10 +1097,16 @@ export const seed: OsState = {
     { id: "pay_maya", userId: "u_maya", month: "2026-08", base: 0, commission: 8800, total: 8800, status: "draft" },
   ],
   bookingSlots: [
-    { id: "bk_1", ownerId: "u_sara", start: "2026-09-08T10:00:00", durationMin: 30 },
-    { id: "bk_2", ownerId: "u_sara", start: "2026-09-08T11:00:00", durationMin: 30 },
-    { id: "bk_3", ownerId: "u_omar", start: "2026-09-09T14:00:00", durationMin: 45 },
-    { id: "bk_4", ownerId: "u_sara", start: "2026-09-10T16:00:00", durationMin: 30, bookedName: "Yasmin Farid", clientId: "ld_bloom" },
+    { id: "bk_1", ownerId: "u_sara", start: "2026-09-08T10:00:00", durationMin: 30, typeId: "bt_disc" },
+    { id: "bk_2", ownerId: "u_sara", start: "2026-09-08T11:00:00", durationMin: 30, typeId: "bt_disc" },
+    { id: "bk_3", ownerId: "u_omar", start: "2026-09-09T14:00:00", durationMin: 45, typeId: "bt_kick" },
+    { id: "bk_4", ownerId: "u_sara", start: "2026-09-10T16:00:00", durationMin: 30, typeId: "bt_rev", bookedName: "Yasmin Farid", clientId: "ld_bloom" },
+    { id: "bk_5", ownerId: "u_sara", start: "2026-09-11T10:30:00", durationMin: 30, typeId: "bt_disc" },
+  ],
+  bookingTypes: [
+    { id: "bt_disc", name: "Discovery call", durationMin: 30, hostId: "u_sara", description: "Fit, budget, and whether Nawah should quote." },
+    { id: "bt_kick", name: "Project kickoff", durationMin: 45, hostId: "u_omar", description: "Access, timeline, and first deliverable." },
+    { id: "bt_rev", name: "Creative review", durationMin: 30, hostId: "u_sara", description: "Approve or request changes on a round." },
   ],
   activities: [
     {
@@ -1105,6 +1145,15 @@ export const seed: OsState = {
       actorId: "u_ahmed",
       action: "invoice.overdue",
       detail: "INV-2188 flagged overdue for Cairo Bites",
+    },
+  ],
+  docComments: [
+    {
+      id: "dc_1",
+      docId: "d_lumin_brief",
+      authorId: "u_sara",
+      body: "Client wants more dining sets in the first two weeks.",
+      createdAt: "2026-09-02T12:00:00",
     },
   ],
 };

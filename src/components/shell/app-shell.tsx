@@ -21,6 +21,7 @@ import {
   Settings,
   Sparkles,
   Timer,
+  UserRound,
   Users,
   Workflow,
   X,
@@ -55,6 +56,7 @@ const groups = [
     items: [
       { href: "/crm", key: "crm", icon: Workflow },
       { href: "/clients", key: "clients", icon: Briefcase },
+      { href: "/accounts", key: "accounts", icon: UserRound },
       { href: "/quotes", key: "quotes", icon: FileText },
       { href: "/catalog", key: "catalog", icon: Sparkles },
     ],
