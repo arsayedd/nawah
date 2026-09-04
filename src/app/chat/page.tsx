@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Textarea } from "@/components/ui/input";
@@ -16,6 +17,8 @@ export default function ChatPage() {
   const me = useOS((s) => s.prefs.currentUserId);
   const sendMessage = useOS((s) => s.sendMessage);
   const addChatRoom = useOS((s) => s.addChatRoom);
+  const removeChatRoom = useOS((s) => s.removeChatRoom);
+  const editLayout = useOS((s) => s.prefs.editLayout);
   const dict = t(locale);
   const mine = rooms.filter((r) => r.memberIds.includes(me));
   const [roomId, setRoomId] = useState(mine[0]?.id ?? "");
@@ -34,6 +37,7 @@ export default function ChatPage() {
         title={dict.nav.chat}
         description="Team chat lives in the OS — not a side Slack. Client threads stay in Inbox."
       />
+      <PageSection page="/chat" id="create" label="Create room">
       <div className="flex gap-2">
         <Input
           className="max-w-xs"
@@ -54,11 +58,13 @@ export default function ChatPage() {
           Create room
         </Button>
       </div>
+      </PageSection>
       <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
+        <PageSection page="/chat" id="rooms" label="Rooms">
         <Card className="p-2">
           {mine.map((r) => (
+            <div key={r.id} className="relative">
             <button
-              key={r.id}
               type="button"
               onClick={() => setRoomId(r.id)}
               className={`mb-1 w-full rounded-[10px] px-3 py-2 text-start text-sm ${
@@ -68,8 +74,20 @@ export default function ChatPage() {
               {r.name}
               <div className="text-[11px] opacity-60">{r.kind} · {r.memberIds.length}</div>
             </button>
+            {editLayout ? (
+              <button
+                type="button"
+                className="absolute top-1 end-1 text-[10px] text-coral"
+                onClick={() => removeChatRoom(r.id)}
+              >
+                Remove
+              </button>
+            ) : null}
+            </div>
           ))}
         </Card>
+        </PageSection>
+        <PageSection page="/chat" id="thread" label="Messages">
         <Card className="flex min-h-[420px] flex-col p-4">
           <div className="flex-1 space-y-2 overflow-y-auto">
             {thread.length === 0 ? (
@@ -104,6 +122,7 @@ export default function ChatPage() {
             </Button>
           </div>
         </Card>
+        </PageSection>
       </div>
     </div>
   );

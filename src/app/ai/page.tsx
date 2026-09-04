@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ export default function AiPage() {
         title={dict.nav.ai}
         description="Nawah will not invent numbers. If ads, email, or a warehouse is not connected, it says so."
       />
+      <PageSection page="/ai" id="prompts" label="Prompts">
       <div className="flex flex-wrap gap-2">
         {prompts.map((p) => (
           <Button
@@ -46,10 +48,8 @@ export default function AiPage() {
           </Button>
         ))}
       </div>
-      <div className="flex gap-2">
-        <Input value={q} onChange={(e) => setQ(e.target.value)} />
-        <Button onClick={() => setAnswers(answerNawah(q, state))}>Ask</Button>
-      </div>
+      </PageSection>
+      <PageSection page="/ai" id="answer" label="Answer">
       <div className="grid gap-3">
         {answers.map((a, i) => (
           <Card key={`${a.title}-${i}`} className="p-4">
@@ -63,6 +63,7 @@ export default function AiPage() {
           </Card>
         ))}
       </div>
+      </PageSection>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { PageSection } from "@/components/shell/page-section";
 import { Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
@@ -22,6 +23,7 @@ export default function MyWorkPage() {
           ClickUp-style “me” queue. Switch person to see assigned work, tags, and blockers.
         </p>
       </div>
+      <PageSection page="/my-work" id="people" label="Person switcher">
       <div className="flex flex-wrap gap-2">
         {employees.map((e) => (
           <button
@@ -36,7 +38,9 @@ export default function MyWorkPage() {
           </button>
         ))}
       </div>
+      </PageSection>
       <p className="text-sm text-navy/50">{person?.role} · {tasks.length} open items</p>
+      <PageSection page="/my-work" id="queue" label="Work queue">
       <div className="grid gap-3">
         {tasks.length === 0 ? (
           <Card className="p-6 text-sm text-navy/50">Inbox zero for this person.</Card>
@@ -64,6 +68,7 @@ export default function MyWorkPage() {
           ))
         )}
       </div>
+      </PageSection>
     </div>
   );
 }

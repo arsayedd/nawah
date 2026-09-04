@@ -80,6 +80,8 @@ export function mergeOsState(remote?: Partial<OsState> | OsState | null): OsStat
     ...(remote?.prefs ?? {}),
     hiddenNav: remote?.prefs?.hiddenNav ?? seed.prefs.hiddenNav,
     hiddenHomeWidgets: remote?.prefs?.hiddenHomeWidgets ?? seed.prefs.hiddenHomeWidgets,
+    hiddenPageSections: remote?.prefs?.hiddenPageSections ?? seed.prefs.hiddenPageSections,
+    editLayout: remote?.prefs?.editLayout ?? seed.prefs.editLayout,
     currentUserId: remote?.prefs?.currentUserId ?? seed.prefs.currentUserId,
   };
   return out;

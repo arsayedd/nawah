@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { RecordChrome } from "@/components/records/chrome";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { egp } from "@/lib/utils";
 import { t } from "@/lib/i18n";
@@ -17,6 +19,7 @@ export default function ClientsPage() {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">{dict.nav.clients}</h1>
+      <PageSection page="/clients" id="grid" label="Client cards">
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {clients.map((c) => {
           const revenue = invoices
@@ -24,7 +27,8 @@ export default function ClientsPage() {
             .reduce((s, i) => s + i.paidAmount, 0);
           const count = projects.filter((p) => p.clientId === c.id).length;
           return (
-            <Link key={c.id} href={`/clients/${c.id}`}>
+            <RecordChrome key={c.id} collection="clients" id={c.id}>
+            <Link href={`/clients/${c.id}`}>
               <Card className="h-full p-5">
                 <div className="flex items-start justify-between">
                   <div>
@@ -47,9 +51,11 @@ export default function ClientsPage() {
                 </div>
               </Card>
             </Link>
+            </RecordChrome>
           );
         })}
       </div>
+      </PageSection>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -52,6 +53,7 @@ export default function InboxPage() {
         description="Project and client threads live next to the work — turn a message into a decision, not a WhatsApp screenshot."
       />
       <div className="grid gap-4 lg:grid-cols-[240px_1fr]">
+        <PageSection page="/inbox" id="channels" label="Channels">
         <Card className="p-2">
           {channels.length === 0 ? (
             <p className="px-3 py-6 text-sm text-navy/45">No project or client channels yet.</p>
@@ -69,6 +71,8 @@ export default function InboxPage() {
             </button>
           ))}
         </Card>
+        </PageSection>
+        <PageSection page="/inbox" id="thread" label="Thread">
         <Card className="flex min-h-[420px] flex-col p-4">
           <div className="flex-1 space-y-3 overflow-y-auto">
             {thread.length === 0 ? (
@@ -127,6 +131,7 @@ export default function InboxPage() {
             </div>
           </div>
         </Card>
+        </PageSection>
       </div>
     </div>
   );

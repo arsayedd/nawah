@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { CommentThread } from "@/components/comments/thread";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
@@ -22,6 +25,7 @@ export default function ContractsPage() {
         title={dict.nav.contracts}
         description="Accepting a quotation drafts the contract. Signing here locks dates — e-sign is simulated in this workspace."
       />
+      <PageSection page="/contracts" id="list" label="Contracts">
       {contracts.length === 0 ? (
         <Card className="p-6 text-sm text-navy/50">No contracts yet. Accept a quotation to draft one.</Card>
       ) : (
@@ -29,7 +33,8 @@ export default function ContractsPage() {
           const client = clients.find((x) => x.id === c.clientId);
           const quote = quotes.find((q) => q.id === c.quoteId);
           return (
-            <Card key={c.id} className="flex flex-wrap items-center justify-between gap-3 p-5">
+            <RecordChrome key={c.id} collection="contracts" id={c.id}>
+            <Card className="flex flex-wrap items-center justify-between gap-3 p-5">
               <div>
                 <div className="font-semibold">
                   {quote ? (locale === "ar" ? quote.titleAr : quote.title) : c.id}
@@ -52,9 +57,14 @@ export default function ContractsPage() {
                 ) : null}
               </div>
             </Card>
+            <div className="mt-2">
+              <CommentThread entity="contract" entityId={c.id} collapsed />
+            </div>
+            </RecordChrome>
           );
         })
       )}
+      </PageSection>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
@@ -25,6 +26,7 @@ export default function HrPage() {
         description="Attendance, leave, payroll, and performance sit on the same people who appear on quotes and timesheets. Full payroll runs stay out of this demo."
       />
       <div className="grid gap-4 lg:grid-cols-2">
+        <PageSection page="/hr" id="attendance" label="Attendance">
         <Card>
           <h2 className="mb-3 font-semibold">Today’s attendance</h2>
           {attendance.map((a) => {
@@ -39,8 +41,9 @@ export default function HrPage() {
             );
           })}
         </Card>
+        </PageSection>
+        <PageSection page="/hr" id="leave" label="Leave">
         <Card>
-          <h2 className="mb-3 font-semibold">Leave</h2>
           {leaves.map((l) => {
             const e = employees.find((x) => x.id === l.userId);
             return (
@@ -68,6 +71,8 @@ export default function HrPage() {
             );
           })}
         </Card>
+        </PageSection>
+        <PageSection page="/hr" id="payroll" label="Payroll">
         <Card>
           <h2 className="mb-3 font-semibold">Payroll & commissions</h2>
           {payroll.map((p) => {
@@ -112,6 +117,7 @@ export default function HrPage() {
               );
             })}
         </Card>
+        </PageSection>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
@@ -19,6 +20,7 @@ export default function AutomationsPage() {
         title={dict.nav.automations}
         description="Trigger → conditions → actions. Quote accept already runs in the OS. Toggle the rest as the agency grows."
       />
+      <PageSection page="/automations" id="rules" label="Rules">
       <div className="grid gap-3">
         {automations.map((a) => (
           <Card key={a.id} className="p-4">
@@ -41,6 +43,8 @@ export default function AutomationsPage() {
           </Card>
         ))}
       </div>
+      </PageSection>
+      <PageSection page="/automations" id="log" label="Activity log">
       <Card>
         <h2 className="mb-3 font-semibold">Activity log</h2>
         {logs.map((l) => (
@@ -49,6 +53,7 @@ export default function AutomationsPage() {
           </div>
         ))}
       </Card>
+      </PageSection>
     </div>
   );
 }

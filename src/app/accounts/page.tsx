@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { egp } from "@/lib/utils";
@@ -30,6 +31,7 @@ export default function AccountsPage() {
         title={dict.nav.accounts}
         description={`${sara?.name}’s book: health, follow-ups, unpaid invoices, and meetings — not a separate CRM.`}
       />
+      <PageSection page="/accounts" id="kpis" label="Book KPIs">
       <div className="grid gap-3 sm:grid-cols-3">
         <Card className="p-4">
           <div className="text-xs text-navy/45">Clients</div>
@@ -46,6 +48,8 @@ export default function AccountsPage() {
           <div className="mt-1 text-2xl font-semibold">{leads.filter((l) => !["won", "lost"].includes(l.stage)).length}</div>
         </Card>
       </div>
+      </PageSection>
+      <PageSection page="/accounts" id="list" label="Accounts list">
       <div className="grid gap-4 lg:grid-cols-2">
         {clients.map((c) => {
           const overdue = invoices.filter(
@@ -101,6 +105,7 @@ export default function AccountsPage() {
           ))}
         </div>
       </Card>
+      </PageSection>
     </div>
   );
 }

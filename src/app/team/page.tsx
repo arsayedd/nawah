@@ -1,5 +1,6 @@
 "use client";
 
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { egp } from "@/lib/utils";
@@ -14,6 +15,7 @@ export default function TeamPage() {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">{dict.nav.team}</h1>
+      <PageSection page="/team" id="rates" label="Rates & load">
       <div className="grid gap-3 md:grid-cols-2">
         {employees.map((e) => {
           const mine = tasks.filter((t) => t.assigneeId === e.id);
@@ -71,6 +73,7 @@ export default function TeamPage() {
           );
         })}
       </div>
+      </PageSection>
     </div>
   );
 }

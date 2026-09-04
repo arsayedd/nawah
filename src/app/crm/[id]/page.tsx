@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { CommentThread } from "@/components/comments/thread";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { egp } from "@/lib/utils";
@@ -91,7 +92,11 @@ export default function LeadPage() {
           ))
         )}
       </Card>
-      {lead ? <CommentThread entity="lead" entityId={lead.id} /> : null}
+      {lead ? (
+        <PageSection page="/crm/:id" id="comments" label="Comments">
+          <CommentThread entity="lead" entityId={lead.id} />
+        </PageSection>
+      ) : null}
     </div>
   );
 }

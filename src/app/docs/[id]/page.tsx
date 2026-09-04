@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input, Textarea } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/input";
+import { CommentThread } from "@/components/comments/thread";
+import { PageSection } from "@/components/shell/page-section";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
 
@@ -18,13 +19,9 @@ export default function DocPage() {
   const saveDoc = useOS((s) => s.saveDoc);
   const convertDocToTasks = useOS((s) => s.convertDocToTasks);
   const applySopToProject = useOS((s) => s.applySopToProject);
-  const addDocComment = useOS((s) => s.addDocComment);
   const addDocRow = useOS((s) => s.addDocRow);
-  const comments = useOS((s) => s.docComments.filter((c) => c.docId === id));
-  const employees = useOS((s) => s.employees);
   const router = useRouter();
   const dict = t(locale);
-  const [note, setNote] = useState("");
 
   if (!doc) {
     return <p>Page not found.</p>;
@@ -53,6 +50,7 @@ export default function DocPage() {
             ))}
         </div>
       </div>
+      <PageSection page="/docs/:id" id="editor" label="Editor">
       <Card className="p-8">
         <p className="text-[11px] uppercase tracking-wide text-navy/40">{doc.kind ?? "page"}</p>
         <h1 className="mt-1 text-3xl font-semibold tracking-tight">
@@ -139,28 +137,10 @@ export default function DocPage() {
           ) : null}
         </div>
       </Card>
-      <div className="space-y-3">
-        <h2 className="text-sm font-semibold">Comments</h2>
-        {comments.map((c) => (
-          <Card key={c.id} className="p-3 text-sm">
-            <div className="text-[11px] text-navy/40">
-              {employees.find((e) => e.id === c.authorId)?.name}
-            </div>
-            {c.body}
-          </Card>
-        ))}
-        <Input placeholder="Comment" value={note} onChange={(e) => setNote(e.target.value)} />
-        <Button
-          size="sm"
-          disabled={!note.trim()}
-          onClick={() => {
-            addDocComment(doc.id, note.trim());
-            setNote("");
-          }}
-        >
-          Add comment
-        </Button>
-      </div>
+      </PageSection>
+      <PageSection page="/docs/:id" id="comments" label="Comments">
+        <CommentThread entity="doc" entityId={doc.id} />
+      </PageSection>
     </div>
   );
 }

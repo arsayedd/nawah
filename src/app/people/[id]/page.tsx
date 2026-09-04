@@ -6,6 +6,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { CommentThread } from "@/components/comments/thread";
+import { PageSection } from "@/components/shell/page-section";
 import { ALL_MODULES, modulesFor } from "@/lib/access";
 import type { AccessRole } from "@/lib/types";
 import { useOS } from "@/store/use-os";
@@ -31,6 +33,7 @@ export default function PersonPage() {
     <div className="space-y-5">
       <Link href="/people" className="text-sm text-cobalt">← People</Link>
       <h1 className="text-2xl font-bold">{employee.name}</h1>
+      <PageSection page="/people/:id" id="profile" label="Profile">
       <Card className="grid gap-3 sm:grid-cols-2">
         <Input value={name} onChange={(e) => setName(e.target.value)} />
         <Input value={role} onChange={(e) => setRole(e.target.value)} />
@@ -58,6 +61,8 @@ export default function PersonPage() {
           Save profile
         </Button>
       </Card>
+      </PageSection>
+      <PageSection page="/people/:id" id="access" label="Module access">
       <Card>
         <h2 className="font-semibold">Module access</h2>
         <p className="mt-1 text-sm text-navy/55">
@@ -82,6 +87,10 @@ export default function PersonPage() {
           })}
         </div>
       </Card>
+      </PageSection>
+      <PageSection page="/people/:id" id="comments" label="Comments">
+        <CommentThread entity="employee" entityId={employee.id} />
+      </PageSection>
     </div>
   );
 }

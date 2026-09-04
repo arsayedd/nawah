@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -53,6 +55,7 @@ export default function DocsPage() {
         </Button>
       </div>
       <div className="grid gap-4 lg:grid-cols-[240px_1fr]">
+        <PageSection page="/docs" id="tree" label="Workspace tree">
         <Card className="p-3">
           <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wide text-navy/40">
             Workspace
@@ -76,6 +79,8 @@ export default function DocsPage() {
             </div>
           ))}
         </Card>
+        </PageSection>
+        <PageSection page="/docs" id="cards" label="Page cards">
         <div className="grid gap-3 sm:grid-cols-2">
           {docs.length === 0 ? (
             <EmptyState
@@ -86,7 +91,8 @@ export default function DocsPage() {
             />
           ) : null}
           {docs.map((doc) => (
-            <Link key={doc.id} href={`/docs/${doc.id}`}>
+            <RecordChrome key={doc.id} collection="docs" id={doc.id}>
+            <Link href={`/docs/${doc.id}`}>
               <Card className="h-full p-4">
                 <div className="text-[11px] uppercase tracking-wide text-navy/40">
                   {doc.kind ?? "page"}
@@ -99,8 +105,10 @@ export default function DocsPage() {
                 </p>
               </Card>
             </Link>
+            </RecordChrome>
           ))}
         </div>
+        </PageSection>
       </div>
     </div>
   );

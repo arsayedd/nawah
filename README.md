@@ -16,7 +16,7 @@ Default language is **English** (LTR). Arabic is a header toggle inside the OS.
 
 ## Modules
 
-CRM, quotations, service catalog, clients, contracts, retainers, projects, people (hire, salary, module access), chat, internal mail, notifications, comments on tasks/projects/clients/quotes/leads, customize sidebar & home widgets, workload auto-assign, docs, inbox, files, portal, public booking, time, finance, analytics, automations, Nawah AI, team, HR, settings.
+CRM, quotations, service catalog, clients, contracts, retainers, projects, people (hire, salary, role, module access), chat, internal mail, notifications, comments on work records, per-page customize (hide any block, remove any record), workload, docs, inbox, files, portal, public booking, time, finance, analytics, automations, Nawah AI, team, HR, settings.
 
 ## Run locally
 

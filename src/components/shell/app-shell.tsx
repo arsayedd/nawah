@@ -12,6 +12,7 @@ import {
   SidebarNav,
 } from "@/components/shell/sidebar";
 import { CommandSearch } from "@/components/shell/command-search";
+import { CustomizePageButton } from "@/components/shell/customize-page";
 import { QuickAdd } from "@/components/shell/quick-add";
 import { Button } from "@/components/ui/button";
 import { canAccessPath } from "@/lib/access";
@@ -30,6 +31,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const setCurrentUser = useOS((s) => s.setCurrentUser);
   const notices = useOS((s) => s.notices);
   const markNoticeRead = useOS((s) => s.markNoticeRead);
+  const editLayout = useOS((s) => s.prefs.editLayout);
+  const setEditLayout = useOS((s) => s.setEditLayout);
   const dict = t(locale);
   const me = employees.find((e) => e.id === meId);
   const unread = notices.filter((n) => n.userId === meId && !n.read);
@@ -102,6 +105,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">{dict.quickAdd}</span>
           </Button>
+          <CustomizePageButton />
           <div className="relative">
             <button
               className="relative rounded-[10px] p-2 text-navy/70 hover:bg-navy/5"
@@ -182,6 +186,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
+        {editLayout ? (
+          <div className="flex items-center justify-between gap-3 bg-navy px-4 py-2 text-xs text-white md:px-8">
+            <span>Layout edit is on. Hide any block, or remove a record from this page.</span>
+            <button type="button" className="font-semibold text-mint" onClick={() => setEditLayout(false)}>
+              Done
+            </button>
+          </div>
+        ) : null}
         <main className="px-4 py-7 text-[#071B3A] md:px-8">
           <ErrorBoundary>
             {canAccessPath(me, pathname) ? (

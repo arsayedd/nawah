@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import type { TaskStatus } from "@/lib/types";
@@ -62,13 +64,15 @@ export default function ProjectsPage() {
         }
       />
 
+      <PageSection page="/projects" id="cards" label="Project cards">
       <div className="grid gap-3 md:grid-cols-3">
         {projects.map((p) => {
           const client = clients.find((c) => c.id === p.clientId);
           const pts = tasks.filter((t) => t.projectId === p.id);
           const done = pts.filter((t) => t.status === "done").length;
           return (
-            <Link key={p.id} href={`/projects/${p.id}`}>
+            <RecordChrome key={p.id} collection="projects" id={p.id}>
+            <Link href={`/projects/${p.id}`}>
               <Card className="h-full p-4">
                 <Badge
                   tone={
@@ -100,10 +104,13 @@ export default function ProjectsPage() {
                 </div>
               </Card>
             </Link>
+            </RecordChrome>
           );
         })}
       </div>
+      </PageSection>
 
+      <PageSection page="/projects" id="board" label="Task views">
       {view === "board" ? (
         <div className="flex gap-3 overflow-x-auto pb-2">
           {columns.map((col) => (
@@ -245,6 +252,7 @@ export default function ProjectsPage() {
           </table>
         </Card>
       )}
+      </PageSection>
     </div>
   );
 }

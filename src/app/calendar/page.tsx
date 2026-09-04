@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Fragment } from "react";
+import { PageSection } from "@/components/shell/page-section";
 import { Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
@@ -38,6 +39,7 @@ export default function CalendarPage() {
           Open public booking
         </Link>
       </div>
+      <PageSection page="/calendar" id="types" label="Booking types">
       <div className="flex flex-wrap gap-2">
         {types.map((bt) => (
           <Card key={bt.id} className="px-3 py-2 text-sm">
@@ -46,6 +48,8 @@ export default function CalendarPage() {
           </Card>
         ))}
       </div>
+      </PageSection>
+      <PageSection page="/calendar" id="week" label="Week grid">
       <div className="overflow-x-auto rounded-[16px] border border-navy/8 bg-white">
         <div className="grid min-w-[720px]" style={{ gridTemplateColumns: `72px repeat(${days.length}, 1fr)` }}>
           <div className="border-b border-navy/8 p-2 text-xs text-navy/40" />
@@ -83,6 +87,7 @@ export default function CalendarPage() {
           ))}
         </div>
       </div>
+      </PageSection>
       <Card>
         <h2 className="mb-3 font-semibold">Deadlines</h2>
         {tasks.map((t) => (

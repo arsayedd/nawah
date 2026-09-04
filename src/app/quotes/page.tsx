@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
@@ -45,11 +47,13 @@ export default function QuotesPage() {
           </Button>
         ))}
       />
+      <PageSection page="/quotes" id="list" label="Quote list">
       <div className="grid gap-3">
         {quotes.map((q) => {
           const tot = quoteTotals(q.items, q.discount, q.taxRate);
           return (
-            <Link key={q.id} href={`/quotes/${q.id}`}>
+            <RecordChrome key={q.id} collection="quotes" id={q.id}>
+            <Link href={`/quotes/${q.id}`}>
               <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="flex items-center gap-2">
@@ -86,9 +90,11 @@ export default function QuotesPage() {
                 </div>
               </Card>
             </Link>
+            </RecordChrome>
           );
         })}
       </div>
+      </PageSection>
     </div>
   );
 }

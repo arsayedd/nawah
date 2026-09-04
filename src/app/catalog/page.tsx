@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
@@ -23,6 +25,7 @@ export default function CatalogPage() {
         title={dict.nav.catalog}
         description="Every line carries hours, role, cost, sell price, revisions, and deliverables. Quotes are assembled from here — not from a blank spreadsheet."
       />
+      <PageSection page="/catalog" id="list" label="Service packages">
       {catalog.map((svc) => {
         const tot = quoteTotals(
           svc.items.map((i) => ({
@@ -41,7 +44,8 @@ export default function CatalogPage() {
           })),
         );
         return (
-          <Card key={svc.id} className="p-5">
+          <RecordChrome key={svc.id} collection="catalog" id={svc.id}>
+          <Card className="p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold">
@@ -103,8 +107,10 @@ export default function CatalogPage() {
               </table>
             </div>
           </Card>
+          </RecordChrome>
         );
       })}
+      </PageSection>
     </div>
   );
 }

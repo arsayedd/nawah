@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
@@ -24,6 +25,7 @@ export default function WorkloadPage() {
         description="Capacity by person. Unassigned work can be auto-placed by skill load and hourly cost."
       />
       {unassigned.length ? (
+        <PageSection page="/workload" id="unassigned" label="Unassigned">
         <Card className="p-4">
           <h2 className="mb-2 font-semibold">Unassigned ({unassigned.length})</h2>
           {unassigned.map((t) => (
@@ -35,7 +37,9 @@ export default function WorkloadPage() {
             </div>
           ))}
         </Card>
+        </PageSection>
       ) : null}
+      <PageSection page="/workload" id="people" label="Capacity grid">
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {employees
           .filter((e) => e.id !== "u_ahmed")
@@ -79,6 +83,7 @@ export default function WorkloadPage() {
             );
           })}
       </div>
+      </PageSection>
     </div>
   );
 }

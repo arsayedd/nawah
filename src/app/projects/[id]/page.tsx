@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { CommentThread } from "@/components/comments/thread";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
@@ -49,6 +50,7 @@ export default function ProjectDetailPage() {
 
   return (
     <div className="space-y-5">
+      <PageSection page="/projects/:id" id="header" label="Project header">
       <div>
         <Link href="/projects" className="text-sm text-cobalt">
           ← {dict.nav.projects}
@@ -85,7 +87,9 @@ export default function ProjectDetailPage() {
           </Card>
         ))}
       </div>
+      </PageSection>
 
+      <PageSection page="/projects/:id" id="tasks" label="Tasks">
       <Card>
         <h2 className="mb-3 font-semibold">
           {locale === "ar" ? "المهام والتسليمات" : "Tasks & deliverables"}
@@ -214,7 +218,10 @@ export default function ProjectDetailPage() {
           })}
         </div>
       </Card>
-      <CommentThread entity="project" entityId={project.id} />
+      </PageSection>
+      <PageSection page="/projects/:id" id="comments" label="Project comments">
+        <CommentThread entity="project" entityId={project.id} />
+      </PageSection>
     </div>
   );
 }

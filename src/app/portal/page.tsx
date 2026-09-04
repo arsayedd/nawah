@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { PageSection } from "@/components/shell/page-section";
 import { NawahLockup } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
@@ -82,6 +83,7 @@ function PortalInner() {
         </div>
       </div>
 
+      <PageSection page="/portal" id="work" label="Work & approvals">
       <div className="grid gap-3 md:grid-cols-3">
         <Card className="p-4">
           <div className="text-xs text-navy/50">
@@ -136,7 +138,9 @@ function PortalInner() {
           ))
         )}
       </Card>
+      </PageSection>
 
+      <PageSection page="/portal" id="billing" label="Quotes & invoices">
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <h2 className="mb-3 font-semibold">{dict.nav.projects}</h2>
@@ -189,6 +193,7 @@ function PortalInner() {
           </Button>
         </Link>
       </Card>
+      </PageSection>
     </div>
   );
 }

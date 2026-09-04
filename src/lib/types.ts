@@ -511,9 +511,23 @@ export type ChatRoom = {
   kind: "dm" | "group";
 };
 
+export type CommentEntity =
+  | "task"
+  | "project"
+  | "client"
+  | "lead"
+  | "quote"
+  | "file"
+  | "invoice"
+  | "doc"
+  | "contract"
+  | "retainer"
+  | "employee"
+  | "ticket";
+
 export type EntityComment = {
   id: string;
-  entity: "task" | "project" | "client" | "lead" | "quote" | "file";
+  entity: CommentEntity;
   entityId: string;
   authorId: string;
   body: string;
@@ -524,6 +538,8 @@ export type WorkspacePrefs = {
   currentUserId: string;
   hiddenNav: string[];
   hiddenHomeWidgets: string[];
+  hiddenPageSections: Record<string, string[]>;
+  editLayout: boolean;
 };
 
 export type OsState = {

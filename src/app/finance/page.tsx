@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { CommentThread } from "@/components/comments/thread";
+import { RecordChrome } from "@/components/records/chrome";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
@@ -24,6 +27,7 @@ export default function FinancePage() {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">{dict.nav.finance}</h1>
+      <PageSection page="/finance" id="kpis" label="Cash KPIs">
       <div className="grid gap-3 md:grid-cols-4">
         <Card className="p-4">
           <div className="text-xs text-navy/50">
@@ -48,7 +52,9 @@ export default function FinancePage() {
           <div className="mt-1 text-2xl font-semibold">{egp(collected - exp, locale)}</div>
         </Card>
       </div>
+      </PageSection>
 
+      <PageSection page="/finance" id="pnl" label="Project P&L">
       <Card>
         <h2 className="mb-3 font-semibold">
           {locale === "ar" ? "ربحية المشروع" : "Project profitability"}
@@ -95,8 +101,10 @@ export default function FinancePage() {
           </table>
         </div>
       </Card>
+      </PageSection>
 
       <div className="grid gap-4 lg:grid-cols-2">
+        <PageSection page="/finance" id="invoices" label="Invoices">
         <Card>
           <h2 className="mb-3 font-semibold">
             {locale === "ar" ? "الفواتير" : "Invoices"}
@@ -104,8 +112,8 @@ export default function FinancePage() {
           {invoices.map((i) => {
             const client = clients.find((c) => c.id === i.clientId);
             return (
+              <RecordChrome key={i.id} collection="invoices" id={i.id}>
               <div
-                key={i.id}
                 className="flex items-center justify-between border-b border-navy/6 py-2 text-sm"
               >
                 <div>
@@ -139,9 +147,13 @@ export default function FinancePage() {
                   ) : null}
                 </div>
               </div>
+              <CommentThread entity="invoice" entityId={i.id} collapsed />
+              </RecordChrome>
             );
           })}
         </Card>
+        </PageSection>
+        <PageSection page="/finance" id="cash" label="Payments & expenses">
         <Card>
           <h2 className="mb-3 font-semibold">
             {locale === "ar" ? "مدفوعات ومصروفات" : "Payments & expenses"}
@@ -153,11 +165,14 @@ export default function FinancePage() {
           ))}
           <div className="my-3 h-px bg-navy/8" />
           {expenses.map((e) => (
-            <div key={e.id} className="py-1 text-sm">
+            <RecordChrome key={e.id} collection="expenses" id={e.id}>
+            <div className="py-1 text-sm">
               {egp(e.amount, locale)} · {e.category} · {e.note}
             </div>
+            </RecordChrome>
           ))}
         </Card>
+        </PageSection>
       </div>
     </div>
   );

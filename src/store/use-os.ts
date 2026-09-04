@@ -33,7 +33,10 @@ type QuickKind =
   | "expense"
   | "employee"
   | "meeting"
-  | "request";
+  | "request"
+  | "notice"
+  | "mail"
+  | "room";
 
 type AcceptResult = {
   clientId: string;
@@ -104,6 +107,10 @@ type Store = OsState & {
   addEntityComment: (opts: Omit<EntityComment, "id" | "createdAt" | "authorId"> & { authorId?: string }) => void;
   toggleNavItem: (href: string) => void;
   toggleHomeWidget: (id: string) => void;
+  togglePageSection: (page: string, id: string) => void;
+  setEditLayout: (v: boolean) => void;
+  removeRecord: (collection: keyof OsState, id: string) => void;
+  removeChatRoom: (id: string) => void;
 };
 
 function pickAssignee(employees: OsState["employees"], role: string, load: Record<string, number>) {
@@ -592,6 +599,22 @@ export const useOS = create<Store>()((set, get) => ({
           });
         } else if (kind === "quote") {
           return get().addQuoteFromCatalog({ catalogId: get().catalog[0]?.id ?? "svc_smm" });
+        } else if (kind === "notice") {
+          get().sendNotice({
+            userIds: get().employees.map((e) => e.id),
+            title,
+            body: title,
+            channel: "inapp",
+            href: "/notifications",
+          });
+        } else if (kind === "mail") {
+          const toId =
+            get().employees.find((e) => e.id !== get().prefs.currentUserId)?.id ??
+            get().prefs.currentUserId;
+          get().sendMail({ toId, subject: title, body: title });
+          return "/mail";
+        } else if (kind === "room") {
+          return get().addChatRoom(title, get().employees.map((e) => e.id));
         }
         return id;
       },
@@ -1087,6 +1110,32 @@ export const useOS = create<Store>()((set, get) => ({
           ? hidden.filter((h) => h !== id)
           : [...hidden, id];
         set({ prefs: { ...get().prefs, hiddenHomeWidgets } });
+      },
+      togglePageSection: (page, id) => {
+        if (page === "/home") {
+          get().toggleHomeWidget(id);
+          return;
+        }
+        const map = { ...get().prefs.hiddenPageSections };
+        const hidden = map[page] ?? [];
+        map[page] = hidden.includes(id) ? hidden.filter((h) => h !== id) : [...hidden, id];
+        set({ prefs: { ...get().prefs, hiddenPageSections: map } });
+      },
+      setEditLayout: (v) => set({ prefs: { ...get().prefs, editLayout: v } }),
+      removeRecord: (collection, id) => {
+        if (collection === "prefs") return;
+        if (collection === "employees" && id === "u_ahmed") return;
+        const current = get()[collection];
+        if (!Array.isArray(current)) return;
+        set({
+          [collection]: current.filter((row: { id?: string }) => row.id !== id),
+        } as Partial<OsState>);
+      },
+      removeChatRoom: (id) => {
+        set({
+          chatRooms: get().chatRooms.filter((r) => r.id !== id),
+          messages: get().messages.filter((m) => m.channelId !== `chat:${id}`),
+        });
       },
 }));
 

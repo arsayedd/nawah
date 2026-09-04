@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AGENCY_NAME } from "@/lib/brand";
@@ -16,6 +17,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">{dict.nav.settings}</h1>
+      <PageSection page="/settings" id="workspace" label="Workspace">
       <Card>
         <h2 className="font-semibold">
           {locale === "ar" ? "مساحة العمل" : "Workspace"}
@@ -30,7 +32,9 @@ export default function SettingsPage() {
           {dict.reset}
         </Button>
       </Card>
+      </PageSection>
       <SupabaseCard locale={locale} />
+      <PageSection page="/settings" id="saas" label="SaaS subscriptions">
       <Card>
         <h2 className="mb-3 font-semibold">
           {locale === "ar" ? "اشتراكات الأدوات" : "SaaS subscriptions"}
@@ -57,6 +61,7 @@ export default function SettingsPage() {
           ))}
         </div>
       </Card>
+      </PageSection>
       <Card>
         <h2 className="font-semibold">Roles</h2>
         <p className="mt-1 text-sm text-navy/55">

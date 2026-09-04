@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import type { PipelineStage } from "@/lib/types";
@@ -48,6 +50,7 @@ export default function CrmPage() {
             : "Drag deals across stages. Won does not stop at CRM — it becomes delivery."
         }
       />
+      <PageSection page="/crm" id="board" label="Pipeline board">
       <div className="flex gap-3 overflow-x-auto pb-4">
         {order.map((stage) => (
           <div
@@ -67,6 +70,7 @@ export default function CrmPage() {
               {grouped[stage]?.map((lead) => {
                 const owner = employees.find((e) => e.id === lead.ownerId);
                 return (
+                  <RecordChrome collection="leads" id={lead.id}>
                   <Card
                     key={lead.id}
                     draggable
@@ -85,12 +89,14 @@ export default function CrmPage() {
                       </div>
                     </Link>
                   </Card>
+                  </RecordChrome>
                 );
               })}
             </div>
           </div>
         ))}
       </div>
+      </PageSection>
     </div>
   );
 }

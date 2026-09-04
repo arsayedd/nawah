@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Textarea } from "@/components/ui/input";
@@ -44,6 +46,7 @@ export default function MailPage() {
         </Button>
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
+        <PageSection page="/mail" id="compose" label="Compose">
         <Card>
           <h2 className="mb-3 font-semibold">Compose</h2>
           <select
@@ -66,16 +69,17 @@ export default function MailPage() {
               setBody("");
             }}
           >
-            Send mail
           </Button>
         </Card>
+        </PageSection>
+        <PageSection page="/mail" id="inbox" label="Inbox / sent">
         <Card>
           <h2 className="mb-3 font-semibold">{folder === "inbox" ? "Inbox" : "Sent"}</h2>
           <div className="space-y-1">
             {rows.length === 0 ? <p className="text-sm text-navy/45">Empty.</p> : null}
             {rows.map((m) => (
+              <RecordChrome key={m.id} collection="mail" id={m.id}>
               <button
-                key={m.id}
                 type="button"
                 className={`block w-full rounded-[10px] px-3 py-2 text-start text-sm ${
                   m.read ? "hover:bg-paper" : "bg-cobalt/8 font-medium"
@@ -90,6 +94,7 @@ export default function MailPage() {
                   {employees.find((e) => e.id === (folder === "inbox" ? m.fromId : m.toId))?.name}
                 </div>
               </button>
+              </RecordChrome>
             ))}
           </div>
           {open ? (
@@ -99,6 +104,7 @@ export default function MailPage() {
             </div>
           ) : null}
         </Card>
+        </PageSection>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
@@ -33,6 +34,7 @@ export default function TimePage() {
           ) : null
         }
       />
+      <PageSection page="/time" id="people" label="People load">
       <div className="grid gap-3 md:grid-cols-3">
         {employees
           .filter((e) => e.id !== "u_ahmed")
@@ -63,6 +65,8 @@ export default function TimePage() {
             );
           })}
       </div>
+      </PageSection>
+      <PageSection page="/time" id="entries" label="Timers & entries">
       <Card>
         <h2 className="mb-3 font-semibold">Open tasks</h2>
         {open.map((task) => (
@@ -111,6 +115,7 @@ export default function TimePage() {
           );
         })}
       </Card>
+      </PageSection>
     </div>
   );
 }

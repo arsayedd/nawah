@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,11 +51,15 @@ export default function PeoplePage() {
           </Button>
         }
       />
+      <PageSection page="/people" id="list" label="Employee cards">
       <div className="grid gap-3 md:grid-cols-2">
         {employees.map((e) => (
-          <PersonCard key={e.id} employee={e} locale={locale} onRemove={() => removeEmployee(e.id)} />
+          <RecordChrome key={e.id} collection="employees" id={e.id}>
+            <PersonCard employee={e} locale={locale} onRemove={() => removeEmployee(e.id)} />
+          </RecordChrome>
         ))}
       </div>
+      </PageSection>
       <Modal open={open} onOpenChange={setOpen} title="New employee">
         <div className="grid gap-3 sm:grid-cols-2">
           <Input placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />

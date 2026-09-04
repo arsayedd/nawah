@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { CommentThread } from "@/components/comments/thread";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
 import { t } from "@/lib/i18n";
@@ -170,7 +171,9 @@ export default function Client360Page() {
           ) : null}
         </Card>
       </div>
-      <CommentThread entity="client" entityId={client.id} />
+      <PageSection page="/clients/:id" id="comments" label="Comments">
+        <CommentThread entity="client" entityId={client.id} />
+      </PageSection>
     </div>
   );
 }

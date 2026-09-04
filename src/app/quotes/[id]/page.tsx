@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { CommentThread } from "@/components/comments/thread";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
@@ -145,7 +146,9 @@ export default function QuoteDetailPage() {
           </div>
         </div>
       </Card>
-      <CommentThread entity="quote" entityId={quote.id} />
+      <PageSection page="/quotes/:id" id="comments" label="Comments">
+        <CommentThread entity="quote" entityId={quote.id} />
+      </PageSection>
     </div>
   );
 }

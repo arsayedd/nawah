@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { RecordChrome } from "@/components/records/chrome";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Textarea } from "@/components/ui/input";
@@ -37,6 +39,7 @@ export default function NotificationsPage() {
         }
       />
       <div className="grid gap-4 lg:grid-cols-2">
+        <PageSection page="/notifications" id="send" label="Send">
         <Card>
           <h2 className="mb-3 font-semibold">Send</h2>
           <div className="mb-3 flex flex-wrap gap-2">
@@ -72,16 +75,17 @@ export default function NotificationsPage() {
               setBody("");
             }}
           >
-            Send
           </Button>
         </Card>
+        </PageSection>
+        <PageSection page="/notifications" id="inbox" label="Your inbox">
         <Card>
           <h2 className="mb-3 font-semibold">Your inbox</h2>
           <div className="space-y-2">
             {mine.length === 0 ? <p className="text-sm text-navy/45">No notifications.</p> : null}
             {mine.map((n) => (
+              <RecordChrome key={n.id} collection="notices" id={n.id}>
               <Link
-                key={n.id}
                 href={n.href ?? "/notifications"}
                 onClick={() => markNoticeRead(n.id)}
                 className={`block rounded-[12px] border px-3 py-2 text-sm ${
@@ -94,9 +98,11 @@ export default function NotificationsPage() {
                 </div>
                 <p className="mt-1 text-navy/70">{n.body}</p>
               </Link>
+              </RecordChrome>
             ))}
           </div>
         </Card>
+        </PageSection>
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ export const seed: OsState = {
     currentUserId: "u_ahmed",
     hiddenNav: [],
     hiddenHomeWidgets: [],
+    hiddenPageSections: {},
+    editLayout: false,
   },
   employees: [
     {

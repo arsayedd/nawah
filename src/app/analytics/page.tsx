@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { PageHeader } from "@/components/shell/page-header";
+import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
 import { t } from "@/lib/i18n";
@@ -40,6 +41,7 @@ export default function AnalyticsPage() {
         title={dict.nav.analytics}
         description="Same numbers as Home, drilled into sales, ops, clients, and services."
       />
+      <PageSection page="/analytics" id="kpis" label="Headline KPIs">
       <div className="grid gap-3 md:grid-cols-4">
         {[
           ["Revenue", egp(k.revenue, locale)],
@@ -53,6 +55,8 @@ export default function AnalyticsPage() {
           </Card>
         ))}
       </div>
+      </PageSection>
+      <PageSection page="/analytics" id="detail" label="Breakdowns">
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <h2 className="mb-3 font-semibold">Sales — leads by source</h2>
@@ -134,6 +138,7 @@ export default function AnalyticsPage() {
           })}
         </Card>
       </div>
+      </PageSection>
     </div>
   );
 }
