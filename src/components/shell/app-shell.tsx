@@ -2,35 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Bell,
-  BookOpen,
-  Bot,
-  Briefcase,
-  CalendarDays,
-  CheckSquare,
-  CircleDollarSign,
-  FileText,
-  FolderKanban,
-  Globe,
-  Home,
-  Menu,
-  MessageSquare,
-  Paperclip,
-  Plus,
-  Settings,
-  Sparkles,
-  Timer,
-  UserRound,
-  Users,
-  Workflow,
-  X,
-  Zap,
-} from "lucide-react";
+import { Bell, Menu, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { NawahLockup } from "@/components/brand/logo";
-import { AGENCY_NAME } from "@/lib/brand";
+import {
+  SIDEBAR_WIDTH,
+  SidebarBrand,
+  SidebarFooter,
+  SidebarNav,
+} from "@/components/shell/sidebar";
 import { CommandSearch } from "@/components/shell/command-search";
 import { QuickAdd } from "@/components/shell/quick-add";
 import { Button } from "@/components/ui/button";
@@ -38,57 +18,6 @@ import { t } from "@/lib/i18n";
 import { writeStoredLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
-
-const groups = [
-  {
-    label: "Operate",
-    labelAr: "تشغيل",
-    items: [
-      { href: "/home", key: "home", icon: Home },
-      { href: "/my-work", key: "myWork", icon: CheckSquare },
-      { href: "/projects", key: "projects", icon: FolderKanban },
-      { href: "/calendar", key: "calendar", icon: CalendarDays },
-      { href: "/time", key: "time", icon: Timer },
-      { href: "/workload", key: "workload", icon: Users },
-    ],
-  },
-  {
-    label: "Win work",
-    labelAr: "المبيعات",
-    items: [
-      { href: "/crm", key: "crm", icon: Workflow },
-      { href: "/clients", key: "clients", icon: Briefcase },
-      { href: "/accounts", key: "accounts", icon: UserRound },
-      { href: "/quotes", key: "quotes", icon: FileText },
-      { href: "/catalog", key: "catalog", icon: Sparkles },
-    ],
-  },
-  {
-    label: "Delivery",
-    labelAr: "التسليم",
-    items: [
-      { href: "/docs", key: "docs", icon: BookOpen },
-      { href: "/inbox", key: "inbox", icon: MessageSquare },
-      { href: "/files", key: "files", icon: Paperclip },
-      { href: "/portal", key: "portal", icon: Globe },
-    ],
-  },
-  {
-    label: "Run the agency",
-    labelAr: "إدارة",
-    items: [
-      { href: "/finance", key: "finance", icon: CircleDollarSign },
-      { href: "/contracts", key: "contracts", icon: FileText },
-      { href: "/retainers", key: "retainers", icon: Zap },
-      { href: "/analytics", key: "analytics", icon: Sparkles },
-      { href: "/automations", key: "automations", icon: Zap },
-      { href: "/ai", key: "ai", icon: Bot },
-      { href: "/team", key: "team", icon: Users },
-      { href: "/hr", key: "hr", icon: Users },
-      { href: "/settings", key: "settings", icon: Settings },
-    ],
-  },
-] as const;
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -109,65 +38,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  const nav = (
-    <nav className="flex flex-1 flex-col gap-5 overflow-y-auto px-3 pb-4">
-      {groups.map((group) => (
-        <div key={group.label}>
-          <div className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35">
-            {locale === "ar" ? group.labelAr : group.label}
-          </div>
-          <div className="flex flex-col gap-0.5">
-            {group.items.map((item) => {
-              const active =
-                item.href === "/home"
-                  ? pathname === "/home"
-                  : pathname.startsWith(item.href);
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-[10px] px-3 py-2 text-[13px] transition-colors",
-                    active
-                      ? "bg-cobalt text-white shadow-[0_8px_20px_rgba(37,99,235,0.28)]"
-                      : "text-white/65 hover:bg-white/8 hover:text-white",
-                  )}
-                >
-                  <Icon className="h-[17px] w-[17px]" strokeWidth={1.75} />
-                  {dict.nav[item.key]}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </nav>
-  );
-
   return (
     <div
       className={cn(
         "min-h-screen bg-paper text-navy",
-        locale === "ar" ? "[font-family:var(--font-cairo),var(--font-inter),sans-serif]" : "font-sans",
+        locale === "ar"
+          ? "[font-family:var(--font-cairo),var(--font-inter),sans-serif]"
+          : "font-sans",
       )}
     >
-      <aside className="fixed inset-y-0 start-0 z-40 hidden w-[260px] flex-col bg-navy text-white lg:flex">
-        <div className="px-5 py-6">
-          <Link href="/">
-            <NawahLockup inverted />
-          </Link>
-          <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.16em] text-white/40">
-            {dict.tagline}
-          </p>
-        </div>
-        {nav}
-        <div className="border-t border-white/8 px-5 py-4">
-          <div className="text-[11px] font-semibold tracking-[0.14em] text-white/80">
-            {AGENCY_NAME}
-          </div>
-          <div className="text-[11px] text-white/35">{AGENCY_NAME} workspace</div>
-        </div>
+      <aside
+        className="fixed inset-y-0 start-0 z-40 hidden flex-col overflow-hidden border-e border-white/10 bg-navy text-white lg:flex"
+        style={{ width: SIDEBAR_WIDTH }}
+      >
+        <SidebarBrand locale={locale} />
+        <SidebarNav locale={locale} />
+        <SidebarFooter />
       </aside>
 
       {mobileNav ? (
@@ -177,19 +63,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => setMobileNav(false)}
             aria-label="Close menu"
           />
-          <aside className="absolute inset-y-0 start-0 z-10 flex w-[min(280px,86vw)] flex-col bg-navy text-white shadow-2xl">
-            <div className="flex items-center justify-between px-4 py-4">
-              <NawahLockup inverted />
-              <button onClick={() => setMobileNav(false)} aria-label="Close">
+          <aside className="absolute inset-y-0 start-0 z-10 flex w-[min(280px,86vw)] flex-col overflow-hidden bg-navy text-white shadow-2xl">
+            <div className="relative shrink-0">
+              <SidebarBrand locale={locale} />
+              <button
+                className="absolute end-2 top-3 rounded-lg p-2 text-white/70 hover:bg-white/10"
+                onClick={() => setMobileNav(false)}
+                aria-label="Close"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            {nav}
+            <SidebarNav locale={locale} onNavigate={() => setMobileNav(false)} />
+            <SidebarFooter />
           </aside>
         </div>
       ) : null}
 
-      <div className="lg:ps-[260px]">
+      <div className="lg:ps-[264px]">
         <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-navy/8 bg-white/90 px-4 backdrop-blur md:px-6">
           <button
             className="rounded-[10px] p-2 text-navy lg:hidden"
