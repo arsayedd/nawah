@@ -194,10 +194,10 @@ export default function MarketingHome() {
             </div>
             <div className="grid grid-cols-2 gap-2 p-4">
               {[
-                ["Revenue", egp(k.revenue, "en")],
-                ["Pipeline", egp(k.pipeline, "en")],
-                ["Overdue", overdueInv?.number ?? egp(k.overdue, "en")],
-                ["Win rate", `${Math.round(k.winRate * 100)}%`],
+                ["Revenue", egp(k.revenue ?? 0, "en")],
+                ["Pipeline", egp(k.pipeline ?? 0, "en")],
+                ["Overdue", overdueInv?.number ?? egp(k.overdue ?? 0, "en")],
+                ["Win rate", `${Math.round((k.winRate ?? 0) * 100)}%`],
               ].map(([l, v]) => (
                 <div key={l} className="rounded-[12px] bg-paper p-3">
                   <div className="text-[10px] uppercase tracking-wide text-navy/40">{l}</div>

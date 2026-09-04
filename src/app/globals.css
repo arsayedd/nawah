@@ -38,17 +38,16 @@ body {
 }
 
 @keyframes nawah-orbit {
-  0% {
+  from {
     transform: rotate(0deg) translateX(var(--orbit, 150px)) rotate(0deg);
   }
-  100% {
+  to {
     transform: rotate(360deg) translateX(var(--orbit, 150px)) rotate(-360deg);
   }
 }
 
 @keyframes nawah-pulse {
-  0%,
-  100% {
+  from {
     transform: scale(1);
     opacity: 0.55;
   }
@@ -56,22 +55,26 @@ body {
     transform: scale(1.18);
     opacity: 0.15;
   }
+  to {
+    transform: scale(1);
+    opacity: 0.55;
+  }
 }
 
 @keyframes nawah-flow {
-  0% {
+  from {
     stroke-dashoffset: 240;
   }
-  100% {
+  to {
     stroke-dashoffset: 0;
   }
 }
 
 @keyframes nawah-marquee {
-  0% {
+  from {
     transform: translateX(0);
   }
-  100% {
+  to {
     transform: translateX(-50%);
   }
 }
@@ -106,7 +109,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nawah-in,
   .nawah-rise,
   .nawah-bar {
     animation: none;
@@ -114,12 +116,14 @@ body {
 }
 
 @keyframes nawah-float {
-  0%,
-  100% {
+  from {
     transform: translateY(0);
   }
   50% {
     transform: translateY(-10px);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 
