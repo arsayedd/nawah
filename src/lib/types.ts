@@ -31,7 +31,8 @@ export type AccessRole =
   | "team"
   | "finance"
   | "hr"
-  | "freelancer";
+  | "freelancer"
+  | "reviewer";
 
 export type Employee = {
   id: string;

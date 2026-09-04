@@ -12,7 +12,7 @@ import { ALL_MODULES, modulesFor } from "@/lib/access";
 import type { AccessRole } from "@/lib/types";
 import { useOS } from "@/store/use-os";
 
-const ROLES: AccessRole[] = ["owner", "admin", "sales", "am", "pm", "team", "finance", "hr", "freelancer"];
+const ROLES: AccessRole[] = ["owner", "admin", "sales", "am", "pm", "team", "finance", "hr", "freelancer", "reviewer"];
 
 export default function PersonPage() {
   const { id } = useParams<{ id: string }>();

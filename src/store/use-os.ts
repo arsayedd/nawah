@@ -17,6 +17,7 @@ import type {
   PipelineStage,
   Project,
   Quote,
+  QuoteStatus,
   Task,
   TaskStatus,
   Ticket,
@@ -53,6 +54,7 @@ type Store = OsState & {
   resetDemo: () => void;
   moveLead: (id: string, stage: PipelineStage) => void;
   acceptQuote: (quoteId: string) => AcceptResult | null;
+  setQuoteStatus: (id: string, status: QuoteStatus) => void;
   markQuoteViewed: (quoteId: string) => void;
   updateTaskStatus: (id: string, status: TaskStatus) => void;
   requestRevision: (taskId: string) => void;
@@ -158,6 +160,10 @@ export const useOS = create<Store>()((set, get) => ({
               ? { ...q, status: "viewed", openedAt: new Date().toISOString() }
               : q,
           ),
+        }),
+      setQuoteStatus: (id, status) =>
+        set({
+          quotes: get().quotes.map((q) => (q.id === id ? { ...q, status } : q)),
         }),
       acceptQuote: (quoteId) => {
         const state = get();

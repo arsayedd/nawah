@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shell/page-header";
 import { PageSection } from "@/components/shell/page-section";
@@ -23,6 +24,7 @@ export default function AnalyticsPage() {
   const employees = useOS((s) => s.employees);
   const dict = t(locale);
   const k = useKpis();
+  const [tab, setTab] = useState<"owner" | "sales" | "ops" | "people" | "client" | "service">("owner");
 
   const bySource = Object.entries(
     leads.reduce<Record<string, number>>((acc, l) => {
@@ -39,8 +41,30 @@ export default function AnalyticsPage() {
       <PageHeader
         kicker="Insight"
         title={dict.nav.analytics}
-        description="Same numbers as Home, drilled into sales, ops, clients, and services."
+        description="Owner, sales, operations, people, client health, and service profit — same numbers as Home."
       />
+      <div className="flex flex-wrap gap-2">
+        {(
+          [
+            ["owner", "Owner"],
+            ["sales", "Sales"],
+            ["ops", "Operations"],
+            ["people", "People"],
+            ["client", "Client health"],
+            ["service", "Service profit"],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setTab(id)}
+            className={`rounded-full px-3 py-1 text-xs ${tab === id ? "bg-navy text-white" : "bg-white text-navy/70"}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {tab === "owner" ? (
       <PageSection page="/analytics" id="kpis" label="Headline KPIs">
       <div className="grid gap-3 md:grid-cols-4">
         {[
@@ -56,8 +80,10 @@ export default function AnalyticsPage() {
         ))}
       </div>
       </PageSection>
+      ) : null}
       <PageSection page="/analytics" id="detail" label="Breakdowns">
       <div className="grid gap-4 lg:grid-cols-2">
+        {tab === "sales" || tab === "owner" ? (
         <Card>
           <h2 className="mb-3 font-semibold">Sales — leads by source</h2>
           {bySource.map(([src, n]) => (
@@ -67,6 +93,8 @@ export default function AnalyticsPage() {
             </div>
           ))}
         </Card>
+        ) : null}
+        {tab === "ops" || tab === "owner" ? (
         <Card>
           <h2 className="mb-3 font-semibold">Operations</h2>
           <div className="text-sm">Late tasks: {late.length}</div>
@@ -75,6 +103,8 @@ export default function AnalyticsPage() {
             Estimated vs actual hours: {k.soldHours} / {k.usedHours}
           </div>
         </Card>
+        ) : null}
+        {tab === "client" || tab === "owner" ? (
         <Card>
           <h2 className="mb-3 font-semibold">Client health</h2>
           {clients.map((c) => (
@@ -84,6 +114,8 @@ export default function AnalyticsPage() {
             </Link>
           ))}
         </Card>
+        ) : null}
+        {tab === "people" || tab === "owner" ? (
         <Card>
           <h2 className="mb-3 font-semibold">People</h2>
           {employees
@@ -106,6 +138,8 @@ export default function AnalyticsPage() {
               );
             })}
         </Card>
+        ) : null}
+        {tab === "service" || tab === "owner" ? (
         <Card>
           <h2 className="mb-3 font-semibold">Service profitability</h2>
           {catalog.map((svc) => {
@@ -137,6 +171,7 @@ export default function AnalyticsPage() {
             );
           })}
         </Card>
+        ) : null}
       </div>
       </PageSection>
     </div>

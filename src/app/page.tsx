@@ -31,6 +31,7 @@ import { useKpis } from "@/store/selectors";
 import { useOS } from "@/store/use-os";
 
 const modules = [
+  { href: "/map", icon: Workflow, title: "Agency OS map", copy: "Every pillar on one page. Click through to the live module — one data core." },
   { href: "/home", icon: Home, title: "Executive home", copy: "Cash, pipeline, risk, workload, and the decisions that need you today." },
   { href: "/crm", icon: Workflow, title: "CRM & sales", copy: "Leads, pipeline, discovery, forecast. Won becomes delivery — not a dead card." },
   { href: "/accounts", icon: UserRound, title: "Account managers", copy: "Sara’s book: health, overdue invoices, waiting quotes, upsell, next meeting." },
@@ -60,11 +61,13 @@ const modules = [
 
 const loop = [
   "Lead",
-  "Quote",
-  "Scope",
-  "Hours",
-  "Team cost",
+  "Opportunity",
+  "Quotation",
+  "Contract",
+  "Client",
   "Project",
+  "Tasks",
+  "Deliverables",
   "Approval",
   "Invoice",
   "Payment",

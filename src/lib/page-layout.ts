@@ -17,7 +17,12 @@ export const PAGE_SECTIONS: Record<string, PageSectionDef[]> = {
     { id: "projects", label: "Projects" },
     { id: "os", label: "Whole OS links" },
   ],
-  "/crm": [{ id: "board", label: "Pipeline board" }],
+  "/map": [
+    { id: "spine", label: "Data spine" },
+    { id: "pillars", label: "OS pillars" },
+  ],
+  "/spaces": [{ id: "list", label: "Departments" }],
+  "/crm": [{ id: "forecast", label: "Sales forecast" }, { id: "board", label: "Pipeline board" }],
   "/crm/:id": [
     { id: "profile", label: "Lead profile" },
     { id: "comments", label: "Comments" },

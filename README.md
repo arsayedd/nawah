@@ -2,14 +2,16 @@
 
 Nawah is the operating system for agencies. One data core:
 
-`Lead → Quote → Scope → Hours → Team cost → Project → Approval → Invoice → Payment → Real profit → Renewal`
+`Lead → Opportunity → Quotation → Contract → Client → Project → Tasks → Deliverables → Approval → Invoice → Payment → Real profit → Renewal`
 
 Default language is **English** (LTR). Arabic is a header toggle inside the OS.
 
 ## Surfaces
 
 - `/` — English marketing home (animated product story)
+- `/map` — live Agency OS map (every pillar and child module)
 - `/home` — executive workspace
+- `/spaces` — departments holding projects
 - `/book` — public booking with event types (Calendly-style)
 - `/accounts` — account manager book
 - `/docs` — wiki tree, templates, linked databases

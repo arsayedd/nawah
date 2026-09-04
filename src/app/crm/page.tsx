@@ -8,7 +8,7 @@ import { PageSection } from "@/components/shell/page-section";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import type { PipelineStage } from "@/lib/types";
-import { egp } from "@/lib/utils";
+import { egp, pct } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
 
 const order: PipelineStage[] = [
@@ -50,6 +50,35 @@ export default function CrmPage() {
             : "Drag deals across stages. Won does not stop at CRM — it becomes delivery."
         }
       />
+      <PageSection page="/crm" id="forecast" label="Sales forecast">
+        <div className="grid gap-3 sm:grid-cols-3">
+          {(() => {
+            const open = leads.filter((l) => !["won", "lost"].includes(l.stage));
+            const weighted = open.reduce((s, l) => s + l.value * l.probability, 0);
+            const best = open.reduce((s, l) => s + l.value, 0);
+            const discovery = leads.filter((l) => l.stage === "discovery" || l.stage === "brief").length;
+            return (
+              <>
+                <Card className="p-4">
+                  <div className="text-[11px] uppercase tracking-wide text-navy/40">Weighted forecast</div>
+                  <div className="mt-1 text-2xl font-semibold">{egp(weighted, locale)}</div>
+                  <p className="mt-1 text-xs text-navy/45">Value × probability on open deals</p>
+                </Card>
+                <Card className="p-4">
+                  <div className="text-[11px] uppercase tracking-wide text-navy/40">Unweighted pipeline</div>
+                  <div className="mt-1 text-2xl font-semibold">{egp(best, locale)}</div>
+                  <p className="mt-1 text-xs text-navy/45">{open.length} open · win mix {pct(leads.filter((l) => l.stage === "won").length / Math.max(1, leads.filter((l) => l.stage === "won" || l.stage === "lost").length), locale)}</p>
+                </Card>
+                <Card className="p-4">
+                  <div className="text-[11px] uppercase tracking-wide text-navy/40">In discovery / brief</div>
+                  <div className="mt-1 text-2xl font-semibold">{discovery}</div>
+                  <p className="mt-1 text-xs text-navy/45">Forms feed the quotation and project brief</p>
+                </Card>
+              </>
+            );
+          })()}
+        </div>
+      </PageSection>
       <PageSection page="/crm" id="board" label="Pipeline board">
       <div className="flex gap-3 overflow-x-auto pb-4">
         {order.map((stage) => (

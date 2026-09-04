@@ -18,6 +18,8 @@ import { useKpis, useWorkspace } from "@/store/selectors";
 import { useOS } from "@/store/use-os";
 
 const osLinks = [
+  ["/map", "OS map"],
+  ["/spaces", "Spaces"],
   ["/crm", "Pipeline"],
   ["/accounts", "Accounts"],
   ["/clients", "Clients"],
@@ -49,7 +51,20 @@ const osLinks = [
   ["/settings", "Settings"],
 ] as const;
 
-const spine = ["Lead", "Quote", "Scope", "Hours", "Project", "Approval", "Invoice", "Profit", "Renewal"];
+const spine = [
+  "Lead",
+  "Opportunity",
+  "Quote",
+  "Contract",
+  "Client",
+  "Project",
+  "Tasks",
+  "Approval",
+  "Invoice",
+  "Payment",
+  "Profit",
+  "Renewal",
+];
 
 function Rise({ delay, children }: { delay: number; children: ReactNode }) {
   return (

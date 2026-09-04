@@ -17,6 +17,7 @@ export default function PublicQuotePage() {
   const locale = useOS((s) => s.locale);
   const markQuoteViewed = useOS((s) => s.markQuoteViewed);
   const acceptQuote = useOS((s) => s.acceptQuote);
+  const setQuoteStatus = useOS((s) => s.setQuoteStatus);
   const router = useRouter();
   const hydrated = useOS((s) => s.hydrated);
   const dict = t(locale);
@@ -170,24 +171,24 @@ export default function PublicQuotePage() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() =>
+                  onClick={() => {
+                    setQuoteStatus(quote.id, "changes");
                     toast.message(
                       locale === "ar"
                         ? "طلب التعديل اتسجل عند فريق المبيعات."
                         : "Change request noted for the sales team.",
-                    )
-                  }
+                    );
+                  }}
                 >
                   {locale === "ar" ? "طلب تعديل" : "Request changes"}
                 </Button>
                 <Button
                   type="button"
                   variant="coral"
-                  onClick={() =>
-                    toast.message(
-                      locale === "ar" ? "تم رفض العرض." : "Quote marked as declined.",
-                    )
-                  }
+                  onClick={() => {
+                    setQuoteStatus(quote.id, "rejected");
+                    toast.message(locale === "ar" ? "تم رفض العرض." : "Quote marked as declined.");
+                  }}
                 >
                   {locale === "ar" ? "رفض" : "Reject"}
                 </Button>

@@ -53,6 +53,8 @@ export function CommandSearch() {
         label: `${quote.number} · ${name(quote.title, quote.titleAr)}`,
         kind: "Quote",
       })),
+      { href: "/map", label: "Agency OS map", kind: "Nav" },
+      { href: "/spaces", label: "Spaces / departments", kind: "Nav" },
     ]
       .filter((row) => row.label.toLowerCase().includes(needle))
       .slice(0, 8);

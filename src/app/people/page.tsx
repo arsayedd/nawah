@@ -15,7 +15,7 @@ import type { AccessRole, Employee } from "@/lib/types";
 import { egp } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
 
-const ROLES: AccessRole[] = ["owner", "admin", "sales", "am", "pm", "team", "finance", "hr", "freelancer"];
+const ROLES: AccessRole[] = ["owner", "admin", "sales", "am", "pm", "team", "finance", "hr", "freelancer", "reviewer"];
 
 const emptyForm = {
   name: "",

@@ -40,6 +40,8 @@ export const copy = {
       mail: "الإيميل",
       notifications: "التنبيهات",
       customize: "تخصيص",
+      map: "خريطة النظام",
+      spaces: "الأقسام",
     },
     kpi: {
       revenue: "إيراد هذا الشهر",
@@ -130,6 +132,8 @@ export const copy = {
       mail: "Mail",
       notifications: "Notifications",
       customize: "Customize",
+      map: "OS map",
+      spaces: "Spaces",
     },
     kpi: {
       revenue: "Revenue this month",

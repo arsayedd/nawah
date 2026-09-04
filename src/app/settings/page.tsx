@@ -5,6 +5,7 @@ import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AGENCY_NAME } from "@/lib/brand";
+import { INTEGRATIONS } from "@/lib/os-map";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
 
@@ -100,30 +101,35 @@ export default function SettingsPage() {
       </Card>
       <AuditCard />
       <Card>
+        <h2 className="mb-3 font-semibold">API & webhooks</h2>
+        <p className="mb-3 text-sm text-navy/55">
+          Workspace events can POST to your URL. Keys stay in this tenant — never across agencies.
+        </p>
+        <div className="space-y-2 text-sm">
+          <div className="rounded-[10px] bg-paper px-3 py-2 font-mono text-xs">POST /api/os · workspace snapshot</div>
+          <div className="rounded-[10px] bg-paper px-3 py-2">quote.accepted · invoice.overdue · task.late · retainer.ending</div>
+        </div>
+      </Card>
+      <Card>
         <h2 className="mb-3 font-semibold">Integrations</h2>
         <p className="mb-3 text-sm text-navy/55">
-          Operating layer stays in Nawah. Connect the specialist tools — ads, banks, Drive — when you need them.
+          Operating layer stays in Nawah. Connect the specialist tools when you need them.
         </p>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {[
-            "Gmail",
-            "WhatsApp Business",
-            "Google Calendar",
-            "Google Drive",
-            "Figma",
-            "Slack",
-            "Meta Ads",
-            "Google Ads",
-            "Shopify",
-            "Stripe / Paymob",
-            "QuickBooks / Xero",
-          ].map((name) => (
-            <div
-              key={name}
-              className="flex items-center justify-between rounded-[10px] border border-navy/8 px-3 py-2 text-sm"
-            >
-              <span>{name}</span>
-              <span className="text-xs text-navy/40">Connect</span>
+        <div className="space-y-4">
+          {INTEGRATIONS.map((g) => (
+            <div key={g.group}>
+              <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-navy/40">{g.group}</div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {g.tools.map((name) => (
+                  <div
+                    key={name}
+                    className="flex items-center justify-between rounded-[10px] border border-navy/8 px-3 py-2 text-sm"
+                  >
+                    <span>{name}</span>
+                    <span className="text-xs text-navy/40">Connect</span>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>

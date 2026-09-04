@@ -47,7 +47,9 @@ const groups: {
     labelAr: "تشغيل",
     items: [
       { href: "/home", key: "home", icon: Home },
+      { href: "/map", key: "map", icon: Workflow },
       { href: "/my-work", key: "myWork", icon: CheckSquare },
+      { href: "/spaces", key: "spaces", icon: FolderKanban },
       { href: "/projects", key: "projects", icon: FolderKanban },
       { href: "/calendar", key: "calendar", icon: CalendarDays },
       { href: "/time", key: "time", icon: Timer },
