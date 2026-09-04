@@ -27,3 +27,18 @@ export function pct(value: number, locale: "ar" | "en" = "en") {
 export function hoursLabel(value: number, locale: "ar" | "en") {
   return locale === "ar" ? `${value} س` : `${value}h`;
 }
+
+export function parseDay(iso: string) {
+  return new Date(`${iso.slice(0, 10)}T00:00:00`);
+}
+
+export function dayKey(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+export function daysBetween(from: string, to: string) {
+  return Math.round((parseDay(to).getTime() - parseDay(from).getTime()) / 86400000);
+}

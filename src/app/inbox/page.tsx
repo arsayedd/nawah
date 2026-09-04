@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/shell/page-header";
 import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
@@ -18,6 +20,7 @@ export default function InboxPage() {
   const sendMessage = useOS((s) => s.sendMessage);
   const convertMessageToTask = useOS((s) => s.convertMessageToTask);
   const dict = t(locale);
+  const router = useRouter();
   const channels = useMemo(
     () => [
       ...projects.map((p) => ({
@@ -94,7 +97,18 @@ export default function InboxPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => convertMessageToTask(m.id)}
+                          onClick={() => {
+                            const id = convertMessageToTask(m.id);
+                            if (!id) {
+                              toast.error("Could not create a task from this message.");
+                              return;
+                            }
+                            toast.success("Task created from this thread");
+                            const projectId = m.channelId.startsWith("project:")
+                              ? m.channelId.slice(8)
+                              : undefined;
+                            if (projectId) router.push(`/projects/${projectId}`);
+                          }}
                         >
                           Turn into task
                         </Button>

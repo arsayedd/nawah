@@ -16,6 +16,7 @@ export default function HrPage() {
   const payroll = useOS((s) => s.payroll);
   const tasks = useOS((s) => s.tasks);
   const decideLeave = useOS((s) => s.decideLeave);
+  const clockAttendance = useOS((s) => s.clockAttendance);
   const dict = t(locale);
 
   return (
@@ -28,7 +29,12 @@ export default function HrPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <PageSection page="/hr" id="attendance" label="Attendance">
         <Card>
-          <h2 className="mb-3 font-semibold">Today’s attendance</h2>
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <h2 className="font-semibold">Today’s attendance</h2>
+            <Button size="sm" variant="outline" onClick={() => clockAttendance()}>
+              Clock +1h
+            </Button>
+          </div>
           {attendance.map((a) => {
             const e = employees.find((x) => x.id === a.userId);
             return (

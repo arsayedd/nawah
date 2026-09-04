@@ -66,8 +66,18 @@ export default function CalendarPage() {
               </div>
               {days.map((d) => {
                 const { meets, books } = eventsOn(d, h);
+                const dues = h === 9 ? tasks.filter((t) => t.due === d) : [];
                 return (
                   <div key={`${d}-${h}`} className="min-h-[56px] border-b border-s border-navy/6 p-1">
+                    {dues.map((t) => (
+                      <Link
+                        key={t.id}
+                        href={`/projects/${t.projectId}`}
+                        className="mb-1 block rounded-md bg-coral/15 px-1.5 py-1 text-[10px] text-navy"
+                      >
+                        Due · {t.title}
+                      </Link>
+                    ))}
                     {meets.map((m) => (
                       <div key={m.id} className="mb-1 rounded-md bg-cobalt/15 px-1.5 py-1 text-[10px] text-navy">
                         {m.title}

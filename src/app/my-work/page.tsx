@@ -5,6 +5,7 @@ import { useState } from "react";
 import { PageSection } from "@/components/shell/page-section";
 import { Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
+import type { TaskStatus } from "@/lib/types";
 import { useOS } from "@/store/use-os";
 
 export default function MyWorkPage() {
@@ -14,6 +15,7 @@ export default function MyWorkPage() {
   const [who, setWho] = useState("u_lina");
   const allTasks = useOS((s) => s.tasks);
   const tasks = allTasks.filter((t) => t.assigneeId === who);
+  const updateTaskStatus = useOS((s) => s.updateTaskStatus);
   const dict = t(locale);
   const person = employees.find((e) => e.id === who);
 
@@ -48,25 +50,34 @@ export default function MyWorkPage() {
           <Card className="p-6 text-sm text-navy/50">Inbox zero for this person.</Card>
         ) : (
           tasks.map((task) => (
-            <Link key={task.id} href={`/projects/${task.projectId}`}>
-              <Card className="flex items-center justify-between p-4">
-                <div>
-                  <div className="font-medium">
-                    {locale === "ar" ? task.titleAr : task.title}
-                  </div>
-                  <div className="text-xs text-navy/50">
-                    {dict.taskStatus[task.status]} · due {task.due ?? "—"}
-                    {task.dependsOn?.length ? ` · blocked by ${task.dependsOn.join(", ")}` : ""}
-                  </div>
-                  {task.tags?.length ? (
-                    <div className="mt-1 text-[11px] text-navy/40">{task.tags.join(" · ")}</div>
-                  ) : null}
+            <Card key={task.id} className="flex items-center justify-between gap-3 p-4">
+              <Link href={`/projects/${task.projectId}`} className="min-w-0">
+                <div className="font-medium">{locale === "ar" ? task.titleAr : task.title}</div>
+                <div className="text-xs text-navy/50">
+                  due {task.due ?? "—"}
+                  {task.dependsOn?.length ? ` · blocked by ${task.dependsOn.join(", ")}` : ""}
                 </div>
+                {task.tags?.length ? (
+                  <div className="mt-1 text-[11px] text-navy/40">{task.tags.join(" · ")}</div>
+                ) : null}
+              </Link>
+              <div className="flex shrink-0 items-center gap-2">
+                <select
+                  className="h-8 rounded-[8px] border border-navy/10 px-2 text-xs"
+                  value={task.status}
+                  onChange={(e) => updateTaskStatus(task.id, e.target.value as TaskStatus)}
+                >
+                  {(["todo", "doing", "review", "client", "done"] as const).map((s) => (
+                    <option key={s} value={s}>
+                      {dict.taskStatus[s]}
+                    </option>
+                  ))}
+                </select>
                 <div className="text-xs text-navy/45">
                   {task.actualHours}/{task.estimateHours}h
                 </div>
-              </Card>
-            </Link>
+              </div>
+            </Card>
           ))
         )}
       </div>

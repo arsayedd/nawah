@@ -83,6 +83,7 @@ export function mergeOsState(remote?: Partial<OsState> | OsState | null): OsStat
     hiddenPageSections: remote?.prefs?.hiddenPageSections ?? seed.prefs.hiddenPageSections,
     editLayout: remote?.prefs?.editLayout ?? seed.prefs.editLayout,
     currentUserId: remote?.prefs?.currentUserId ?? seed.prefs.currentUserId,
+    webhookUrl: remote?.prefs?.webhookUrl ?? seed.prefs.webhookUrl,
   };
   out.subscriptions = normalizeSubscriptions(out.subscriptions);
   return out;

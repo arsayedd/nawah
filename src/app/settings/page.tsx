@@ -85,16 +85,7 @@ export default function SettingsPage() {
         </div>
       </Card>
       <AuditCard />
-      <Card>
-        <h2 className="mb-3 font-semibold">API & webhooks</h2>
-        <p className="mb-3 text-sm text-navy/55">
-          Workspace events can POST to your URL. Keys stay in this tenant — never across agencies.
-        </p>
-        <div className="space-y-2 text-sm">
-          <div className="rounded-[10px] bg-paper px-3 py-2 font-mono text-xs">POST /api/os · workspace snapshot</div>
-          <div className="rounded-[10px] bg-paper px-3 py-2">quote.accepted · invoice.overdue · task.late · retainer.ending</div>
-        </div>
-      </Card>
+      <WebhookCard />
       <Card>
         <h2 className="mb-3 font-semibold">Already in Nawah</h2>
         <p className="mb-3 text-sm text-navy/55">
@@ -118,6 +109,53 @@ export default function SettingsPage() {
         </div>
       </Card>
     </div>
+  );
+}
+
+function WebhookCard() {
+  const url = useOS((s) => s.prefs.webhookUrl ?? "");
+  const setWebhookUrl = useOS((s) => s.setWebhookUrl);
+  const automationLogs = useOS((s) => s.automationLogs);
+  const logs = automationLogs.filter((l) => l.automationId === "webhook");
+  const [value, setValue] = useState(url);
+
+  return (
+    <Card>
+      <h2 className="mb-3 font-semibold">API & webhooks</h2>
+      <p className="mb-3 text-sm text-navy/55">
+        Save an endpoint. When a quote is accepted, Nawah writes a webhook log in this workspace — it does not POST
+        out to the public internet from this demo.
+      </p>
+      <form
+        className="mb-3 flex flex-col gap-2 sm:flex-row"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setWebhookUrl(value.trim());
+        }}
+      >
+        <Input
+          placeholder="https://hooks.example.com/nawah"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <Button type="submit" size="sm" variant="outline">
+          Save URL
+        </Button>
+      </form>
+      <div className="space-y-2 text-sm">
+        <div className="rounded-[10px] bg-paper px-3 py-2 font-mono text-xs">GET/PUT /api/os · workspace snapshot</div>
+        <div className="rounded-[10px] bg-paper px-3 py-2">quote.accepted · invoice.overdue · task.late · retainer.ending</div>
+      </div>
+      {logs.length ? (
+        <div className="mt-3 space-y-1 text-xs text-navy/50">
+          {logs.slice(0, 5).map((l) => (
+            <div key={l.id}>
+              {l.at.slice(0, 16)} · {l.detail}
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </Card>
   );
 }
 

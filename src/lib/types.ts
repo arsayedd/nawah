@@ -543,6 +543,8 @@ export type WorkspacePrefs = {
   hiddenHomeWidgets: string[];
   hiddenPageSections: Record<string, string[]>;
   editLayout: boolean;
+  /** Destination for workspace event logs (stored, not fired to the public internet from this demo). */
+  webhookUrl?: string;
 };
 
 export type OsState = {

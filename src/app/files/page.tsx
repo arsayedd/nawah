@@ -18,6 +18,8 @@ export default function FilesPage() {
   const projects = useOS((s) => s.projects);
   const dict = t(locale);
   const [openId, setOpenId] = useState<string | null>(null);
+  const setFileStatus = useOS((s) => s.setFileStatus);
+  const bumpFileVersion = useOS((s) => s.bumpFileVersion);
 
   return (
     <div className="space-y-5">
@@ -57,6 +59,24 @@ export default function FilesPage() {
                       >
                         {f.status}
                       </Badge>
+                      <select
+                        className="h-8 rounded-[8px] border border-navy/10 px-2 text-xs"
+                        value={f.status}
+                        onChange={(e) => setFileStatus(f.id, e.target.value as typeof f.status)}
+                      >
+                        {(["working", "internal", "client", "approved"] as const).map((st) => (
+                          <option key={st} value={st}>
+                            {st}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className="text-xs text-navy/50 hover:text-cobalt"
+                        onClick={() => bumpFileVersion(f.id)}
+                      >
+                        New version
+                      </button>
                       {f.kind === "design" && f.taskId ? (
                         <Link href={`/review/${f.taskId}`} className="text-sm text-cobalt">
                           Review

@@ -10,6 +10,7 @@ import type {
   Employee,
   EntityComment,
   Expense,
+  FileAsset,
   Invoice,
   Lead,
   Locale,
@@ -69,6 +70,16 @@ type Store = OsState & {
   setQuoteStatus: (id: string, status: QuoteStatus) => void;
   markQuoteViewed: (quoteId: string) => void;
   updateTaskStatus: (id: string, status: TaskStatus) => void;
+  patchTask: (
+    id: string,
+    patch: Partial<Pick<Task, "due" | "start" | "priority" | "assigneeId" | "estimateHours">>,
+  ) => void;
+  toggleChecklist: (taskId: string, itemId: string) => void;
+  addChecklistItem: (taskId: string, text: string) => void;
+  setFileStatus: (id: string, status: FileAsset["status"]) => void;
+  bumpFileVersion: (id: string) => void;
+  setWebhookUrl: (url: string) => void;
+  clockAttendance: (userId?: string) => void;
   requestRevision: (taskId: string) => void;
   approveDeliverable: (taskId: string) => void;
   logTime: (taskId: string, userId: string, hours: number) => void;
@@ -95,7 +106,7 @@ type Store = OsState & {
   toggleAutomation: (id: string) => void;
   assignTask: (taskId: string, userId: string) => void;
   assignByCapacity: (taskId: string) => void;
-  convertMessageToTask: (messageId: string) => void;
+  convertMessageToTask: (messageId: string) => string | undefined;
   bookSlot: (slotId: string, name: string, clientId?: string) => void;
   signContract: (id: string) => void;
   recordPayment: (invoiceId: string, amount?: number, method?: string) => void;
@@ -366,6 +377,31 @@ export const useOS = create<Store>()((set, get) => ({
           ],
         });
 
+        const hook = get().prefs.webhookUrl?.trim();
+        if (hook) {
+          set({
+            automationLogs: [
+              {
+                id: uid("al"),
+                automationId: "webhook",
+                at: new Date().toISOString(),
+                detail: `quote.accepted queued for ${hook} · ${quote.number}`,
+              },
+              ...get().automationLogs,
+            ],
+            audit: [
+              {
+                id: uid("au"),
+                actorId: get().prefs.currentUserId,
+                action: "webhook.quote.accepted",
+                at: new Date().toISOString(),
+                detail: hook,
+              },
+              ...get().audit,
+            ],
+          });
+        }
+
         return { clientId, projectId, invoiceId: invoice.id, quoteId: quote.id };
       },
       updateTaskStatus: (id, status) =>
@@ -387,6 +423,65 @@ export const useOS = create<Store>()((set, get) => ({
               : t,
           ),
         }),
+      patchTask: (id, patch) =>
+        set({
+          tasks: get().tasks.map((t) => (t.id === id ? { ...t, ...patch } : t)),
+        }),
+      toggleChecklist: (taskId, itemId) =>
+        set({
+          tasks: get().tasks.map((t) =>
+            t.id === taskId
+              ? {
+                  ...t,
+                  checklist: t.checklist.map((c) => (c.id === itemId ? { ...c, done: !c.done } : c)),
+                }
+              : t,
+          ),
+        }),
+      addChecklistItem: (taskId, text) => {
+        const name = text.trim();
+        if (!name) return;
+        set({
+          tasks: get().tasks.map((t) =>
+            t.id === taskId
+              ? { ...t, checklist: [...t.checklist, { id: uid("c"), text: name, done: false }] }
+              : t,
+          ),
+        });
+      },
+      setFileStatus: (id, status) =>
+        set({
+          files: get().files.map((f) => (f.id === id ? { ...f, status } : f)),
+        }),
+      bumpFileVersion: (id) =>
+        set({
+          files: get().files.map((f) =>
+            f.id === id ? { ...f, version: f.version + 1, status: "working" as const } : f,
+          ),
+        }),
+      setWebhookUrl: (url) =>
+        set({
+          prefs: { ...get().prefs, webhookUrl: url },
+        }),
+      clockAttendance: (userId) => {
+        const uidEmp = userId ?? get().prefs.currentUserId;
+        const date = new Date().toISOString().slice(0, 10);
+        const existing = get().attendance.find((a) => a.userId === uidEmp && a.date === date);
+        if (existing) {
+          set({
+            attendance: get().attendance.map((a) =>
+              a.id === existing.id ? { ...a, hours: a.hours + 1, status: "office" as const } : a,
+            ),
+          });
+          return;
+        }
+        set({
+          attendance: [
+            { id: uid("att"), userId: uidEmp, date, hours: 1, status: "office" },
+            ...get().attendance,
+          ],
+        });
+      },
       requestRevision: (taskId) =>
         set({
           tasks: get().tasks.map((t) =>
@@ -977,6 +1072,7 @@ export const useOS = create<Store>()((set, get) => ({
             ...get().tasks,
           ],
         });
+        return id;
       },
       bookSlot: (slotId, name, clientId) => {
         const slot = get().bookingSlots.find((s) => s.id === slotId);
