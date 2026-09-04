@@ -57,6 +57,43 @@ export default function SettingsPage() {
         </div>
       </Card>
       <Card>
+        <h2 className="font-semibold">Roles</h2>
+        <p className="mt-1 text-sm text-navy/55">
+          Field-level finance lock is enforced in the portal (clients never see cost). Workspace roles below are the operating model.
+        </p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-navy/40">
+                <th className="py-2 text-start">Role</th>
+                <th className="text-start">CRM</th>
+                <th className="text-start">Delivery</th>
+                <th className="text-start">Money</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["Owner", "Full", "Full", "Full"],
+                ["Account Manager", "Clients", "Comments", "Invoices send"],
+                ["Project Manager", "Read", "Full", "Hidden cost"],
+                ["Finance", "Read", "Read", "Full"],
+                ["Freelancer", "None", "Assigned tasks", "None"],
+                ["Client", "None", "Portal only", "Pay / approve"],
+              ].map((row) => (
+                <tr key={row[0]} className="border-t border-navy/6">
+                  {row.map((c) => (
+                    <td key={c} className="py-2">
+                      {c}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+      <AuditCard />
+      <Card>
         <h2 className="mb-3 font-semibold">Integrations</h2>
         <p className="mb-3 text-sm text-navy/55">
           Operating layer stays in Nawah. Connect the specialist tools — ads, banks, Drive — when you need them.
@@ -86,6 +123,24 @@ export default function SettingsPage() {
         </div>
       </Card>
     </div>
+  );
+}
+
+function AuditCard() {
+  const audit = useOS((s) => s.audit);
+  const employees = useOS((s) => s.employees);
+  return (
+    <Card>
+      <h2 className="mb-3 font-semibold">Audit log</h2>
+      {audit.map((e) => (
+        <div key={e.id} className="border-b border-navy/6 py-2 text-sm">
+          <div className="font-medium">{e.action}</div>
+          <div className="text-navy/50">
+            {employees.find((x) => x.id === e.actorId)?.name} · {e.at.slice(0, 16)} · {e.detail}
+          </div>
+        </div>
+      ))}
+    </Card>
   );
 }
 

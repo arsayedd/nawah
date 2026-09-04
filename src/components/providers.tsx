@@ -61,7 +61,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const englishSurface = pathname === "/" || pathname.startsWith("/q/");
+    const englishSurface =
+      pathname === "/" || pathname.startsWith("/q/") || pathname.startsWith("/book");
     document.documentElement.lang =
       englishSurface || locale !== "ar" ? "en" : "ar";
     document.documentElement.dir =

@@ -9,7 +9,7 @@ import type { TaskStatus } from "@/lib/types";
 import { egp } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
 
-const views = ["board", "table", "gantt"] as const;
+const views = ["board", "table", "gantt", "list", "calendar", "portfolio"] as const;
 
 export default function ProjectsPage() {
   const locale = useOS((s) => s.locale);
@@ -41,7 +41,7 @@ export default function ProjectsPage() {
         description={
           locale === "ar"
             ? "نفس المهام تظهر في اللوحة، القائمة، والربحية."
-            : "One task list. Board, table, and profitability all read the same work."
+            : "One task list. Board, table, gantt, calendar, and portfolio all read the same work."
         }
         actions={
           <div className="flex rounded-[10px] border border-navy/10 p-1">
@@ -125,6 +125,60 @@ export default function ProjectsPage() {
               </div>
             </div>
           ))}
+        </div>
+      ) : view === "list" ? (
+        <Card className="p-2">
+          {tasks.map((task) => {
+            const p = projects.find((x) => x.id === task.projectId);
+            return (
+              <Link
+                key={task.id}
+                href={`/projects/${task.projectId}`}
+                className="flex items-center justify-between rounded-[10px] px-3 py-2 text-sm hover:bg-paper"
+              >
+                <span>
+                  {task.title}
+                  <span className="text-navy/40"> · {p?.name}</span>
+                </span>
+                <span className="text-navy/45">
+                  {dict.taskStatus[task.status]} · {task.due ?? "—"}
+                </span>
+              </Link>
+            );
+          })}
+        </Card>
+      ) : view === "calendar" ? (
+        <Card>
+          <p className="mb-3 text-sm text-navy/50">Tasks by due date · same records as the calendar module.</p>
+          {tasks
+            .filter((t) => t.due)
+            .sort((a, b) => (a.due ?? "").localeCompare(b.due ?? ""))
+            .map((task) => (
+              <div key={task.id} className="flex justify-between border-b border-navy/6 py-2 text-sm">
+                <span>{task.title}</span>
+                <span className="text-navy/45">{task.due}</span>
+              </div>
+            ))}
+        </Card>
+      ) : view === "portfolio" ? (
+        <div className="grid gap-3 md:grid-cols-2">
+          {projects.map((p) => {
+            const pts = tasks.filter((t) => t.projectId === p.id);
+            const client = clients.find((c) => c.id === p.clientId);
+            return (
+              <Link key={p.id} href={`/projects/${p.id}`}>
+                <Card className="p-4">
+                  <div className="text-xs text-navy/40">{p.spaceId ?? "Delivery"}</div>
+                  <div className="mt-1 font-semibold">{p.name}</div>
+                  <div className="text-sm text-navy/50">{client?.name}</div>
+                  <div className="mt-2 text-sm">
+                    {pts.filter((t) => t.status === "done").length}/{pts.length} done ·{" "}
+                    {egp(p.expectedRevenue - p.expectedCost, locale)} planned profit
+                  </div>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
       ) : view === "gantt" ? (
         <Card className="space-y-3">

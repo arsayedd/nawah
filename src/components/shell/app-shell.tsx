@@ -46,6 +46,7 @@ const groups = [
       { href: "/projects", key: "projects", icon: FolderKanban },
       { href: "/calendar", key: "calendar", icon: CalendarDays },
       { href: "/time", key: "time", icon: Timer },
+      { href: "/workload", key: "workload", icon: Users },
     ],
   },
   {
@@ -55,6 +56,7 @@ const groups = [
       { href: "/crm", key: "crm", icon: Workflow },
       { href: "/clients", key: "clients", icon: Briefcase },
       { href: "/quotes", key: "quotes", icon: FileText },
+      { href: "/catalog", key: "catalog", icon: Sparkles },
     ],
   },
   {
@@ -72,10 +74,13 @@ const groups = [
     labelAr: "إدارة",
     items: [
       { href: "/finance", key: "finance", icon: CircleDollarSign },
+      { href: "/contracts", key: "contracts", icon: FileText },
+      { href: "/retainers", key: "retainers", icon: Zap },
       { href: "/analytics", key: "analytics", icon: Sparkles },
       { href: "/automations", key: "automations", icon: Zap },
       { href: "/ai", key: "ai", icon: Bot },
       { href: "/team", key: "team", icon: Users },
+      { href: "/hr", key: "hr", icon: Users },
       { href: "/settings", key: "settings", icon: Settings },
     ],
   },
@@ -97,7 +102,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setNotesOpen(false);
   }, [pathname]);
 
-  if (pathname === "/" || pathname.startsWith("/q/")) {
+  if (pathname === "/" || pathname.startsWith("/q/") || pathname.startsWith("/book")) {
     return <>{children}</>;
   }
 
@@ -167,7 +172,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => setMobileNav(false)}
             aria-label="Close menu"
           />
-          <aside className="absolute inset-y-0 start-0 flex w-[260px] flex-col bg-navy text-white">
+          <aside className="absolute inset-y-0 start-0 z-10 flex w-[min(280px,86vw)] flex-col bg-navy text-white shadow-2xl">
             <div className="flex items-center justify-between px-4 py-4">
               <NawahLockup inverted />
               <button onClick={() => setMobileNav(false)} aria-label="Close">

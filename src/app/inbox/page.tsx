@@ -15,6 +15,7 @@ export default function InboxPage() {
   const clients = useOS((s) => s.clients);
   const employees = useOS((s) => s.employees);
   const sendMessage = useOS((s) => s.sendMessage);
+  const convertMessageToTask = useOS((s) => s.convertMessageToTask);
   const dict = t(locale);
   const channels = useMemo(
     () => [
@@ -75,6 +76,15 @@ export default function InboxPage() {
                         <span>{m.internal ? "Internal" : "Client-visible"}</span>
                       </div>
                       {m.body}
+                      <div className="mt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => convertMessageToTask(m.id)}
+                        >
+                          Turn into task
+                        </Button>
+                      </div>
                     </div>
                   );
                 })

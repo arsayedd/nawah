@@ -170,7 +170,7 @@ export default function HomePage() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <div className="text-[11px] uppercase tracking-[0.08em] text-navy/45">
             {dict.kpi.billed}
@@ -198,6 +198,15 @@ export default function HomePage() {
           <div className="mt-2 text-2xl font-semibold">{k.pendingQuotes.length}</div>
           <Link href="/quotes" className="text-sm text-cobalt">
             {locale === "ar" ? "افتح الكوتيشنات" : "Review quotations"}
+          </Link>
+        </Card>
+        <Card>
+          <div className="text-[11px] uppercase tracking-[0.08em] text-navy/45">
+            Approvals waiting
+          </div>
+          <div className="mt-2 text-2xl font-semibold">{k.waitingClient.length}</div>
+          <Link href="/portal" className="text-sm text-cobalt">
+            Open portal queue
           </Link>
         </Card>
       </div>

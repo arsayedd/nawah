@@ -24,9 +24,18 @@ export default function DocsPage() {
           const children = docs.filter((d) => d.parentId === doc.id);
           return (
             <Card key={doc.id} className="p-5">
-              <Link href={`/docs/${doc.id}`} className="text-lg font-semibold">
+              <Link
+                key={doc.id}
+                href={`/docs/${doc.id}`}
+                className="text-lg font-semibold"
+              >
                 {locale === "ar" ? doc.titleAr : doc.title}
               </Link>
+              {doc.kind ? (
+                <span className="ms-2 text-[11px] uppercase tracking-wide text-navy/40">
+                  {doc.kind}
+                </span>
+              ) : null}
               <p className="mt-2 line-clamp-3 text-sm text-navy/60">
                 {locale === "ar" ? doc.bodyAr : doc.body}
               </p>

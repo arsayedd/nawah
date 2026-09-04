@@ -10,11 +10,11 @@ Default language is **English** (LTR). Arabic is a header toggle inside the OS.
 
 - `/` — English marketing home (animated product story)
 - `/home` — executive workspace
-- `/q/q_bloom` — public quotation (Bloom Café, NW-1042)
+- `/book` — public meeting booking (Calendly-style, same calendar)
 
 ## Modules
 
-CRM, quotations, clients, projects (board / table / gantt), docs, inbox, files & review, portal, time, finance, analytics, automations, Nawah AI, team, calendar, my work, settings.
+CRM, quotations, service catalog, clients, contracts, retainers, projects (board / table / gantt / list / calendar / portfolio), workload auto-assign, docs, inbox (message → task), files, portal, public booking, time, finance (record payment), analytics, automations, Nawah AI, team, HR (attendance / leave / payroll), settings (roles, audit, integrations).
 
 ## Run locally
 

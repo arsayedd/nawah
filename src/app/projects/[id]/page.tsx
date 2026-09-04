@@ -22,6 +22,9 @@ export default function ProjectDetailPage() {
   const requestRevision = useOS((s) => s.requestRevision);
   const approveDeliverable = useOS((s) => s.approveDeliverable);
   const logTime = useOS((s) => s.logTime);
+  const assignTask = useOS((s) => s.assignTask);
+  const assignByCapacity = useOS((s) => s.assignByCapacity);
+  const addSubtask = useOS((s) => s.addSubtask);
   const dict = t(locale);
 
   if (!project) {
@@ -100,6 +103,9 @@ export default function ProjectDetailPage() {
                   <div>
                     <div className="font-medium">
                       {locale === "ar" ? task.titleAr : task.title}
+                      {task.parentId ? (
+                        <span className="ms-2 text-[11px] font-normal text-navy/40">subtask</span>
+                      ) : null}
                     </div>
                     <div className="text-xs text-navy/50">
                       {task.milestone} · {locale === "ar" ? emp?.nameAr : emp?.name} ·{" "}
@@ -143,6 +149,34 @@ export default function ProjectDetailPage() {
                       </option>
                     ))}
                   </select>
+                  <select
+                    className="h-8 rounded-[10px] border border-navy/10 px-2 text-xs"
+                    value={task.assigneeId ?? ""}
+                    onChange={(e) => assignTask(task.id, e.target.value)}
+                  >
+                    <option value="">Unassigned</option>
+                    {employees
+                      .filter((e) => e.id !== "u_ahmed")
+                      .map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.name}
+                        </option>
+                      ))}
+                  </select>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => assignByCapacity(task.id)}
+                  >
+                    Auto-assign
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => addSubtask(task.id, `Check: ${task.title}`)}
+                  >
+                    + Subtask
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"

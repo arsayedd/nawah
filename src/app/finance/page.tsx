@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { egp } from "@/lib/utils";
@@ -14,6 +15,7 @@ export default function FinancePage() {
   const projects = useOS((s) => s.projects);
   const clients = useOS((s) => s.clients);
   const dict = t(locale);
+  const recordPayment = useOS((s) => s.recordPayment);
 
   const collected = invoices.reduce((s, i) => s + i.paidAmount, 0);
   const outstanding = invoices.reduce((s, i) => s + (i.amount - i.paidAmount), 0);
@@ -22,7 +24,7 @@ export default function FinancePage() {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">{dict.nav.finance}</h1>
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-4">
         <Card className="p-4">
           <div className="text-xs text-navy/50">
             {locale === "ar" ? "محصّل" : "Collected"}
@@ -40,6 +42,10 @@ export default function FinancePage() {
             {locale === "ar" ? "مصروفات مباشرة" : "Direct expenses"}
           </div>
           <div className="mt-1 text-2xl font-semibold">{egp(exp, locale)}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-xs text-navy/50">Cash after expenses</div>
+          <div className="mt-1 text-2xl font-semibold">{egp(collected - exp, locale)}</div>
         </Card>
       </div>
 
@@ -121,6 +127,16 @@ export default function FinancePage() {
                   >
                     {i.status}
                   </Badge>
+                  {i.status !== "paid" ? (
+                    <Button
+                      className="mt-1"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => recordPayment(i.id)}
+                    >
+                      Record payment
+                    </Button>
+                  ) : null}
                 </div>
               </div>
             );

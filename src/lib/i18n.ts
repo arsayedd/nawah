@@ -29,6 +29,11 @@ export const copy = {
       team: "الفريق",
       portal: "بوابة العميل",
       settings: "الإعدادات",
+      catalog: "الكتالوج",
+      contracts: "العقود",
+      retainers: "الريتِينر",
+      hr: "الموارد البشرية",
+      workload: "الحمل",
     },
     kpi: {
       revenue: "إيراد هذا الشهر",
@@ -108,6 +113,11 @@ export const copy = {
       team: "Team",
       portal: "Client portal",
       settings: "Settings",
+      catalog: "Catalog",
+      contracts: "Contracts",
+      retainers: "Retainers",
+      hr: "People",
+      workload: "Workload",
     },
     kpi: {
       revenue: "Revenue this month",

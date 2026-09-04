@@ -19,6 +19,7 @@ export default function AnalyticsPage() {
   const expenses = useOS((s) => s.expenses);
   const projects = useOS((s) => s.projects);
   const catalog = useOS((s) => s.catalog);
+  const employees = useOS((s) => s.employees);
   const dict = t(locale);
   const k = useKpis();
 
@@ -78,6 +79,28 @@ export default function AnalyticsPage() {
               <Badge tone={c.health >= 70 ? "mint" : "coral"}>{c.health}</Badge>
             </Link>
           ))}
+        </Card>
+        <Card>
+          <h2 className="mb-3 font-semibold">People</h2>
+          {employees
+            .filter((e) => e.id !== "u_ahmed")
+            .map((e) => {
+              const mine = tasks.filter((t) => t.assigneeId === e.id);
+              const booked = mine
+                .filter((t) => t.status !== "done")
+                .reduce((s, t) => s + t.estimateHours, 0);
+              return (
+                <div key={e.id} className="flex justify-between py-1 text-sm">
+                  <span>
+                    {e.name}
+                    {e.kind === "freelancer" ? " (F)" : ""}
+                  </span>
+                  <span>
+                    {booked}/{e.weeklyHours}h
+                  </span>
+                </div>
+              );
+            })}
         </Card>
         <Card>
           <h2 className="mb-3 font-semibold">Service profitability</h2>

@@ -13,6 +13,7 @@ export default function LeadPage() {
   const lead = useOS((s) => s.leads.find((l) => l.id === id));
   const owner = useOS((s) => s.employees.find((e) => e.id === lead?.ownerId));
   const quotes = useOS((s) => s.quotes.filter((q) => q.leadId === id));
+  const activities = useOS((s) => s.activities.filter((a) => a.leadId === id));
   const dict = t(locale);
 
   if (!lead) {
@@ -58,6 +59,20 @@ export default function LeadPage() {
         {lead.notes ? (
           <p className="mt-4 rounded-[10px] bg-paper p-3 text-sm">{lead.notes}</p>
         ) : null}
+      </Card>
+      <Card>
+        <h2 className="mb-2 font-semibold">Activity</h2>
+        {activities.length === 0 ? (
+          <p className="text-sm text-navy/50">No logged calls or emails yet.</p>
+        ) : (
+          activities.map((a) => (
+            <div key={a.id} className="border-b border-navy/6 py-2 text-sm">
+              <span className="font-medium capitalize">{a.kind}</span>
+              <span className="text-navy/40"> · {a.at.slice(0, 16)}</span>
+              <p className="text-navy/70">{a.note}</p>
+            </div>
+          ))
+        )}
       </Card>
       <Card>
         <h2 className="mb-2 font-semibold">

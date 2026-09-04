@@ -34,6 +34,7 @@ export default function TeamPage() {
                   </div>
                   <div className="text-xs text-navy/50">
                     {locale === "ar" ? e.roleAr : e.role} · {e.department}
+                    {e.kind === "freelancer" ? " · freelancer" : ""}
                   </div>
                 </div>
                 <Badge

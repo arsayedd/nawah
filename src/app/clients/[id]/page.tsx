@@ -20,6 +20,9 @@ export default function Client360Page() {
   const meetings = useOS((s) => s.meetings.filter((m) => m.clientId === id));
   const expenses = useOS((s) => s.expenses);
   const tasks = useOS((s) => s.tasks);
+  const employees = useOS((s) => s.employees);
+  const activities = useOS((s) => s.activities.filter((a) => a.clientId === id));
+  const contracts = useOS((s) => s.contracts.filter((c) => c.clientId === id));
   const dict = t(locale);
 
   if (!client) {
@@ -47,6 +50,7 @@ export default function Client360Page() {
           </h1>
           <p className="text-sm text-navy/55">
             {client.industry} · {client.email}
+            {client.accountManagerId ? " · AM on file" : ""}
           </p>
         </div>
         <Badge tone={client.health >= 70 ? "mint" : "coral"}>
@@ -131,6 +135,25 @@ export default function Client360Page() {
               {locale === "ar" ? m.titleAr : m.title} · {m.when.slice(0, 16)}
             </div>
           ))}
+          {contracts.map((c) => (
+            <div key={c.id} className="mt-2 text-sm">
+              Contract {c.status} · {c.startDate} → {c.endDate}
+            </div>
+          ))}
+          {activities.map((a) => (
+            <div key={a.id} className="mt-2 text-xs text-navy/50">
+              {a.kind} · {a.note}
+            </div>
+          ))}
+          {client.accountManagerId ? (
+            <div className="mt-3 text-sm">
+              Account manager:{" "}
+              {employees.find((e) => e.id === client.accountManagerId)?.name}
+            </div>
+          ) : null}
+          {client.upsell ? (
+            <div className="mt-1 text-sm text-cobalt">Upsell: {client.upsell}</div>
+          ) : null}
         </Card>
       </div>
     </div>

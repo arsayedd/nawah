@@ -33,6 +33,10 @@ export type Employee = {
   billRate: number;
   skills: string[];
   weeklyHours: number;
+  kind?: "staff" | "freelancer";
+  salary?: number;
+  managerId?: string;
+  languages?: string[];
 };
 
 export type Lead = {
@@ -71,6 +75,8 @@ export type Client = {
   risk?: string;
   portalEnabled: boolean;
   createdAt: string;
+  accountManagerId?: string;
+  upsell?: string;
 };
 
 export type Contact = {
@@ -160,6 +166,8 @@ export type Project = {
   expectedRevenue: number;
   expectedCost: number;
   expectedHours: number;
+  spaceId?: string;
+  retainerId?: string;
 };
 
 export type ChecklistItem = { id: string; text: string; done: boolean };
@@ -239,6 +247,7 @@ export type DocPage = {
   bodyAr: string;
   clientId?: string;
   projectId?: string;
+  kind?: "wiki" | "sop" | "brief" | "template" | "form";
 };
 
 export type Ticket = {
@@ -363,6 +372,78 @@ export type ReviewPin = {
   createdAt: string;
 };
 
+export type Space = {
+  id: string;
+  name: string;
+  nameAr: string;
+};
+
+export type Retainer = {
+  id: string;
+  clientId: string;
+  catalogId: string;
+  name: string;
+  monthlyHours: number;
+  monthlyFee: number;
+  consumedHours: number;
+  renewalDate: string;
+  status: "active" | "ending" | "paused";
+};
+
+export type LeaveRequest = {
+  id: string;
+  userId: string;
+  type: "annual" | "sick" | "unpaid";
+  start: string;
+  end: string;
+  days: number;
+  status: "pending" | "approved" | "denied";
+};
+
+export type AttendanceDay = {
+  id: string;
+  userId: string;
+  date: string;
+  hours: number;
+  status: "office" | "remote" | "leave";
+};
+
+export type PayrollLine = {
+  id: string;
+  userId: string;
+  month: string;
+  base: number;
+  commission: number;
+  total: number;
+  status: "draft" | "paid";
+};
+
+export type BookingSlot = {
+  id: string;
+  ownerId: string;
+  start: string;
+  durationMin: number;
+  bookedName?: string;
+  clientId?: string;
+};
+
+export type Activity = {
+  id: string;
+  leadId?: string;
+  clientId?: string;
+  kind: "call" | "email" | "meeting" | "note";
+  at: string;
+  note: string;
+};
+
+export type AuditEvent = {
+  id: string;
+  at: string;
+  actorId: string;
+  action: string;
+  detail: string;
+};
+
 export type OsState = {
   employees: Employee[];
   leads: Lead[];
@@ -389,4 +470,12 @@ export type OsState = {
   automationLogs: AutomationLog[];
   subscriptions: SaasSub[];
   reviewPins: ReviewPin[];
+  spaces: Space[];
+  retainers: Retainer[];
+  leaves: LeaveRequest[];
+  attendance: AttendanceDay[];
+  payroll: PayrollLine[];
+  bookingSlots: BookingSlot[];
+  activities: Activity[];
+  audit: AuditEvent[];
 };

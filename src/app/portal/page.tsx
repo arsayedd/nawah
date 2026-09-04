@@ -171,6 +171,11 @@ function PortalInner() {
             </div>
           ))
         )}
+        <Link href={`/book?client=${client.id}`}>
+          <Button className="mt-4" size="sm" variant="outline">
+            Book a meeting
+          </Button>
+        </Link>
       </Card>
     </div>
   );

@@ -32,6 +32,14 @@ const keys: (keyof OsState)[] = [
   "automationLogs",
   "subscriptions",
   "reviewPins",
+  "spaces",
+  "retainers",
+  "leaves",
+  "attendance",
+  "payroll",
+  "bookingSlots",
+  "activities",
+  "audit",
 ];
 
 export function pickOsState(input: Partial<OsState> | OsState): OsState {

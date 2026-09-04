@@ -69,6 +69,15 @@ type Store = OsState & {
   submitDiscovery: (leadId: string, data: Omit<Discovery, "id" | "leadId">) => void;
   addReviewPin: (taskId: string, x: number, y: number, body: string) => void;
   toggleAutomation: (id: string) => void;
+  assignTask: (taskId: string, userId: string) => void;
+  assignByCapacity: (taskId: string) => void;
+  convertMessageToTask: (messageId: string) => void;
+  bookSlot: (slotId: string, name: string, clientId?: string) => void;
+  signContract: (id: string) => void;
+  recordPayment: (invoiceId: string, amount?: number, method?: string) => void;
+  decideLeave: (id: string, status: "approved" | "denied") => void;
+  generateRetainerMonth: (retainerId: string) => void;
+  addSubtask: (parentId: string, title: string) => void;
 };
 
 function pickAssignee(employees: OsState["employees"], role: string, load: Record<string, number>) {
@@ -661,6 +670,200 @@ export const useOS = create<Store>()((set, get) => ({
             a.id === id ? { ...a, enabled: !a.enabled } : a,
           ),
         }),
+      assignTask: (taskId, userId) =>
+        set({
+          tasks: get().tasks.map((t) =>
+            t.id === taskId ? { ...t, assigneeId: userId } : t,
+          ),
+          audit: [
+            {
+              id: uid("au"),
+              at: new Date().toISOString(),
+              actorId: "u_ahmed",
+              action: "task.assigned",
+              detail: `${taskId} → ${userId}`,
+            },
+            ...get().audit,
+          ],
+        }),
+      assignByCapacity: (taskId) => {
+        const state = get();
+        const task = state.tasks.find((t) => t.id === taskId);
+        if (!task) return;
+        const load: Record<string, number> = {};
+        for (const t of state.tasks) {
+          if (t.assigneeId && t.status !== "done") {
+            load[t.assigneeId] = (load[t.assigneeId] ?? 0) + t.estimateHours;
+          }
+        }
+        const pick = pickAssignee(state.employees, "", load);
+        if (pick) get().assignTask(taskId, pick);
+      },
+      convertMessageToTask: (messageId) => {
+        const msg = get().messages.find((m) => m.id === messageId);
+        if (!msg) return;
+        const projectId = msg.channelId.startsWith("project:")
+          ? msg.channelId.slice(8)
+          : get().projects[0]?.id;
+        if (!projectId) return;
+        const id = uid("t");
+        set({
+          tasks: [
+            {
+              id,
+              projectId,
+              milestone: "From inbox",
+              title: msg.body.slice(0, 80),
+              titleAr: msg.body.slice(0, 80),
+              status: "todo",
+              priority: "med",
+              estimateHours: 2,
+              actualHours: 0,
+              billable: true,
+              checklist: [],
+              revisionCount: 0,
+              approvalStatus: "working",
+            },
+            ...get().tasks,
+          ],
+        });
+      },
+      bookSlot: (slotId, name, clientId) => {
+        const slot = get().bookingSlots.find((s) => s.id === slotId);
+        if (!slot || slot.bookedName) return;
+        set({
+          bookingSlots: get().bookingSlots.map((s) =>
+            s.id === slotId ? { ...s, bookedName: name, clientId } : s,
+          ),
+          meetings: [
+            {
+              id: uid("m"),
+              title: `Booked: ${name}`,
+              titleAr: `حجز: ${name}`,
+              clientId,
+              when: slot.start,
+              notes: `${slot.durationMin} min with account team`,
+            },
+            ...get().meetings,
+          ],
+        });
+      },
+      signContract: (id) =>
+        set({
+          contracts: get().contracts.map((c) =>
+            c.id === id ? { ...c, status: "signed" as const } : c,
+          ),
+        }),
+      recordPayment: (invoiceId, amount, method = "Bank transfer") => {
+        const invoice = get().invoices.find((i) => i.id === invoiceId);
+        if (!invoice) return;
+        const pay = Math.min(amount ?? invoice.amount - invoice.paidAmount, invoice.amount - invoice.paidAmount);
+        if (pay <= 0) return;
+        const paidAmount = invoice.paidAmount + pay;
+        set({
+          payments: [
+            {
+              id: uid("pay"),
+              invoiceId,
+              amount: pay,
+              date: new Date().toISOString().slice(0, 10),
+              method,
+            },
+            ...get().payments,
+          ],
+          invoices: get().invoices.map((i) =>
+            i.id === invoiceId
+              ? {
+                  ...i,
+                  paidAmount,
+                  status: paidAmount >= i.amount ? ("paid" as const) : ("partial" as const),
+                }
+              : i,
+          ),
+        });
+      },
+      decideLeave: (id, status) =>
+        set({
+          leaves: get().leaves.map((l) => (l.id === id ? { ...l, status } : l)),
+        }),
+      generateRetainerMonth: (retainerId) => {
+        const ret = get().retainers.find((r) => r.id === retainerId);
+        if (!ret) return;
+        const catalog = get().catalog.find((c) => c.id === ret.catalogId);
+        const today = new Date().toISOString().slice(0, 10);
+        const projectId = uid("p");
+        const project: Project = {
+          id: projectId,
+          clientId: ret.clientId,
+          retainerId: ret.id,
+          name: `${ret.name} — cycle`,
+          nameAr: ret.name,
+          status: "healthy",
+          startDate: today,
+          dueDate: ret.renewalDate,
+          expectedRevenue: ret.monthlyFee,
+          expectedCost: Math.round(ret.monthlyFee * 0.35),
+          expectedHours: ret.monthlyHours,
+          spaceId: "sp_delivery",
+        };
+        const tasks: Task[] = (catalog?.items ?? []).slice(0, 5).map((item) => ({
+          id: uid("t"),
+          projectId,
+          milestone: "Retainer",
+          title: item.name,
+          titleAr: item.nameAr,
+          status: "todo" as const,
+          priority: "med" as const,
+          estimateHours: item.hours,
+          actualHours: 0,
+          billable: true,
+          checklist: [],
+          revisionCount: 0,
+          approvalStatus: "working" as const,
+        }));
+        const invoice: Invoice = {
+          id: uid("inv"),
+          number: `INV-R${Date.now().toString().slice(-4)}`,
+          clientId: ret.clientId,
+          projectId,
+          amount: ret.monthlyFee,
+          status: "sent",
+          dueDate: today,
+          paidAmount: 0,
+          issuedAt: today,
+          note: "Monthly retainer",
+        };
+        set({
+          projects: [project, ...get().projects],
+          tasks: [...tasks, ...get().tasks],
+          invoices: [invoice, ...get().invoices],
+          retainers: get().retainers.map((r) =>
+            r.id === retainerId ? { ...r, consumedHours: 0 } : r,
+          ),
+        });
+      },
+      addSubtask: (parentId, title) => {
+        const parent = get().tasks.find((t) => t.id === parentId);
+        if (!parent) return;
+        set({
+          tasks: [
+            {
+              ...parent,
+              id: uid("t"),
+              parentId,
+              title,
+              titleAr: title,
+              status: "todo",
+              estimateHours: 1,
+              actualHours: 0,
+              checklist: [],
+              revisionCount: 0,
+              approvalStatus: "working",
+            },
+            ...get().tasks,
+          ],
+        });
+      },
 }));
 
 export function useHydratedOS() {
