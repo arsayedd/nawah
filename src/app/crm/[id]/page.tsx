@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { CommentThread } from "@/components/comments/thread";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { egp } from "@/lib/utils";
@@ -90,6 +91,7 @@ export default function LeadPage() {
           ))
         )}
       </Card>
+      {lead ? <CommentThread entity="lead" entityId={lead.id} /> : null}
     </div>
   );
 }

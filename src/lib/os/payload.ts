@@ -10,7 +10,12 @@ export type OsPayload = {
 export const OS_SCHEMA = 3;
 
 const keys: (keyof OsState)[] = [
+  "prefs",
   "employees",
+  "notices",
+  "mail",
+  "chatRooms",
+  "entityComments",
   "leads",
   "clients",
   "contacts",
@@ -70,6 +75,13 @@ export function mergeOsState(remote?: Partial<OsState> | OsState | null): OsStat
     accountManagerId: c.accountManagerId ?? "u_sara",
     portalEnabled: c.portalEnabled ?? true,
   }));
+  out.prefs = {
+    ...seed.prefs,
+    ...(remote?.prefs ?? {}),
+    hiddenNav: remote?.prefs?.hiddenNav ?? seed.prefs.hiddenNav,
+    hiddenHomeWidgets: remote?.prefs?.hiddenHomeWidgets ?? seed.prefs.hiddenHomeWidgets,
+    currentUserId: remote?.prefs?.currentUserId ?? seed.prefs.currentUserId,
+  };
   return out;
 }
 

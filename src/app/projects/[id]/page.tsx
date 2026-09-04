@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { CommentThread } from "@/components/comments/thread";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
@@ -205,11 +206,15 @@ export default function ProjectDetailPage() {
                   {locale === "ar" ? "قيمة مباعة تقديرية" : "Est. sold value"}{" "}
                   {egp(sell, locale)}
                 </div>
+                <div className="mt-3">
+                  <CommentThread entity="task" entityId={task.id} />
+                </div>
               </div>
             );
           })}
         </div>
       </Card>
+      <CommentThread entity="project" entityId={project.id} />
     </div>
   );
 }

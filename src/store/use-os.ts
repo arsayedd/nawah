@@ -4,7 +4,11 @@ import { create } from "zustand";
 import { quoteTotals, seed } from "@/data/seed";
 import { pickOsState } from "@/lib/os/payload";
 import type {
+  AccessRole,
   Client,
+  Discovery,
+  Employee,
+  EntityComment,
   Expense,
   Invoice,
   Lead,
@@ -16,7 +20,6 @@ import type {
   Task,
   TaskStatus,
   Ticket,
-  Discovery,
 } from "@/lib/types";
 import { uid } from "@/lib/utils";
 
@@ -82,6 +85,25 @@ type Store = OsState & {
   addDocComment: (docId: string, body: string) => void;
   setAccountManager: (clientId: string, userId: string) => void;
   addDocRow: (docId: string, values: Record<string, string>) => void;
+  setCurrentUser: (userId: string) => void;
+  upsertEmployee: (input: Partial<Employee> & { name: string }) => string;
+  removeEmployee: (id: string) => void;
+  setEmployeeModules: (id: string, modules: string[]) => void;
+  sendNotice: (opts: {
+    userIds: string[];
+    title: string;
+    body: string;
+    href?: string;
+    channel: "inapp" | "email" | "both";
+  }) => void;
+  markNoticeRead: (id: string) => void;
+  markAllNoticesRead: (userId: string) => void;
+  sendMail: (opts: { toId: string; subject: string; body: string }) => string;
+  markMailRead: (id: string) => void;
+  addChatRoom: (name: string, memberIds: string[]) => string;
+  addEntityComment: (opts: Omit<EntityComment, "id" | "createdAt" | "authorId"> & { authorId?: string }) => void;
+  toggleNavItem: (href: string) => void;
+  toggleHomeWidget: (id: string) => void;
 };
 
 function pickAssignee(employees: OsState["employees"], role: string, load: Record<string, number>) {
@@ -532,6 +554,10 @@ export const useOS = create<Store>()((set, get) => ({
                 billRate: 400,
                 skills: [],
                 weeklyHours: 40,
+                email: `${title.toLowerCase().replace(/\s+/g, ".")}@nawah.agency`,
+                accessRole: "team" as AccessRole,
+                salary: 18000,
+                status: "active" as const,
               },
               ...get().employees,
             ],
@@ -583,7 +609,7 @@ export const useOS = create<Store>()((set, get) => ({
             {
               id: uid("msg"),
               channelId,
-              authorId: "u_ahmed",
+              authorId: get().prefs.currentUserId,
               body,
               createdAt: new Date().toISOString(),
               internal,
@@ -662,7 +688,7 @@ export const useOS = create<Store>()((set, get) => ({
               x,
               y,
               body,
-              authorId: "u_ahmed",
+              authorId: get().prefs.currentUserId,
               createdAt: new Date().toISOString(),
             },
             ...get().reviewPins,
@@ -893,7 +919,7 @@ export const useOS = create<Store>()((set, get) => ({
             {
               id: uid("dc"),
               docId,
-              authorId: "u_ahmed",
+              authorId: get().prefs.currentUserId,
               body,
               createdAt: new Date().toISOString(),
             },
@@ -914,6 +940,154 @@ export const useOS = create<Store>()((set, get) => ({
               : d,
           ),
         }),
+      setCurrentUser: (userId) =>
+        set({ prefs: { ...get().prefs, currentUserId: userId } }),
+      upsertEmployee: (input) => {
+        const existing = input.id ? get().employees.find((e) => e.id === input.id) : undefined;
+        const id = existing?.id ?? uid("u");
+        const next: Employee = {
+          id,
+          name: input.name,
+          nameAr: input.nameAr ?? input.name,
+          email: input.email ?? existing?.email ?? `${input.name.toLowerCase().replace(/\s+/g, ".")}@nawah.agency`,
+          phone: input.phone ?? existing?.phone,
+          role: input.role ?? existing?.role ?? "Team member",
+          roleAr: input.roleAr ?? existing?.roleAr ?? "عضو فريق",
+          accessRole: input.accessRole ?? existing?.accessRole ?? "team",
+          department: input.department ?? existing?.department ?? "Delivery",
+          hourlyCost: input.hourlyCost ?? existing?.hourlyCost ?? 150,
+          billRate: input.billRate ?? existing?.billRate ?? 400,
+          skills: input.skills ?? existing?.skills ?? [],
+          weeklyHours: input.weeklyHours ?? existing?.weeklyHours ?? 40,
+          kind: input.kind ?? existing?.kind ?? "staff",
+          salary: input.salary ?? existing?.salary ?? 18000,
+          managerId: input.managerId ?? existing?.managerId,
+          status: input.status ?? existing?.status ?? "active",
+          modules: input.modules ?? existing?.modules,
+        };
+        set({
+          employees: existing
+            ? get().employees.map((e) => (e.id === id ? next : e))
+            : [next, ...get().employees],
+        });
+        return id;
+      },
+      removeEmployee: (id) => {
+        if (id === "u_ahmed") return;
+        set({ employees: get().employees.filter((e) => e.id !== id) });
+      },
+      setEmployeeModules: (id, modules) =>
+        set({
+          employees: get().employees.map((e) => (e.id === id ? { ...e, modules } : e)),
+        }),
+      sendNotice: ({ userIds, title, body, href, channel }) => {
+        const fromId = get().prefs.currentUserId;
+        const now = new Date().toISOString();
+        const notices = userIds.map((userId) => ({
+          id: uid("n"),
+          userId,
+          fromId,
+          title,
+          body,
+          href,
+          read: false,
+          channel,
+          createdAt: now,
+        }));
+        const mail =
+          channel === "email" || channel === "both"
+            ? userIds.map((toId) => ({
+                id: uid("mail"),
+                fromId,
+                toId,
+                subject: title,
+                body,
+                read: false,
+                createdAt: now,
+              }))
+            : [];
+        set({
+          notices: [...notices, ...get().notices],
+          mail: [...mail, ...get().mail],
+        });
+      },
+      markNoticeRead: (id) =>
+        set({
+          notices: get().notices.map((n) => (n.id === id ? { ...n, read: true } : n)),
+        }),
+      markAllNoticesRead: (userId) =>
+        set({
+          notices: get().notices.map((n) => (n.userId === userId ? { ...n, read: true } : n)),
+        }),
+      sendMail: ({ toId, subject, body }) => {
+        const id = uid("mail");
+        const fromId = get().prefs.currentUserId;
+        const now = new Date().toISOString();
+        set({
+          mail: [
+            { id, fromId, toId, subject, body, read: false, createdAt: now },
+            ...get().mail,
+          ],
+          notices: [
+            {
+              id: uid("n"),
+              userId: toId,
+              fromId,
+              title: subject,
+              body,
+              href: "/mail",
+              read: false,
+              channel: "email",
+              createdAt: now,
+            },
+            ...get().notices,
+          ],
+        });
+        return id;
+      },
+      markMailRead: (id) =>
+        set({
+          mail: get().mail.map((m) => (m.id === id ? { ...m, read: true } : m)),
+        }),
+      addChatRoom: (name, memberIds) => {
+        const id = uid("room");
+        const me = get().prefs.currentUserId;
+        set({
+          chatRooms: [
+            { id, name, memberIds: Array.from(new Set([me, ...memberIds])), kind: "group" },
+            ...get().chatRooms,
+          ],
+        });
+        return id;
+      },
+      addEntityComment: ({ entity, entityId, body, authorId }) =>
+        set({
+          entityComments: [
+            {
+              id: uid("ec"),
+              entity,
+              entityId,
+              authorId: authorId ?? get().prefs.currentUserId,
+              body,
+              createdAt: new Date().toISOString(),
+            },
+            ...get().entityComments,
+          ],
+        }),
+      toggleNavItem: (href) => {
+        const hidden = get().prefs.hiddenNav;
+        const hiddenNav = hidden.includes(href)
+          ? hidden.filter((h) => h !== href)
+          : [...hidden, href];
+        set({ prefs: { ...get().prefs, hiddenNav } });
+      },
+      toggleHomeWidget: (id) => {
+        const hidden = get().prefs.hiddenHomeWidgets;
+        const hiddenHomeWidgets = hidden.includes(id)
+          ? hidden.filter((h) => h !== id)
+          : [...hidden, id];
+        set({ prefs: { ...get().prefs, hiddenHomeWidgets } });
+      },
 }));
 
 export function useHydratedOS() {

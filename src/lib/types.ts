@@ -22,12 +22,26 @@ export type QuoteStatus =
   | "rejected"
   | "changes";
 
+export type AccessRole =
+  | "owner"
+  | "admin"
+  | "sales"
+  | "am"
+  | "pm"
+  | "team"
+  | "finance"
+  | "hr"
+  | "freelancer";
+
 export type Employee = {
   id: string;
   name: string;
   nameAr: string;
+  email?: string;
+  phone?: string;
   role: string;
   roleAr: string;
+  accessRole?: AccessRole;
   department: string;
   hourlyCost: number;
   billRate: number;
@@ -37,6 +51,9 @@ export type Employee = {
   salary?: number;
   managerId?: string;
   languages?: string[];
+  status?: "active" | "inactive";
+  /** Empty = use the role default. */
+  modules?: string[];
 };
 
 export type Lead = {
@@ -465,8 +482,57 @@ export type AuditEvent = {
   detail: string;
 };
 
+export type Notice = {
+  id: string;
+  userId: string;
+  fromId: string;
+  title: string;
+  body: string;
+  href?: string;
+  read: boolean;
+  channel: "inapp" | "email" | "both";
+  createdAt: string;
+};
+
+export type MailItem = {
+  id: string;
+  fromId: string;
+  toId: string;
+  subject: string;
+  body: string;
+  read: boolean;
+  createdAt: string;
+};
+
+export type ChatRoom = {
+  id: string;
+  name: string;
+  memberIds: string[];
+  kind: "dm" | "group";
+};
+
+export type EntityComment = {
+  id: string;
+  entity: "task" | "project" | "client" | "lead" | "quote" | "file";
+  entityId: string;
+  authorId: string;
+  body: string;
+  createdAt: string;
+};
+
+export type WorkspacePrefs = {
+  currentUserId: string;
+  hiddenNav: string[];
+  hiddenHomeWidgets: string[];
+};
+
 export type OsState = {
+  prefs: WorkspacePrefs;
   employees: Employee[];
+  notices: Notice[];
+  mail: MailItem[];
+  chatRooms: ChatRoom[];
+  entityComments: EntityComment[];
   leads: Lead[];
   clients: Client[];
   contacts: Contact[];

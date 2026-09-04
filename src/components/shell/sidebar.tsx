@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
+  Bell,
   BookOpen,
   Bot,
   Briefcase,
@@ -14,9 +15,11 @@ import {
   FolderKanban,
   Globe,
   Home,
+  Mail,
   MessageSquare,
   Paperclip,
   Settings,
+  SlidersHorizontal,
   Sparkles,
   Timer,
   UserRound,
@@ -26,9 +29,11 @@ import {
 } from "lucide-react";
 import { NawahLockup } from "@/components/brand/logo";
 import { AGENCY_NAME, AGENCY_NAME_AR } from "@/lib/brand";
+import { canAccessPath } from "@/lib/access";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { Locale } from "@/lib/types";
+import { useOS } from "@/store/use-os";
 
 export const SIDEBAR_WIDTH = 264;
 
@@ -66,6 +71,9 @@ const groups: {
     items: [
       { href: "/docs", key: "docs", icon: BookOpen },
       { href: "/inbox", key: "inbox", icon: MessageSquare },
+      { href: "/chat", key: "chat", icon: MessageSquare },
+      { href: "/mail", key: "mail", icon: Mail },
+      { href: "/notifications", key: "notifications", icon: Bell },
       { href: "/files", key: "files", icon: Paperclip },
       { href: "/portal", key: "portal", icon: Globe },
     ],
@@ -81,7 +89,9 @@ const groups: {
       { href: "/automations", key: "automations", icon: Zap },
       { href: "/ai", key: "ai", icon: Bot },
       { href: "/team", key: "team", icon: Users },
+      { href: "/people", key: "people", icon: Users },
       { href: "/hr", key: "hr", icon: Users },
+      { href: "/customize", key: "customize", icon: SlidersHorizontal },
       { href: "/settings", key: "settings", icon: Settings },
     ],
   },
@@ -96,16 +106,24 @@ export function SidebarNav({
 }) {
   const pathname = usePathname();
   const dict = t(locale);
+  const hiddenNav = useOS((s) => s.prefs.hiddenNav);
+  const me = useOS((s) => s.employees.find((e) => e.id === s.prefs.currentUserId));
 
   return (
     <nav className="nawah-side-scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2.5 py-3">
-      {groups.map((group) => (
+      {groups.map((group) => {
+        const items = group.items.filter(
+          (item) =>
+            !hiddenNav.includes(item.href) && canAccessPath(me, item.href),
+        );
+        if (!items.length) return null;
+        return (
         <div key={group.label} className="mb-4 last:mb-0">
           <div className="px-2.5 pb-1.5 text-[11px] font-medium text-white/45">
             {locale === "ar" ? group.labelAr : group.label}
           </div>
           <div className="flex flex-col gap-px">
-            {group.items.map((item) => {
+            {items.map((item) => {
               const active =
                 item.href === "/home"
                   ? pathname === "/home"
@@ -133,7 +151,8 @@ export function SidebarNav({
             })}
           </div>
         </div>
-      ))}
+        );
+      })}
     </nav>
   );
 }

@@ -35,6 +35,11 @@ export const copy = {
       hr: "الموارد البشرية",
       workload: "الحمل",
       accounts: "الحسابات",
+      people: "الموظفين",
+      chat: "الشات",
+      mail: "الإيميل",
+      notifications: "التنبيهات",
+      customize: "تخصيص",
     },
     kpi: {
       revenue: "إيراد هذا الشهر",
@@ -120,6 +125,11 @@ export const copy = {
       hr: "People",
       workload: "Workload",
       accounts: "Accounts",
+      people: "People",
+      chat: "Chat",
+      mail: "Mail",
+      notifications: "Notifications",
+      customize: "Customize",
     },
     kpi: {
       revenue: "Revenue this month",

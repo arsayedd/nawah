@@ -3,6 +3,11 @@ import type { OsState, QuoteItem } from "@/lib/types";
 const today = "2026-09-04";
 
 export const seed: OsState = {
+  prefs: {
+    currentUserId: "u_ahmed",
+    hiddenNav: [],
+    hiddenHomeWidgets: [],
+  },
   employees: [
     {
       id: "u_ahmed",
@@ -15,6 +20,10 @@ export const seed: OsState = {
       billRate: 0,
       skills: ["strategy", "sales"],
       weeklyHours: 40,
+      email: "ahmed@nawah.agency",
+      accessRole: "owner",
+      salary: 85000,
+      status: "active",
     },
     {
       id: "u_sara",
@@ -27,6 +36,10 @@ export const seed: OsState = {
       billRate: 450,
       skills: ["accounts", "arabic"],
       weeklyHours: 40,
+      email: "sara@nawah.agency",
+      accessRole: "am",
+      salary: 28000,
+      status: "active",
     },
     {
       id: "u_omar",
@@ -39,6 +52,10 @@ export const seed: OsState = {
       billRate: 500,
       skills: ["pm", "shopify"],
       weeklyHours: 40,
+      email: "omar@nawah.agency",
+      accessRole: "pm",
+      salary: 32000,
+      status: "active",
     },
     {
       id: "u_lina",
@@ -51,6 +68,10 @@ export const seed: OsState = {
       billRate: 420,
       skills: ["design", "brand"],
       weeklyHours: 40,
+      email: "lina@nawah.agency",
+      accessRole: "team",
+      salary: 24000,
+      status: "active",
     },
     {
       id: "u_karim",
@@ -63,6 +84,10 @@ export const seed: OsState = {
       billRate: 480,
       skills: ["ads", "meta"],
       weeklyHours: 40,
+      email: "karim@nawah.agency",
+      accessRole: "sales",
+      salary: 26000,
+      status: "active",
     },
     {
       id: "u_nour",
@@ -75,6 +100,10 @@ export const seed: OsState = {
       billRate: 380,
       skills: ["copy", "arabic"],
       weeklyHours: 32,
+      email: "nour@nawah.agency",
+      accessRole: "team",
+      salary: 20000,
+      status: "active",
     },
     {
       id: "u_maya",
@@ -89,6 +118,10 @@ export const seed: OsState = {
       weeklyHours: 15,
       kind: "freelancer",
       languages: ["en", "ar"],
+      email: "maya@nawah.agency",
+      accessRole: "freelancer",
+      salary: 0,
+      status: "active",
     },
   ],
   catalog: [
@@ -942,6 +975,14 @@ export const seed: OsState = {
       createdAt: "2026-09-04T11:40:00",
       internal: false,
     },
+    {
+      id: "msg_ops",
+      channelId: "chat:room_ops",
+      authorId: "u_omar",
+      body: "Standup in 10. Lina needs a decision on the Northline crop.",
+      createdAt: "2026-09-04T09:50:00",
+      internal: true,
+    },
   ],
   files: [
     {
@@ -1154,6 +1195,82 @@ export const seed: OsState = {
       authorId: "u_sara",
       body: "Client wants more dining sets in the first two weeks.",
       createdAt: "2026-09-02T12:00:00",
+    },
+  ],
+  notices: [
+    {
+      id: "n_1",
+      userId: "u_ahmed",
+      fromId: "u_sara",
+      title: "Cairo Bites still has not paid INV-2188",
+      body: "Flagged for owner review. Collect before we start more work.",
+      href: "/finance",
+      read: false,
+      channel: "both",
+      createdAt: "2026-09-04T09:10:00",
+    },
+    {
+      id: "n_2",
+      userId: "u_lina",
+      fromId: "u_omar",
+      title: "Northline batch A is in review",
+      body: "Please pin comments on the hero crop before we send to the client.",
+      href: "/projects/p_north",
+      read: false,
+      channel: "inapp",
+      createdAt: "2026-09-04T10:02:00",
+    },
+  ],
+  mail: [
+    {
+      id: "mail_1",
+      fromId: "u_sara",
+      toId: "u_ahmed",
+      subject: "Weekly account risk — Cairo Bites",
+      body: "Health is 42. Overdue invoice plus slow approvals. I recommend a call this week.",
+      read: false,
+      createdAt: "2026-09-04T08:40:00",
+    },
+    {
+      id: "mail_2",
+      fromId: "u_ahmed",
+      toId: "u_omar",
+      subject: "Protect Lina’s week",
+      body: "She is overbooked. Move Northline motion if Maya can take it.",
+      read: true,
+      createdAt: "2026-09-03T16:00:00",
+    },
+  ],
+  chatRooms: [
+    {
+      id: "room_ops",
+      name: "Ops",
+      memberIds: ["u_ahmed", "u_sara", "u_omar", "u_lina"],
+      kind: "group",
+    },
+    {
+      id: "room_sara",
+      name: "Ahmed × Sara",
+      memberIds: ["u_ahmed", "u_sara"],
+      kind: "dm",
+    },
+  ],
+  entityComments: [
+    {
+      id: "ec_1",
+      entity: "project",
+      entityId: "p_lumin",
+      authorId: "u_sara",
+      body: "Mona asked for warmer wood tones on batch A. Keep captions Arabic-first.",
+      createdAt: "2026-09-04T10:20:00",
+    },
+    {
+      id: "ec_2",
+      entity: "task",
+      entityId: "t_2",
+      authorId: "u_omar",
+      body: "This is the third revision — log it as a change request, not included work.",
+      createdAt: "2026-09-04T11:05:00",
     },
   ],
 };

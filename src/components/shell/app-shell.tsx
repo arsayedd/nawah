@@ -14,6 +14,7 @@ import {
 import { CommandSearch } from "@/components/shell/command-search";
 import { QuickAdd } from "@/components/shell/quick-add";
 import { Button } from "@/components/ui/button";
+import { canAccessPath } from "@/lib/access";
 import { t } from "@/lib/i18n";
 import { writeStoredLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -24,7 +25,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const locale = useOS((s) => s.locale);
   const setLocale = useOS((s) => s.setLocale);
   const alerts = useOS((s) => s.alerts);
+  const employees = useOS((s) => s.employees);
+  const meId = useOS((s) => s.prefs.currentUserId);
+  const setCurrentUser = useOS((s) => s.setCurrentUser);
+  const notices = useOS((s) => s.notices);
+  const markNoticeRead = useOS((s) => s.markNoticeRead);
   const dict = t(locale);
+  const me = employees.find((e) => e.id === meId);
+  const unread = notices.filter((n) => n.userId === meId && !n.read);
   const [quick, setQuick] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
@@ -101,13 +109,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               onClick={() => setNotesOpen((v) => !v)}
             >
               <Bell className="h-5 w-5" />
-              {alerts.length ? (
+              {unread.length || alerts.length ? (
                 <span className="absolute end-1.5 top-1.5 h-2 w-2 rounded-full bg-coral" />
               ) : null}
             </button>
             {notesOpen ? (
               <div className="absolute end-0 top-11 z-40 w-[min(360px,calc(100vw-32px))] rounded-[14px] border border-navy/8 bg-white p-2 shadow-xl">
-                {alerts.slice(0, 6).map((a) => (
+                <Link
+                  href="/notifications"
+                  className="block px-3 py-2 text-xs font-semibold text-cobalt"
+                  onClick={() => setNotesOpen(false)}
+                >
+                  Open notifications
+                </Link>
+                {unread.slice(0, 6).map((n) => (
+                  <Link
+                    key={n.id}
+                    href={n.href ?? "/notifications"}
+                    className="block rounded-[10px] px-3 py-2.5 text-sm hover:bg-paper"
+                    onClick={() => {
+                      markNoticeRead(n.id);
+                      setNotesOpen(false);
+                    }}
+                  >
+                    {n.title}
+                  </Link>
+                ))}
+                {alerts.slice(0, 4).map((a) => (
                   <Link
                     key={a.id}
                     href={a.href}
@@ -132,18 +160,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             {locale === "ar" ? "EN" : "AR"}
           </button>
+          <select
+            className="hidden h-9 max-w-[140px] rounded-[10px] border border-navy/10 bg-white px-2 text-xs sm:block"
+            value={meId}
+            onChange={(e) => setCurrentUser(e.target.value)}
+            aria-label="Act as employee"
+          >
+            {employees.map((e) => (
+              <option key={e.id} value={e.id}>
+                {e.name.split(" ")[0]}
+              </option>
+            ))}
+          </select>
           <div className="hidden items-center gap-2 sm:flex">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-semibold text-white">
-              Ah
+              {(me?.name ?? "Ah").slice(0, 2)}
             </div>
             <div className="leading-tight">
-              <div className="text-sm font-semibold">Ahmed Raafat</div>
-              <div className="text-[11px] text-navy/50">Owner</div>
+              <div className="text-sm font-semibold">{me?.name ?? "Ahmed Raafat"}</div>
+              <div className="text-[11px] text-navy/50">{me?.role ?? "Owner"}</div>
             </div>
           </div>
         </header>
         <main className="px-4 py-7 text-[#071B3A] md:px-8">
-          <ErrorBoundary>{children}</ErrorBoundary>
+          <ErrorBoundary>
+            {canAccessPath(me, pathname) ? (
+              children
+            ) : (
+              <div className="rounded-[16px] border border-navy/10 bg-white p-8">
+                <h1 className="text-xl font-semibold">No access</h1>
+                <p className="mt-2 text-sm text-navy/55">
+                  {me?.name} cannot open this module. Change their role under People.
+                </p>
+                <Link href="/people" className="mt-3 inline-block text-sm text-cobalt">
+                  Open people
+                </Link>
+              </div>
+            )}
+          </ErrorBoundary>
         </main>
       </div>
       <QuickAdd open={quick} onOpenChange={setQuick} />

@@ -36,7 +36,12 @@ const osLinks = [
   ["/book", "Booking"],
   ["/time", "Time"],
   ["/finance", "Finance"],
-  ["/hr", "People"],
+  ["/hr", "People / HR"],
+  ["/people", "Employees"],
+  ["/chat", "Chat"],
+  ["/mail", "Mail"],
+  ["/notifications", "Notifications"],
+  ["/customize", "Customize"],
   ["/team", "Team"],
   ["/analytics", "Analytics"],
   ["/automations", "Automations"],
@@ -61,6 +66,8 @@ export default function HomePage() {
   const subscriptions = ws.subscriptions;
   const catalog = ws.catalog;
   const k = useKpis();
+  const hiddenHome = useOS((s) => s.prefs.hiddenHomeWidgets);
+  const show = (id: string) => !hiddenHome.includes(id);
 
   const kpis = [
     { label: dict.kpi.revenue, value: egp(k.revenue, locale), up: true, delta: "+12%" },
@@ -108,15 +115,16 @@ export default function HomePage() {
                 NW-1042
               </Button>
             </Link>
-            <Link href="/">
+            <Link href="/customize">
               <Button size="sm" variant="outline">
-                Product story
+                Customize
               </Button>
             </Link>
           </div>
         }
       />
 
+      {show("spine") ? (
       <div className="flex flex-wrap gap-2 text-[12px] text-navy/50">
         {["Lead", "Quote", "Scope", "Project", "Approval", "Invoice", "Profit", "Renewal"].map(
           (step, i) => (
@@ -129,8 +137,9 @@ export default function HomePage() {
           ),
         )}
       </div>
+      ) : null}
 
-      {k.overdue > 0 ? (
+      {show("cash") && k.overdue > 0 ? (
         <Link
           href="/finance"
           className="flex items-center justify-between gap-3 rounded-[16px] border border-coral/30 bg-coral/8 px-4 py-3"
@@ -147,6 +156,7 @@ export default function HomePage() {
         </Link>
       ) : null}
 
+      {show("kpis") ? (
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((item) => (
           <Card key={item.label} className="p-4 text-[#071B3A]">
@@ -175,7 +185,9 @@ export default function HomePage() {
           </Card>
         ))}
       </div>
+      ) : null}
 
+      {show("health") ? (
       <div className="grid gap-3 sm:grid-cols-3">
         <Card className="p-4">
           <div className="text-xs text-navy/45">Healthy projects</div>
@@ -193,7 +205,9 @@ export default function HomePage() {
           </div>
         </Card>
       </div>
+      ) : null}
 
+      {show("decisions") ? (
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <div className="mb-4 flex items-center justify-between">
@@ -258,12 +272,11 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <Link href="/workload" className="mt-4 inline-block text-sm text-cobalt">
-            Open workload
-          </Link>
         </Card>
       </div>
+      ) : null}
 
+      {show("spotlight") ? (
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <div className="text-[11px] uppercase tracking-[0.08em] text-navy/45">
@@ -308,12 +321,11 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <Link href="/calendar" className="mt-2 inline-block text-sm text-cobalt">
-            Calendar
-          </Link>
         </Card>
       </div>
+      ) : null}
 
+      {show("pipeline") ? (
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <div className="mb-3 flex items-center justify-between">
@@ -354,6 +366,7 @@ export default function HomePage() {
           )}
         </Card>
       </div>
+      ) : null}
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Card>
