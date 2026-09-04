@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -143,38 +142,28 @@ export default function LandingPage() {
 
       <section className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-8 lg:grid-cols-2 lg:pt-14">
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-[11px] font-semibold uppercase tracking-[0.22em] text-mint"
-          >
+          <p className="nawah-in text-[11px] font-semibold uppercase tracking-[0.22em] text-mint">
             نواة · Agency operating system
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-4 text-4xl font-semibold tracking-tight md:text-6xl"
+          </p>
+          <h1
+            className="nawah-in mt-4 text-4xl font-semibold tracking-tight md:text-6xl"
+            style={{ animationDelay: "80ms" }}
           >
             Your agency,
             <br />
             in one core.
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-5 max-w-lg text-lg leading-8 text-white/65"
+          </h1>
+          <p
+            className="nawah-in mt-5 max-w-lg text-lg leading-8 text-white/65"
+            style={{ animationDelay: "160ms" }}
           >
             CRM, quotations, ClickUp-class projects, Notion-like docs, account
             managers, calendar, client booking, portal, time, finance, HR, and
             AI — one data spine from first lead to real profit.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.32 }}
-            className="mt-8 flex flex-wrap gap-3"
+          </p>
+          <div
+            className="nawah-in mt-8 flex flex-wrap gap-3"
+            style={{ animationDelay: "240ms" }}
           >
             <Link
               href="/home"
@@ -195,13 +184,10 @@ export default function LandingPage() {
             >
               Book a meeting
             </Link>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.88 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+        <div
           className="relative mx-auto grid h-[380px] w-full max-w-[380px] place-items-center"
         >
           <div
@@ -209,14 +195,11 @@ export default function LandingPage() {
             style={{ animation: "nawah-pulse 5s ease-in-out infinite" }}
           />
           <div className="absolute h-72 w-72 rounded-full border border-dashed border-white/10" />
-          <motion.div
-            initial={{ rotate: -48, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            transition={{ delay: 0.15, duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
+          <div
             style={{ animation: "nawah-float 6s ease-in-out infinite" }}
           >
             <NawahMark className="h-52 w-52" />
-          </motion.div>
+          </div>
           {orbits.map((item) => (
             <span
               key={item.label}
@@ -232,7 +215,7 @@ export default function LandingPage() {
               </span>
             </span>
           ))}
-        </motion.div>
+        </div>
       </section>
 
       <div className="relative z-10 overflow-hidden border-y border-white/8 py-3">
@@ -258,17 +241,13 @@ export default function LandingPage() {
         </h2>
         <div className="mt-8 flex gap-2 overflow-x-auto pb-2">
           {loop.map((step, i) => (
-            <motion.div
+            <div
               key={step}
-              initial={{ opacity: 0, x: 16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04 }}
               className="flex shrink-0 items-center gap-2"
             >
               <span className="rounded-full bg-white/10 px-3 py-1.5 text-sm">{step}</span>
               {i < loop.length - 1 ? <ArrowRight className="h-3.5 w-3.5 text-mint/80" /> : null}
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -293,18 +272,14 @@ export default function LandingPage() {
             </Link>
           </div>
           <div className="space-y-2">
-            {acceptCascade.map((line, i) => (
-              <motion.div
+            {acceptCascade.map((line) => (
+              <div
                 key={line}
-                initial={{ opacity: 0, x: 24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
                 className="flex items-center gap-3 rounded-[12px] border border-white/8 bg-white/[0.03] px-4 py-3"
               >
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-mint" />
                 <span className="text-sm text-white/80">{line}</span>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -314,13 +289,13 @@ export default function LandingPage() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">Demo path</p>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight">Walk the core in five clicks.</h2>
         <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {walk.map((s, i) => (
-            <motion.div key={s.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+          {walk.map((s) => (
+            <div key={s.title}>
               <Link href={s.href} className="block h-full rounded-[16px] border border-white/10 bg-white/[0.04] p-4 hover:border-mint/40">
                 <div className="text-sm font-semibold">{s.title}</div>
                 <p className="mt-2 text-sm text-white/55">{s.copy}</p>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -334,15 +309,11 @@ export default function LandingPage() {
           Every card opens the live workspace. Same data. English first.
         </p>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {modules.map((m, i) => {
+          {modules.map((m) => {
             const Icon = m.icon;
             return (
-              <motion.div
+              <div
                 key={m.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: (i % 9) * 0.04 }}
               >
                 <Link
                   href={m.href}
@@ -352,7 +323,7 @@ export default function LandingPage() {
                   <h3 className="mt-4 font-semibold">{m.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-white/55">{m.copy}</p>
                 </Link>
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -360,10 +331,7 @@ export default function LandingPage() {
 
       <section className="relative z-10 mx-auto max-w-6xl px-5 pb-20">
         <div className="grid gap-10 lg:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+          <div
             className="rounded-[22px] border border-white/10 bg-gradient-to-br from-cobalt/35 to-transparent p-8"
           >
             <Bot className="h-6 w-6 text-mint" />
@@ -374,32 +342,25 @@ export default function LandingPage() {
               over capacity, which service is underpriced, and what needs a
               decision today.
             </p>
-          </motion.div>
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            {replaces.map((r, i) => (
-              <motion.div
+            {replaces.map((r) => (
+              <div
                 key={r.from}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
                 className="rounded-[16px] border border-white/10 p-4"
               >
                 <div className="text-[11px] uppercase tracking-[0.14em] text-white/35">
                   Instead of {r.from}
                 </div>
                 <div className="mt-1 text-sm font-medium">{r.for}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       <section className="relative z-10 mx-auto max-w-6xl px-5 pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+        <div
           className="overflow-hidden rounded-[28px] bg-white px-8 py-12 text-navy md:px-14"
         >
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-cobalt">
@@ -423,7 +384,7 @@ export default function LandingPage() {
               Wiki
             </Link>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       <footer className="relative z-10 border-t border-white/8 px-5 py-10">
