@@ -28,7 +28,18 @@ Arabic is the default (RTL). Switch to English from the header.
 
 Quick Add creates a lead, client, quote, project, task, invoice, expense, employee, meeting, or client request.
 
-Data lives in the browser (`localStorage`). Reset the demo from Settings.
+Data is stored on **Supabase** (not in the browser). Copy `.env.example` to `.env.local` and fill in the project URL plus keys. The service role key stays on the server only.
+
+Until the SQL schema is applied, Nawah writes a workspace snapshot to the private `nawah` Storage bucket. After you run `supabase/migrations/20260904120000_nawah_core.sql` in the Supabase SQL Editor, the same API switches to the `os_snapshots` Postgres table (RLS on, no browser access).
+
+```bash
+cp .env.example .env.local
+# then add NEXT_PUBLIC_SUPABASE_URL, anon/publishable, and SUPABASE_SERVICE_ROLE_KEY
+```
+
+`supabase link --project-ref tdesltksowtgksxukowl` needs a database password and `supabase login` (account token). Direct `db.*.supabase.co:5432` is IPv6-only.
+
+Reset the demo from Settings — that rewrites the seed workspace on Supabase.
 
 ## Brand
 
@@ -38,4 +49,4 @@ Cairo (Arabic) + Inter (Latin).
 
 ## Stack
 
-Next.js, TypeScript, Tailwind CSS, Zustand.
+Next.js, TypeScript, Tailwind CSS, Zustand, Supabase.

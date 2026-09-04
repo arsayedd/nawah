@@ -1,8 +1,8 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { quoteTotals, seed } from "@/data/seed";
+import { pickOsState } from "@/lib/os/payload";
 import type {
   Client,
   Expense,
@@ -57,27 +57,7 @@ type Store = OsState & {
     clientId?: string;
     catalogId: string;
   }) => string;
-};
-
-const emptyOs: OsState = {
-  employees: [],
-  leads: [],
-  clients: [],
-  contacts: [],
-  catalog: [],
-  quotes: [],
-  projects: [],
-  tasks: [],
-  invoices: [],
-  payments: [],
-  expenses: [],
-  timeEntries: [],
-  docs: [],
-  tickets: [],
-  meetings: [],
-  alerts: [],
-  contracts: [],
-  portalInvites: [],
+  hydrateFromRemote: (payload: { locale: Locale; state: OsState }) => void;
 };
 
 function pickAssignee(employees: OsState["employees"], role: string, load: Record<string, number>) {
@@ -92,15 +72,23 @@ function pickAssignee(employees: OsState["employees"], role: string, load: Recor
   return scored[0]?.e.id;
 }
 
-export const useOS = create<Store>()(
-  persist(
-    (set, get) => ({
+export const useOS = create<Store>()((set, get) => ({
       ...seed,
       locale: "ar",
       hydrated: false,
       setHydrated: (v) => set({ hydrated: v }),
+      hydrateFromRemote: ({ locale, state }) =>
+        set({ ...pickOsState(state), locale, hydrated: true }),
       setLocale: (locale) => set({ locale }),
-      resetDemo: () => set({ ...seed, locale: get().locale }),
+      resetDemo: () => {
+        const locale = get().locale;
+        set({ ...seed, locale, hydrated: true });
+        void fetch("/api/os/reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ locale }),
+        });
+      },
       moveLead: (id, stage) =>
         set({
           leads: get().leads.map((l) => (l.id === id ? { ...l, stage } : l)),
@@ -552,18 +540,7 @@ export const useOS = create<Store>()(
         }
         return id;
       },
-    }),
-    {
-      name: "nawah-os-v1",
-      skipHydration: true,
-      partialize: (s) => {
-        const { hydrated, ...rest } = s;
-        void hydrated;
-        return rest as Store;
-      },
-    },
-  ),
-);
+}));
 
 export function useHydratedOS() {
   const hydrated = useOS((s) => s.hydrated);
