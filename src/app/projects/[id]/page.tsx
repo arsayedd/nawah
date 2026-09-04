@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { CommentThread } from "@/components/comments/thread";
 import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { t } from "@/lib/i18n";
 import type { TaskStatus } from "@/lib/types";
 import { egp, pct } from "@/lib/utils";
@@ -30,7 +32,9 @@ export default function ProjectDetailPage() {
   const assignTask = useOS((s) => s.assignTask);
   const assignByCapacity = useOS((s) => s.assignByCapacity);
   const addSubtask = useOS((s) => s.addSubtask);
+  const quickAdd = useOS((s) => s.quickAdd);
   const dict = t(locale);
+  const [taskTitle, setTaskTitle] = useState("");
 
   if (!project) {
     return <p>{locale === "ar" ? "المشروع مش موجود." : "Project not found."}</p>;
@@ -97,6 +101,25 @@ export default function ProjectDetailPage() {
         <h2 className="mb-3 font-semibold">
           {locale === "ar" ? "المهام والتسليمات" : "Tasks & deliverables"}
         </h2>
+        <form
+          className="mb-4 flex flex-col gap-2 sm:flex-row"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const name = taskTitle.trim();
+            if (!name) return;
+            quickAdd("task", name, { projectId: id });
+            setTaskTitle("");
+          }}
+        >
+          <Input
+            value={taskTitle}
+            onChange={(e) => setTaskTitle(e.target.value)}
+            placeholder={locale === "ar" ? "مهمة جديدة" : "New task"}
+          />
+          <Button type="submit" size="sm">
+            Add task
+          </Button>
+        </form>
         <div className="space-y-3">
           {tasks.map((task) => {
             const emp = employees.find((e) => e.id === task.assigneeId);

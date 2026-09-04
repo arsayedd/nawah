@@ -22,6 +22,15 @@ const kinds = [
   { id: "notice", ar: "تنبيه", en: "Notice", href: "/notifications" },
   { id: "mail", ar: "إيميل", en: "Mail", href: "/mail" },
   { id: "room", ar: "شات", en: "Chat room", href: "/chat" },
+  { id: "space", ar: "قسم", en: "Space", href: "/spaces" },
+  { id: "catalog", ar: "خدمة", en: "Catalog", href: "/catalog" },
+  { id: "contract", ar: "عقد", en: "Contract", href: "/contracts" },
+  { id: "retainer", ar: "ريتِينر", en: "Retainer", href: "/retainers" },
+  { id: "file", ar: "ملف", en: "File", href: "/files" },
+  { id: "doc", ar: "صفحة", en: "Doc", href: "/docs" },
+  { id: "leave", ar: "إجازة", en: "Leave", href: "/hr" },
+  { id: "automation", ar: "أتمتة", en: "Automation", href: "/automations" },
+  { id: "booking", ar: "حجز", en: "Booking type", href: "/calendar" },
 ] as const;
 
 export function QuickAdd({
@@ -79,7 +88,15 @@ export function QuickAdd({
                 ? `/quotes/${id}`
                 : kind === "employee"
                   ? `/people/${id}`
-                  : kinds.find((k) => k.id === kind)?.href ?? "/";
+                  : kind === "doc"
+                    ? `/docs/${id}`
+                    : kind === "lead"
+                      ? `/crm/${id}`
+                      : kind === "client"
+                        ? `/clients/${id}`
+                        : kind === "project"
+                          ? `/projects/${id}`
+                          : kinds.find((k) => k.id === kind)?.href ?? "/";
             onOpenChange(false);
             router.push(href);
           }}

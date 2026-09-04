@@ -13,6 +13,7 @@ import {
 } from "@/components/shell/sidebar";
 import { CommandSearch } from "@/components/shell/command-search";
 import { CustomizePageButton } from "@/components/shell/customize-page";
+import { PageComposer } from "@/components/shell/page-composer";
 import { QuickAdd } from "@/components/shell/quick-add";
 import { Button } from "@/components/ui/button";
 import { canAccessPath } from "@/lib/access";
@@ -197,7 +198,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main className="px-4 py-7 text-[#071B3A] md:px-8">
           <ErrorBoundary>
             {canAccessPath(me, pathname) ? (
-              children
+              <>
+                <PageComposer />
+                {children}
+              </>
             ) : (
               <div className="rounded-[16px] border border-navy/10 bg-white p-8">
                 <h1 className="text-xl font-semibold">No access</h1>

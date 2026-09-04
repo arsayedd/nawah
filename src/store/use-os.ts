@@ -24,7 +24,7 @@ import type {
 } from "@/lib/types";
 import { uid } from "@/lib/utils";
 
-type QuickKind =
+export type QuickKind =
   | "lead"
   | "client"
   | "quote"
@@ -37,7 +37,18 @@ type QuickKind =
   | "request"
   | "notice"
   | "mail"
-  | "room";
+  | "room"
+  | "space"
+  | "catalog"
+  | "contract"
+  | "retainer"
+  | "file"
+  | "doc"
+  | "leave"
+  | "automation"
+  | "booking"
+  | "saas"
+  | "hours";
 
 type AcceptResult = {
   clientId: string;
@@ -60,7 +71,11 @@ type Store = OsState & {
   requestRevision: (taskId: string) => void;
   approveDeliverable: (taskId: string) => void;
   logTime: (taskId: string, userId: string, hours: number) => void;
-  quickAdd: (kind: QuickKind, title: string) => string;
+  quickAdd: (
+    kind: QuickKind,
+    title: string,
+    extra?: { amount?: number; projectId?: string; clientId?: string },
+  ) => string;
   addQuoteFromCatalog: (opts: {
     leadId?: string;
     clientId?: string;
@@ -467,9 +482,12 @@ export const useOS = create<Store>()((set, get) => ({
         set({ quotes: [quote, ...get().quotes] });
         return id;
       },
-      quickAdd: (kind, title) => {
+      quickAdd: (kind, title, extra) => {
         const id = uid(kind.slice(0, 2));
         const today = new Date().toISOString().slice(0, 10);
+        const clientId = extra?.clientId ?? get().clients[0]?.id ?? "";
+        const projectId = extra?.projectId ?? get().projects[0]?.id ?? "";
+        const amount = extra?.amount ?? 0;
         if (kind === "lead") {
           const lead: Lead = {
             id,
@@ -502,7 +520,6 @@ export const useOS = create<Store>()((set, get) => ({
           };
           set({ clients: [client, ...get().clients] });
         } else if (kind === "project") {
-          const clientId = get().clients[0]?.id ?? "";
           const project: Project = {
             id,
             clientId,
@@ -511,13 +528,12 @@ export const useOS = create<Store>()((set, get) => ({
             status: "healthy",
             startDate: today,
             dueDate: today,
-            expectedRevenue: 0,
+            expectedRevenue: amount || 0,
             expectedCost: 0,
             expectedHours: 0,
           };
           set({ projects: [project, ...get().projects] });
         } else if (kind === "task") {
-          const projectId = get().projects[0]?.id ?? "";
           const task: Task = {
             id,
             projectId,
@@ -526,7 +542,7 @@ export const useOS = create<Store>()((set, get) => ({
             titleAr: title,
             status: "todo",
             priority: "med",
-            estimateHours: 2,
+            estimateHours: amount || 2,
             actualHours: 0,
             billable: true,
             checklist: [],
@@ -538,8 +554,9 @@ export const useOS = create<Store>()((set, get) => ({
           const invoice: Invoice = {
             id,
             number: `INV-${Date.now().toString().slice(-4)}`,
-            clientId: get().clients[0]?.id ?? "",
-            amount: 0,
+            clientId,
+            projectId: extra?.projectId,
+            amount: amount || 1000,
             status: "draft",
             dueDate: today,
             paidAmount: 0,
@@ -551,9 +568,10 @@ export const useOS = create<Store>()((set, get) => ({
           const expense: Expense = {
             id,
             category: "other",
-            amount: 0,
+            amount: amount || 250,
             date: today,
             note: title,
+            projectId: extra?.projectId,
           };
           set({ expenses: [expense, ...get().expenses] });
         } else if (kind === "employee") {
@@ -585,7 +603,7 @@ export const useOS = create<Store>()((set, get) => ({
                 id,
                 title,
                 titleAr: title,
-                when: new Date().toISOString(),
+                when: "2026-09-10T11:00:00",
                 notes: "",
               },
               ...get().meetings,
@@ -596,7 +614,7 @@ export const useOS = create<Store>()((set, get) => ({
             tickets: [
               {
                 id,
-                clientId: get().clients[0]?.id ?? "",
+                clientId,
                 title,
                 titleAr: title,
                 priority: "med",
@@ -607,7 +625,7 @@ export const useOS = create<Store>()((set, get) => ({
             ],
           });
         } else if (kind === "quote") {
-          return get().addQuoteFromCatalog({ catalogId: get().catalog[0]?.id ?? "svc_smm" });
+          return get().addQuoteFromCatalog({ catalogId: get().catalog[0]?.id ?? "svc_smm", clientId, leadId: get().leads[0]?.id });
         } else if (kind === "notice") {
           get().sendNotice({
             userIds: get().employees.map((e) => e.id),
@@ -624,6 +642,163 @@ export const useOS = create<Store>()((set, get) => ({
           return "/mail";
         } else if (kind === "room") {
           return get().addChatRoom(title, get().employees.map((e) => e.id));
+        } else if (kind === "space") {
+          set({
+            spaces: [{ id, name: title, nameAr: title }, ...get().spaces],
+          });
+        } else if (kind === "catalog") {
+          set({
+            catalog: [
+              {
+                id,
+                name: title,
+                nameAr: title,
+                description: title,
+                descriptionAr: title,
+                items: [
+                  {
+                    id: uid("ln"),
+                    name: "Delivery",
+                    nameAr: "تنفيذ",
+                    hours: 10,
+                    role: "pm",
+                    hourlyCost: 200,
+                    sellPrice: amount || 15000,
+                    revisions: 2,
+                    days: 10,
+                    minMargin: 0.4,
+                    deliverables: ["Kickoff"],
+                  },
+                ],
+              },
+              ...get().catalog,
+            ],
+          });
+        } else if (kind === "contract") {
+          set({
+            contracts: [
+              {
+                id,
+                quoteId: get().quotes[0]?.id ?? "",
+                clientId,
+                status: "draft",
+                startDate: today,
+                endDate: new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10),
+              },
+              ...get().contracts,
+            ],
+          });
+        } else if (kind === "retainer") {
+          set({
+            retainers: [
+              {
+                id,
+                clientId,
+                catalogId: get().catalog[0]?.id ?? "svc_smm",
+                name: title,
+                monthlyHours: 20,
+                monthlyFee: amount || 25000,
+                consumedHours: 0,
+                renewalDate: today,
+                status: "active",
+              },
+              ...get().retainers,
+            ],
+          });
+        } else if (kind === "file") {
+          set({
+            files: [
+              {
+                id,
+                name: title,
+                clientId,
+                projectId,
+                kind: "file",
+                version: 1,
+                status: "working",
+              },
+              ...get().files,
+            ],
+          });
+        } else if (kind === "doc") {
+          return get().addDoc(title);
+        } else if (kind === "leave") {
+          set({
+            leaves: [
+              {
+                id,
+                userId: get().prefs.currentUserId,
+                type: "annual",
+                start: today,
+                end: today,
+                days: 1,
+                status: "pending",
+              },
+              ...get().leaves,
+            ],
+          });
+        } else if (kind === "automation") {
+          set({
+            automations: [
+              {
+                id,
+                name: title,
+                trigger: "manual",
+                condition: "always",
+                action: title,
+                enabled: true,
+              },
+              ...get().automations,
+            ],
+            automationLogs: [
+              {
+                id: uid("al"),
+                automationId: id,
+                at: new Date().toISOString(),
+                detail: `Created rule “${title}”`,
+              },
+              ...get().automationLogs,
+            ],
+          });
+        } else if (kind === "booking") {
+          set({
+            bookingTypes: [
+              {
+                id,
+                name: title,
+                durationMin: 30,
+                hostId: get().prefs.currentUserId,
+                description: title,
+              },
+              ...get().bookingTypes,
+            ],
+          });
+        } else if (kind === "saas") {
+          set({
+            subscriptions: [
+              {
+                id,
+                name: title,
+                plan: "Seat",
+                monthly: amount || 0,
+                seats: 1,
+                used: 1,
+                renew: today,
+                lastUsed: today,
+              },
+              ...get().subscriptions,
+            ],
+          });
+        } else if (kind === "hours") {
+          const taskId = extra?.projectId
+            ? get().tasks.find((t) => t.projectId === extra.projectId)?.id
+            : get().tasks.find((t) => t.status !== "done")?.id;
+          if (taskId) get().logTime(taskId, get().prefs.currentUserId, amount || 1);
+          else {
+            const tid = get().quickAdd("task", title || "Time log", extra);
+            get().logTime(tid, get().prefs.currentUserId, amount || 1);
+            return tid;
+          }
         }
         return id;
       },
