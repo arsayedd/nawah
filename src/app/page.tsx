@@ -25,6 +25,9 @@ import {
   Zap,
 } from "lucide-react";
 import { NawahLockup, NawahMark } from "@/components/brand/logo";
+import { egp } from "@/lib/utils";
+import { useKpis } from "@/store/selectors";
+import { useOS } from "@/store/use-os";
 
 const modules = [
   { href: "/home", icon: Home, title: "Executive home", copy: "Cash, pipeline, risk, workload, and the decisions that need you today." },
@@ -99,13 +102,13 @@ const walk = [
   { href: "/finance", title: "5. Cash", copy: "Deposit invoice and real P&L." },
 ];
 
-const orbits = [
-  { label: "Clients", delay: "0s", orbit: "132px" },
-  { label: "Team", delay: "-4s", orbit: "158px" },
-  { label: "Delivery", delay: "-8s", orbit: "184px" },
-];
+export default function MarketingHome() {
+  const k = useKpis();
+  const alerts = useOS((s) => s.alerts);
+  const invoices = useOS((s) => s.invoices);
+  const overdueInv = invoices.find((i) => i.status === "overdue");
+  const decision = alerts.slice(0, 3).map((a) => a.title);
 
-export default function LandingPage() {
   return (
     <div dir="ltr" lang="en" className="relative min-h-screen overflow-x-hidden bg-navy font-sans text-white">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -142,29 +145,20 @@ export default function LandingPage() {
 
       <section className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-8 lg:grid-cols-2 lg:pt-14">
         <div>
-          <p className="nawah-in text-[11px] font-semibold uppercase tracking-[0.22em] text-mint">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-mint">
             نواة · Agency operating system
           </p>
-          <h1
-            className="nawah-in mt-4 text-4xl font-semibold tracking-tight md:text-6xl"
-            style={{ animationDelay: "80ms" }}
-          >
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-6xl">
             Your agency,
             <br />
             in one core.
           </h1>
-          <p
-            className="nawah-in mt-5 max-w-lg text-lg leading-8 text-white/65"
-            style={{ animationDelay: "160ms" }}
-          >
+          <p className="mt-5 max-w-lg text-lg leading-8 text-white/65">
             CRM, quotations, ClickUp-class projects, Notion-like docs, account
             managers, calendar, client booking, portal, time, finance, HR, and
             AI — one data spine from first lead to real profit.
           </p>
-          <div
-            className="nawah-in mt-8 flex flex-wrap gap-3"
-            style={{ animationDelay: "240ms" }}
-          >
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/home"
               className="inline-flex h-12 items-center gap-2 rounded-[10px] bg-white px-5 text-sm font-semibold text-navy"
@@ -187,34 +181,43 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div
-          className="relative mx-auto grid h-[380px] w-full max-w-[380px] place-items-center"
-        >
+        <div className="relative mx-auto w-full max-w-[520px]">
+          <div className="overflow-hidden rounded-[22px] border border-white/15 bg-white text-navy shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+            <div className="flex items-center gap-2 border-b border-navy/8 bg-navy px-4 py-3">
+              <NawahMark className="h-7 w-7" />
+              <span className="text-sm font-semibold text-white">Masar Digital</span>
+              <span className="ms-auto text-[11px] text-white/50">Owner home</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 p-4">
+              {[
+                ["Revenue", egp(k.revenue, "en")],
+                ["Pipeline", egp(k.pipeline, "en")],
+                ["Overdue", overdueInv?.number ?? egp(k.overdue, "en")],
+                ["Win rate", `${Math.round(k.winRate * 100)}%`],
+              ].map(([l, v]) => (
+                <div key={l} className="rounded-[12px] bg-paper p-3">
+                  <div className="text-[10px] uppercase tracking-wide text-navy/40">{l}</div>
+                  <div className="mt-1 text-lg font-semibold">{v}</div>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-2 px-4 pb-4">
+              {(decision.length
+                ? decision
+                : ["Cairo Bites health 42", "Lina overbooked", "NW-1042 waiting"]
+              ).map((row) => (
+                <div key={row} className="rounded-[10px] border border-navy/8 px-3 py-2 text-xs">
+                  {row}
+                </div>
+              ))}
+            </div>
+          </div>
           <div
-            className="absolute h-56 w-56 rounded-full border border-white/10"
-            style={{ animation: "nawah-pulse 5s ease-in-out infinite" }}
-          />
-          <div className="absolute h-72 w-72 rounded-full border border-dashed border-white/10" />
-          <div
+            className="pointer-events-none absolute -right-6 -top-6 hidden h-24 w-24 sm:block"
             style={{ animation: "nawah-float 6s ease-in-out infinite" }}
           >
-            <NawahMark className="h-52 w-52" />
+            <NawahMark className="h-24 w-24" />
           </div>
-          {orbits.map((item) => (
-            <span
-              key={item.label}
-              className="absolute left-1/2 top-1/2 text-[11px] tracking-wide text-white/80"
-              style={{
-                animation: "nawah-orbit 14s linear infinite",
-                animationDelay: item.delay,
-                ["--orbit" as string]: item.orbit,
-              }}
-            >
-              <span className="block -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-navy/80 px-3 py-1 backdrop-blur-sm">
-                {item.label}
-              </span>
-            </span>
-          ))}
         </div>
       </section>
 
