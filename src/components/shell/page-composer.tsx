@@ -71,8 +71,7 @@ function specFor(pathname: string): Spec | null {
     return { kind: "task", label: "Add task", placeholder: "Task title" };
   if (pathname === "/spaces")
     return { kind: "space", label: "Add department", placeholder: "Space name" };
-  if (pathname === "/docs")
-    return { kind: "doc", label: "Add page", placeholder: "Page title", href: (id) => `/docs/${id}` };
+  if (pathname === "/docs" || pathname.startsWith("/docs/")) return null;
   if (pathname === "/files")
     return { kind: "file", label: "Add file", placeholder: "File name" };
   if (pathname === "/portal")

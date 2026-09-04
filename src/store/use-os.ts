@@ -86,7 +86,7 @@ type Store = OsState & {
   startTimer: (taskId: string) => void;
   stopTimer: () => void;
   sendMessage: (channelId: string, body: string, internal: boolean) => void;
-  saveDoc: (id: string, body: string) => void;
+  saveDoc: (id: string, patch: { title?: string; body?: string }) => void;
   convertDocToTasks: (docId: string, projectId?: string) => void;
   applySopToProject: (docId: string, projectId: string) => void;
   submitDiscovery: (leadId: string, data: Omit<Discovery, "id" | "leadId">) => void;
@@ -101,10 +101,11 @@ type Store = OsState & {
   decideLeave: (id: string, status: "approved" | "denied") => void;
   generateRetainerMonth: (retainerId: string) => void;
   addSubtask: (parentId: string, title: string) => void;
-  addDoc: (title: string, kind?: "wiki" | "sop" | "brief" | "template" | "database") => string;
+  addDoc: (title: string, kind?: "wiki" | "sop" | "brief" | "template" | "database", parentId?: string) => string;
   addDocComment: (docId: string, body: string) => void;
   setAccountManager: (clientId: string, userId: string) => void;
   addDocRow: (docId: string, values: Record<string, string>) => void;
+  updateDocCell: (docId: string, rowId: string, column: string, value: string) => void;
   setCurrentUser: (userId: string) => void;
   upsertEmployee: (input: Partial<Employee> & { name: string }) => string;
   removeEmployee: (id: string) => void;
@@ -826,10 +827,18 @@ export const useOS = create<Store>()((set, get) => ({
             ...get().messages,
           ],
         }),
-      saveDoc: (id, body) =>
+      saveDoc: (id, patch) =>
         set({
           docs: get().docs.map((d) =>
-            d.id === id ? { ...d, body, bodyAr: body } : d,
+            d.id === id
+              ? {
+                  ...d,
+                  title: patch.title ?? d.title,
+                  titleAr: patch.title ?? d.titleAr,
+                  body: patch.body ?? d.body,
+                  bodyAr: patch.body ?? d.bodyAr,
+                }
+              : d,
           ),
         }),
       convertDocToTasks: (docId, projectId) => {
@@ -1103,7 +1112,7 @@ export const useOS = create<Store>()((set, get) => ({
           ],
         });
       },
-      addDoc: (title, kind = "wiki") => {
+      addDoc: (title, kind = "wiki", parentId) => {
         const id = uid("d");
         set({
           docs: [
@@ -1111,6 +1120,7 @@ export const useOS = create<Store>()((set, get) => ({
               id,
               title,
               titleAr: title,
+              parentId,
               body: kind === "database" ? "Linked database" : "",
               bodyAr: "",
               kind,
@@ -1146,6 +1156,19 @@ export const useOS = create<Store>()((set, get) => ({
           docs: get().docs.map((d) =>
             d.id === docId
               ? { ...d, rows: [{ id: uid("r"), values }, ...(d.rows ?? [])] }
+              : d,
+          ),
+        }),
+      updateDocCell: (docId, rowId, column, value) =>
+        set({
+          docs: get().docs.map((d) =>
+            d.id === docId
+              ? {
+                  ...d,
+                  rows: (d.rows ?? []).map((row) =>
+                    row.id === rowId ? { ...row, values: { ...row.values, [column]: value } } : row,
+                  ),
+                }
               : d,
           ),
         }),
