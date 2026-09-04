@@ -77,7 +77,7 @@ async function loadSnapshot(): Promise<
 export async function readOs(): Promise<OsPayload & { backend: OsBackend }> {
   const loaded = await loadSnapshot();
   if ("empty" in loaded) {
-    const fresh = seeded("ar");
+    const fresh = seeded("en");
     await saveSnapshot(fresh.locale, fresh.state);
     return { ...fresh, backend: loaded.backend };
   }

@@ -47,7 +47,7 @@ export default function PublicQuotePage() {
             <p className="text-[11px] uppercase tracking-[0.2em] text-white/50">
               {dict.tagline}
             </p>
-            <h1 className="mt-3 font-cairo text-3xl font-bold">
+            <h1 className="mt-3 font-sans text-3xl font-semibold tracking-tight">
               {locale === "ar" ? quote.titleAr : quote.title}
             </h1>
             <p className="mt-3 max-w-xl text-sm text-white/70">

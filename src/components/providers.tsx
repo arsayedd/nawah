@@ -4,12 +4,18 @@ import { useEffect } from "react";
 import { Toaster } from "sonner";
 import { AppShell } from "@/components/shell/app-shell";
 import { pickOsState } from "@/lib/os/payload";
+import { readStoredLocale } from "@/lib/locale";
 import { useOS } from "@/store/use-os";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const locale = useOS((s) => s.locale);
   const hydrateFromRemote = useOS((s) => s.hydrateFromRemote);
   const setHydrated = useOS((s) => s.setHydrated);
+  const setLocale = useOS((s) => s.setLocale);
+
+  useEffect(() => {
+    setLocale(readStoredLocale());
+  }, [setLocale]);
 
   useEffect(() => {
     let cancelled = false;
@@ -20,7 +26,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       })
       .then((data) => {
         if (cancelled) return;
-        hydrateFromRemote({ locale: data.locale, state: data.state });
+        hydrateFromRemote({ locale: readStoredLocale(), state: data.state });
       })
       .catch(() => {
         if (!cancelled) setHydrated(true);

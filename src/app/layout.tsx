@@ -14,7 +14,7 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "نواة | Nawah — Agency OS",
+  title: "Nawah — Agency OS",
   description:
     "All-in-one operating system for modern agencies. From first lead to real profit.",
   icons: { icon: "/brand/nawah-icon.png" },
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <body className={`${inter.variable} ${cairo.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>

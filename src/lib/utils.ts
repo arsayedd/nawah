@@ -9,7 +9,7 @@ export function uid(prefix = "id") {
   return `${prefix}_${Math.random().toString(36).slice(2, 8)}${Date.now().toString(36).slice(-4)}`;
 }
 
-export function egp(value: number, locale: "ar" | "en" = "ar") {
+export function egp(value: number, locale: "ar" | "en" = "en") {
   return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
     style: "currency",
     currency: "EGP",
@@ -17,7 +17,7 @@ export function egp(value: number, locale: "ar" | "en" = "ar") {
   }).format(value);
 }
 
-export function pct(value: number, locale: "ar" | "en" = "ar") {
+export function pct(value: number, locale: "ar" | "en" = "en") {
   return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
     style: "percent",
     maximumFractionDigits: 0,

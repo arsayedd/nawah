@@ -78,14 +78,15 @@ export const copy = {
     productEn: "نواة",
     tagline: "All-in-one operating system for modern agencies",
     slogan: "From first lead to real profit",
-    search: "Search projects, clients...",
+    search: "Search projects, clients, quotes…",
     greeting: "Good morning, Ahmed",
-    greetingSub: "Decisions that need you today are listed below.",
+    greetingSub:
+      "Your agency core: cash, pipeline, delivery risk, and the decisions that need you today.",
     quickAdd: "Quick add",
     nav: {
       home: "Home",
       myWork: "My work",
-      crm: "CRM",
+      crm: "Pipeline",
       clients: "Clients",
       quotes: "Quotations",
       projects: "Projects",

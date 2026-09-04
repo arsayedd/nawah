@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { PageHeader } from "@/components/shell/page-header";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import type { PipelineStage } from "@/lib/types";
@@ -38,14 +39,15 @@ export default function CrmPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold">{dict.nav.crm}</h1>
-        <p className="text-sm text-navy/55">
-          {locale === "ar"
+      <PageHeader
+        kicker="Sales"
+        title={dict.nav.crm}
+        description={
+          locale === "ar"
             ? "اسحب الصفقة بين المراحل. المرحلة الأخيرة مربوطة بالكوتيشن والتنفيذ."
-            : "Drag deals across stages. Won connects to quotation and delivery."}
-        </p>
-      </div>
+            : "Drag deals across stages. Won does not stop at CRM — it becomes delivery."
+        }
+      />
       <div className="flex gap-3 overflow-x-auto pb-4">
         {order.map((stage) => (
           <div

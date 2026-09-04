@@ -74,7 +74,7 @@ function pickAssignee(employees: OsState["employees"], role: string, load: Recor
 
 export const useOS = create<Store>()((set, get) => ({
       ...seed,
-      locale: "ar",
+      locale: "en",
       hydrated: false,
       setHydrated: (v) => set({ hydrated: v }),
       hydrateFromRemote: ({ locale, state }) =>

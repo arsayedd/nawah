@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
@@ -19,34 +20,31 @@ export default function QuotesPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">{dict.nav.quotes}</h1>
-          <p className="text-sm text-navy/55">
-            {locale === "ar"
-              ? "التكلفة، الهامش، والدفعة تتحسبوا وأنت بتبني العرض."
-              : "Cost, margin, and deposit calculate as you build the offer."}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          {catalog.map((c) => (
-            <Button
-              key={c.id}
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const id = addQuoteFromCatalog({
-                  catalogId: c.id,
-                  leadId: "ld_atlas",
-                });
-                router.push(`/quotes/${id}`);
-              }}
-            >
-              {locale === "ar" ? `من ${c.nameAr}` : `From ${c.name}`}
-            </Button>
-          ))}
-        </div>
-      </div>
+      <PageHeader
+        kicker="Quotes"
+        title={dict.nav.quotes}
+        description={
+          locale === "ar"
+            ? "التكلفة، الهامش، والدفعة تتحسبوا وأنت بتبني العرض."
+            : "Price from catalog, protect the margin, then accept into delivery, invoice, and portal."
+        }
+        actions={catalog.map((c) => (
+          <Button
+            key={c.id}
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const id = addQuoteFromCatalog({
+                catalogId: c.id,
+                leadId: "ld_atlas",
+              });
+              router.push(`/quotes/${id}`);
+            }}
+          >
+            {locale === "ar" ? `من ${c.nameAr}` : `New · ${c.name}`}
+          </Button>
+        ))}
+      />
       <div className="grid gap-3">
         {quotes.map((q) => {
           const tot = quoteTotals(q.items, q.discount, q.taxRate);

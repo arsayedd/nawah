@@ -19,6 +19,7 @@ body {
 
 body {
   font-feature-settings: "ss01" on, "cv11" on;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 ::selection {

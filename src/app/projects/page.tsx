@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { PageHeader } from "@/components/shell/page-header";
 import { Badge, Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import type { TaskStatus } from "@/lib/types";
@@ -34,29 +35,30 @@ export default function ProjectsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">{dict.nav.projects}</h1>
-          <p className="text-sm text-navy/55">
-            {locale === "ar"
-              ? "نفس المهام تظهر في اللوحة، القائمة، والربحية."
-              : "The same tasks power board, list, and profitability."}
-          </p>
-        </div>
-        <div className="flex rounded-[10px] border border-navy/10 p-1">
-          {views.map((v) => (
-            <button
-              key={v}
-              onClick={() => setView(v)}
-              className={`rounded-[8px] px-3 py-1 text-xs font-medium ${
-                view === v ? "bg-navy text-white" : "text-navy/60"
-              }`}
-            >
-              {v}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PageHeader
+        kicker="Operations"
+        title={dict.nav.projects}
+        description={
+          locale === "ar"
+            ? "نفس المهام تظهر في اللوحة، القائمة، والربحية."
+            : "One task list. Board, table, and profitability all read the same work."
+        }
+        actions={
+          <div className="flex rounded-[10px] border border-navy/10 p-1">
+            {views.map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`rounded-[8px] px-3 py-1 text-xs font-medium ${
+                  view === v ? "bg-navy text-white" : "text-navy/60"
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       <div className="grid gap-3 md:grid-cols-3">
         {projects.map((p) => {
