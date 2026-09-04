@@ -206,7 +206,7 @@ export const OS_PILLARS: MapPillar[] = [
   },
   {
     id: "admin",
-    title: "Settings, Security & Integrations",
+    title: "Settings & Security",
     blurb: "Roles, audit, and SaaS seats. ClickUp and Notion are already Projects and Docs — not Connect buttons.",
     href: "/settings",
     children: [
