@@ -30,6 +30,7 @@ import {
 import { useEffect, useState } from "react";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { NawahLockup } from "@/components/brand/logo";
+import { AGENCY_NAME } from "@/lib/brand";
 import { CommandSearch } from "@/components/shell/command-search";
 import { QuickAdd } from "@/components/shell/quick-add";
 import { Button } from "@/components/ui/button";
@@ -162,8 +163,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         {nav}
         <div className="border-t border-white/8 px-5 py-4">
-          <div className="text-[11px] font-medium text-white/55">Nawah</div>
-          <div className="text-[11px] text-white/35">Agency workspace</div>
+          <div className="text-[11px] font-semibold tracking-[0.14em] text-white/80">
+            {AGENCY_NAME}
+          </div>
+          <div className="text-[11px] text-white/35">{AGENCY_NAME} workspace</div>
         </div>
       </aside>
 

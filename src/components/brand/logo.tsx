@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { AGENCY_NAME, AGENCY_NAME_AR } from "@/lib/brand";
 
 /** Official Nawah mark from the brand file. */
 export function NawahMark({
@@ -36,7 +37,7 @@ export function NawahLockup({
             inverted ? "text-white" : "text-navy",
           )}
         >
-          نواة
+          {AGENCY_NAME_AR}
         </div>
         <div
           className={cn(
@@ -44,7 +45,7 @@ export function NawahLockup({
             inverted ? "text-white/70" : "text-navy/70",
           )}
         >
-          Nawah
+          {AGENCY_NAME}
         </div>
       </div>
     </div>

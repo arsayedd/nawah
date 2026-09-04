@@ -1,5 +1,6 @@
 import { seed } from "@/data/seed";
-import { AGENCY_ID, createAdminClient, isMissingTable } from "@/lib/supabase/admin";
+import { AGENCY_ID, AGENCY_NAME } from "@/lib/brand";
+import { createAdminClient, isMissingTable } from "@/lib/supabase/admin";
 import { isSparseState, pickOsState, type OsPayload } from "@/lib/os/payload";
 import type { Locale, OsState } from "@/lib/types";
 
@@ -20,7 +21,7 @@ async function saveSnapshot(
   const payload = { locale, state: pickOsState(state) };
   const agency = await admin.from("agencies").upsert({
     id: AGENCY_ID,
-    name: "Nawah",
+    name: AGENCY_NAME,
     locale,
   });
   if (!agency.error) {

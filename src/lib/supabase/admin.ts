@@ -1,6 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { AGENCY_ID } from "@/lib/brand";
 
-export const AGENCY_ID = "ag_masar";
+export { AGENCY_ID };
 
 export function createAdminClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

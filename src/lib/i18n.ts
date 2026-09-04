@@ -3,7 +3,7 @@ import type { Locale, PipelineStage, ProjectHealth, QuoteStatus, TaskStatus } fr
 export const copy = {
   ar: {
     product: "نواة",
-    productEn: "Nawah",
+    productEn: "NAWAH",
     tagline: "نظام التشغيل الكامل للأجنسي",
     slogan: "من أول عميل لحد الربح",
     search: "ابحث في المشاريع والعملاء...",
@@ -86,7 +86,7 @@ export const copy = {
     reset: "إعادة الديمو",
   },
   en: {
-    product: "Nawah",
+    product: "NAWAH",
     productEn: "نواة",
     tagline: "All-in-one operating system for modern agencies",
     slogan: "From first lead to real profit",

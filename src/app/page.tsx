@@ -25,6 +25,7 @@ import {
   Zap,
 } from "lucide-react";
 import { NawahLockup, NawahMark } from "@/components/brand/logo";
+import { AGENCY_NAME } from "@/lib/brand";
 import { egp } from "@/lib/utils";
 import { useKpis } from "@/store/selectors";
 import { useOS } from "@/store/use-os";
@@ -185,7 +186,7 @@ export default function MarketingHome() {
           <div className="overflow-hidden rounded-[22px] border border-white/15 bg-white text-navy shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
             <div className="flex items-center gap-2 border-b border-navy/8 bg-navy px-4 py-3">
               <NawahMark className="h-7 w-7" />
-              <span className="text-sm font-semibold text-white">Nawah</span>
+              <span className="text-sm font-semibold text-white">{AGENCY_NAME}</span>
               <span className="ms-auto text-[11px] text-white/50">Owner home</span>
             </div>
             <div className="grid grid-cols-2 gap-2 p-4">

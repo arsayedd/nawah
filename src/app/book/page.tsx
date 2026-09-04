@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { NawahLockup } from "@/components/brand/logo";
+import { AGENCY_NAME } from "@/lib/brand";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useOS } from "@/store/use-os";
@@ -33,7 +34,7 @@ function BookInner() {
             Client booking
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-            Book time with Nawah
+            Book time with {AGENCY_NAME}
           </h1>
           <p className="mt-2 text-sm text-navy/55">
             Pick an event type, then a slot. It lands on the agency calendar — no extra Calendly account.
