@@ -462,7 +462,14 @@ export default function HomePage() {
               {subscriptions.map((s) => (
                 <div key={s.id} className="mb-2 text-sm">
                   {s.name} · {s.renew}
-                  {s.overlap ? <span className="text-coral"> · overlap</span> : null}
+                  {s.replacesHref ? (
+                    <Link href={s.replacesHref} className="text-cobalt">
+                      {" "}
+                      · open {s.replacesLabel}
+                    </Link>
+                  ) : s.used < s.seats ? (
+                    <span className="text-navy/40"> · {s.seats - s.used} idle seats</span>
+                  ) : null}
                 </div>
               ))}
             </Card>

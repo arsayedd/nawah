@@ -18,6 +18,7 @@ import type {
   Project,
   Quote,
   QuoteStatus,
+  SaasSub,
   Task,
   TaskStatus,
   Ticket,
@@ -131,6 +132,7 @@ type Store = OsState & {
   setEditLayout: (v: boolean) => void;
   removeRecord: (collection: keyof OsState, id: string) => void;
   removeChatRoom: (id: string) => void;
+  upsertSubscription: (input: Partial<SaasSub> & { name: string }) => string;
 };
 
 function pickAssignee(employees: OsState["employees"], role: string, load: Record<string, number>) {
@@ -1382,6 +1384,28 @@ export const useOS = create<Store>()((set, get) => ({
           chatRooms: get().chatRooms.filter((r) => r.id !== id),
           messages: get().messages.filter((m) => m.channelId !== `chat:${id}`),
         });
+      },
+      upsertSubscription: (input) => {
+        const existing = input.id ? get().subscriptions.find((s) => s.id === input.id) : undefined;
+        const id = existing?.id ?? uid("sub");
+        const next: SaasSub = {
+          id,
+          name: input.name,
+          plan: input.plan ?? existing?.plan ?? "Team",
+          monthly: input.monthly ?? existing?.monthly ?? 0,
+          seats: input.seats ?? existing?.seats ?? 1,
+          used: input.used ?? existing?.used ?? 1,
+          renew: input.renew ?? existing?.renew ?? new Date().toISOString().slice(0, 10),
+          lastUsed: input.lastUsed ?? existing?.lastUsed ?? new Date().toISOString().slice(0, 10),
+          replacesHref: input.replacesHref ?? existing?.replacesHref,
+          replacesLabel: input.replacesLabel ?? existing?.replacesLabel,
+        };
+        set({
+          subscriptions: existing
+            ? get().subscriptions.map((s) => (s.id === id ? next : s))
+            : [next, ...get().subscriptions],
+        });
+        return id;
       },
 }));
 

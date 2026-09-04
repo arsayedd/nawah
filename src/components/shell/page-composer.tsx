@@ -92,8 +92,6 @@ function specFor(pathname: string): Spec | null {
     return { kind: "leave", label: "Add leave request", placeholder: "Who / reason" };
   if (pathname === "/automations")
     return { kind: "automation", label: "Add automation", placeholder: "Rule name" };
-  if (pathname === "/settings")
-    return { kind: "saas", label: "Add SaaS seat", placeholder: "Tool name", money: true };
   if (pathname === "/home")
     return { kind: "lead", label: "Quick add a lead", placeholder: "Company name", href: (id) => `/crm/${id}` };
   if (pathname === "/accounts")

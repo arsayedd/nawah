@@ -1,19 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { AGENCY_NAME } from "@/lib/brand";
-import { INTEGRATIONS } from "@/lib/os-map";
 import { t } from "@/lib/i18n";
+import type { SaasSub } from "@/lib/types";
+import { egp } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
+
+const COVERED = [
+  { from: "ClickUp / Asana / Monday", to: "Projects, My work, Workload", href: "/projects" },
+  { from: "Notion / Confluence", to: "Docs", href: "/docs" },
+  { from: "Slack / Teams", to: "Chat & Inbox", href: "/chat" },
+  { from: "Gmail threads", to: "Mail", href: "/mail" },
+  { from: "Calendly", to: "Booking + Calendar", href: "/calendar" },
+  { from: "Harvest / Toggl", to: "Time", href: "/time" },
+  { from: "HubSpot pipeline", to: "CRM", href: "/crm" },
+] as const;
 
 export default function SettingsPage() {
   const locale = useOS((s) => s.locale);
   const resetDemo = useOS((s) => s.resetDemo);
   const dict = t(locale);
-  const subscriptions = useOS((s) => s.subscriptions);
 
   return (
     <div className="space-y-5">
@@ -35,34 +47,7 @@ export default function SettingsPage() {
       </Card>
       </PageSection>
       <SupabaseCard locale={locale} />
-      <PageSection page="/settings" id="saas" label="SaaS subscriptions">
-      <Card>
-        <h2 className="mb-3 font-semibold">
-          {locale === "ar" ? "اشتراكات الأدوات" : "SaaS subscriptions"}
-        </h2>
-        <p className="mb-3 text-sm text-navy/55">
-          {locale === "ar"
-            ? "نواة بتحل محل ClickUp وNotion للتشغيل اليومي. المقاعد الفاضية ظاهرة تحت."
-            : "Nawah is meant to replace ClickUp and Notion for daily ops. Unused seats are flagged below."}
-        </p>
-        <div className="space-y-2">
-          {subscriptions.map((tool) => (
-            <div
-              key={tool.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] bg-paper px-3 py-2 text-sm"
-            >
-              <span className="font-medium">{tool.name}</span>
-              <span className="text-navy/50">
-                {tool.used}/{tool.seats} seats · {tool.monthly} EGP · {tool.renew}
-              </span>
-              {tool.overlap ? (
-                <span className="text-xs text-coral">Overlap: {tool.overlap}</span>
-              ) : null}
-            </div>
-          ))}
-        </div>
-      </Card>
-      </PageSection>
+      <SaasCard locale={locale} />
       <Card>
         <h2 className="font-semibold">Roles</h2>
         <p className="mt-1 text-sm text-navy/55">
@@ -111,30 +96,169 @@ export default function SettingsPage() {
         </div>
       </Card>
       <Card>
-        <h2 className="mb-3 font-semibold">Integrations</h2>
+        <h2 className="mb-3 font-semibold">Already in Nawah</h2>
         <p className="mb-3 text-sm text-navy/55">
-          Operating layer stays in Nawah. Connect the specialist tools when you need them.
+          These are live modules — not “Connect” placeholders. Open them and work.
         </p>
-        <div className="space-y-4">
-          {INTEGRATIONS.map((g) => (
-            <div key={g.group}>
-              <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-navy/40">{g.group}</div>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {g.tools.map((name) => (
-                  <div
-                    key={name}
-                    className="flex items-center justify-between rounded-[10px] border border-navy/8 px-3 py-2 text-sm"
-                  >
-                    <span>{name}</span>
-                    <span className="text-xs text-navy/40">Connect</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {COVERED.map((row) => (
+            <Link
+              key={row.href + row.from}
+              href={row.href}
+              className="flex items-center justify-between rounded-[10px] border border-navy/8 px-3 py-2 text-sm hover:border-cobalt/40"
+            >
+              <span>
+                <span className="text-navy/45">{row.from}</span>
+                <span className="mx-2 text-navy/25">→</span>
+                <span className="font-medium">{row.to}</span>
+              </span>
+              <span className="text-xs text-cobalt">Open</span>
+            </Link>
           ))}
         </div>
       </Card>
     </div>
+  );
+}
+
+function SaasCard({ locale }: { locale: "ar" | "en" }) {
+  const subscriptions = useOS((s) => s.subscriptions);
+  const upsertSubscription = useOS((s) => s.upsertSubscription);
+  const removeRecord = useOS((s) => s.removeRecord);
+  const [name, setName] = useState("");
+  const [monthly, setMonthly] = useState("");
+  const [seats, setSeats] = useState("1");
+  const spend = subscriptions.filter((s) => !s.replacesHref).reduce((n, s) => n + s.monthly, 0);
+  const recoverable = subscriptions.filter((s) => s.replacesHref).reduce((n, s) => n + s.monthly, 0);
+
+  function patch(tool: SaasSub, field: "used" | "seats" | "monthly" | "renew", value: string) {
+    const n = field === "renew" ? 0 : Number(value);
+    upsertSubscription({
+      ...tool,
+      [field]: field === "renew" ? value : Number.isFinite(n) ? n : tool[field],
+    });
+  }
+
+  return (
+    <PageSection page="/settings" id="saas" label="SaaS subscriptions">
+      <Card>
+        <h2 className="font-semibold">{locale === "ar" ? "اشتراكات الأدوات" : "Tool subscriptions"}</h2>
+        <p className="mt-1 text-sm text-navy/55">
+          Track Adobe, Figma, and the rest you still pay. ClickUp and Notion already live in this OS — open the module
+          instead of keeping empty seats.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-3 text-sm">
+          <span className="rounded-full bg-paper px-3 py-1">
+            Still paying {egp(spend, locale)} / month
+          </span>
+          {recoverable ? (
+            <span className="rounded-full bg-mint/15 px-3 py-1 text-navy">
+              Can drop {egp(recoverable, locale)} / month
+            </span>
+          ) : null}
+        </div>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm">
+            <thead>
+              <tr className="text-[11px] uppercase tracking-wide text-navy/40">
+                <th className="pb-2 text-start">Tool</th>
+                <th className="text-start">Used / seats</th>
+                <th className="text-start">Monthly</th>
+                <th className="text-start">Renews</th>
+                <th className="text-start">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subscriptions.map((tool) => {
+                const idle = Math.max(0, tool.seats - tool.used);
+                return (
+                  <tr key={tool.id} className="border-t border-navy/6">
+                    <td className="py-2.5 pr-3">
+                      <div className="font-medium">{tool.name}</div>
+                      <div className="text-[11px] text-navy/40">{tool.plan}</div>
+                    </td>
+                    <td className="py-2.5 pr-3">
+                      <div className="flex items-center gap-1">
+                        <input
+                          className="h-8 w-12 rounded-[8px] border border-navy/10 px-1 text-center text-sm"
+                          value={tool.used}
+                          onChange={(e) => patch(tool, "used", e.target.value)}
+                        />
+                        <span className="text-navy/40">/</span>
+                        <input
+                          className="h-8 w-12 rounded-[8px] border border-navy/10 px-1 text-center text-sm"
+                          value={tool.seats}
+                          onChange={(e) => patch(tool, "seats", e.target.value)}
+                        />
+                      </div>
+                      {idle > 0 && !tool.replacesHref ? (
+                        <div className="mt-0.5 text-[11px] text-navy/40">{idle} idle</div>
+                      ) : null}
+                    </td>
+                    <td className="py-2.5 pr-3">
+                      <input
+                        className="h-8 w-24 rounded-[8px] border border-navy/10 px-2 text-sm"
+                        value={tool.monthly}
+                        onChange={(e) => patch(tool, "monthly", e.target.value)}
+                      />
+                    </td>
+                    <td className="py-2.5 pr-3">
+                      <input
+                        type="date"
+                        className="h-8 rounded-[8px] border border-navy/10 px-2 text-sm"
+                        value={tool.renew}
+                        onChange={(e) => patch(tool, "renew", e.target.value)}
+                      />
+                    </td>
+                    <td className="py-2.5">
+                      {tool.replacesHref ? (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Link href={tool.replacesHref} className="text-xs font-medium text-cobalt">
+                            Open {tool.replacesLabel}
+                          </Link>
+                          <button
+                            type="button"
+                            className="text-[11px] text-navy/40 hover:text-coral"
+                            onClick={() => removeRecord("subscriptions", tool.id)}
+                          >
+                            Drop seat
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-[11px] text-navy/40">Keep — creative tool</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <form
+          className="mt-4 flex flex-col gap-2 sm:flex-row"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!name.trim()) return;
+            upsertSubscription({
+              name: name.trim(),
+              monthly: Number(monthly) || 0,
+              seats: Number(seats) || 1,
+              used: 1,
+            });
+            setName("");
+            setMonthly("");
+            setSeats("1");
+          }}
+        >
+          <Input placeholder="Add a tool (Canva, Later…)" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input className="sm:max-w-[120px]" placeholder="EGP / mo" value={monthly} onChange={(e) => setMonthly(e.target.value)} />
+          <Input className="sm:max-w-[80px]" placeholder="Seats" value={seats} onChange={(e) => setSeats(e.target.value)} />
+          <Button type="submit" size="sm">
+            Add
+          </Button>
+        </form>
+      </Card>
+    </PageSection>
   );
 }
 

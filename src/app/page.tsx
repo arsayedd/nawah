@@ -56,7 +56,7 @@ const modules = [
   { href: "/analytics", icon: Sparkles, title: "Analytics", copy: "Sales, ops, client health, service profit, people load — same numbers as Home." },
   { href: "/automations", icon: Zap, title: "Automations", copy: "Quote accept already spins the OS. Toggle the rest as the agency grows." },
   { href: "/ai", icon: Bot, title: "Nawah AI", copy: "Answers only from workspace data. No invented numbers." },
-  { href: "/settings", icon: Settings, title: "Settings", copy: "Roles, audit log, SaaS seats, integrations placeholders, demo reset." },
+  { href: "/settings", icon: Settings, title: "Settings", copy: "Roles, audit log, and SaaS seats. ClickUp/Notion already live as Projects and Docs." },
 ];
 
 const loop = [

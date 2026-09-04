@@ -1,5 +1,5 @@
 import { seed } from "@/data/seed";
-import type { Locale, OsState } from "@/lib/types";
+import type { Locale, OsState, SaasSub } from "@/lib/types";
 
 export type OsPayload = {
   locale: Locale;
@@ -84,7 +84,34 @@ export function mergeOsState(remote?: Partial<OsState> | OsState | null): OsStat
     editLayout: remote?.prefs?.editLayout ?? seed.prefs.editLayout,
     currentUserId: remote?.prefs?.currentUserId ?? seed.prefs.currentUserId,
   };
+  out.subscriptions = normalizeSubscriptions(out.subscriptions);
   return out;
+}
+
+function coveredModule(name: string): { href: string; label: string } | null {
+  const n = name.toLowerCase();
+  if (n.includes("clickup") || n.includes("asana") || n.includes("monday")) {
+    return { href: "/projects", label: "Projects" };
+  }
+  if (n.includes("notion") || n.includes("confluence")) {
+    return { href: "/docs", label: "Docs" };
+  }
+  return null;
+}
+
+function normalizeSubscriptions(list: SaasSub[]): SaasSub[] {
+  return list.map((raw) => {
+    const next: SaasSub & { overlap?: string } = { ...raw };
+    delete next.overlap;
+    if (!next.replacesHref) {
+      const covered = coveredModule(next.name);
+      if (covered) {
+        next.replacesHref = covered.href;
+        next.replacesLabel = covered.label;
+      }
+    }
+    return next;
+  });
 }
 
 export function pickOsState(input: Partial<OsState> | OsState): OsState {

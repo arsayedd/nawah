@@ -179,7 +179,10 @@ export default function ChatPage() {
                   <button
                     key={e.id}
                     type="button"
-                    onClick={() => setRoomId(startDirectMessage(e.id))}
+                    onClick={() => {
+                      const id = startDirectMessage(e.id);
+                      if (id) setRoomId(id);
+                    }}
                     className="rounded-full border border-navy/10 px-2 py-0.5 text-[11px] text-navy/70 hover:border-cobalt hover:text-cobalt"
                   >
                     {e.name.split(" ")[0]}

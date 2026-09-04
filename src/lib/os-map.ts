@@ -207,45 +207,15 @@ export const OS_PILLARS: MapPillar[] = [
   {
     id: "admin",
     title: "Settings, Security & Integrations",
-    blurb: "Roles, audit, SaaS seats, connect specialist tools when you need them.",
+    blurb: "Roles, audit, and SaaS seats. ClickUp and Notion are already Projects and Docs — not Connect buttons.",
     href: "/settings",
     children: [
       { label: "Roles & permissions", href: "/people" },
       { label: "Audit logs", href: "/settings" },
       { label: "API & webhooks", href: "/settings" },
-      { label: "Integrations", href: "/settings" },
+      { label: "Tool subscriptions", href: "/settings" },
       { label: "Customize", href: "/customize" },
     ],
   },
 ];
 
-export const INTEGRATIONS: { group: string; tools: string[] }[] = [
-  {
-    group: "Communication",
-    tools: ["Gmail", "Outlook", "WhatsApp Business", "Slack", "Microsoft Teams", "Zoom", "Google Meet"],
-  },
-  {
-    group: "Files and design",
-    tools: ["Google Drive", "Dropbox", "OneDrive", "Figma", "Canva", "Adobe"],
-  },
-  {
-    group: "Marketing",
-    tools: ["Meta Ads", "Google Ads", "TikTok Ads", "LinkedIn Ads", "GA4", "Search Console", "Shopify", "WordPress"],
-  },
-  {
-    group: "Finance",
-    tools: ["Stripe", "Paymob", "PayPal", "Fawry", "QuickBooks", "Xero", "Zoho Books"],
-  },
-  {
-    group: "Calendar",
-    tools: ["Google Calendar", "Outlook Calendar", "Calendly"],
-  },
-  {
-    group: "Development",
-    tools: ["GitHub", "GitLab", "Vercel", "Cloudflare"],
-  },
-  {
-    group: "Migration",
-    tools: ["Notion", "ClickUp", "Trello", "Asana", "Monday", "Airtable", "Excel", "CSV"],
-  },
-];

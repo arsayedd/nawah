@@ -381,7 +381,9 @@ export type SaasSub = {
   used: number;
   renew: string;
   lastUsed: string;
-  overlap?: string;
+  /** If set, this vendor is already covered by a Nawah module. */
+  replacesHref?: string;
+  replacesLabel?: string;
 };
 
 export type ReviewPin = {

@@ -1125,8 +1125,9 @@ export const seed: OsState = {
   subscriptions: [
     { id: "sub_1", name: "Adobe CC", plan: "Team", monthly: 9800, seats: 6, used: 4, renew: "2026-09-20", lastUsed: "2026-09-04" },
     { id: "sub_2", name: "Figma", plan: "Org", monthly: 4200, seats: 8, used: 5, renew: "2026-10-01", lastUsed: "2026-09-04" },
-    { id: "sub_3", name: "ClickUp", plan: "Business", monthly: 3600, seats: 12, used: 3, renew: "2026-09-12", lastUsed: "2026-08-02", overlap: "Nawah Projects" },
-    { id: "sub_4", name: "Notion", plan: "Plus", monthly: 2400, seats: 12, used: 7, renew: "2026-09-28", lastUsed: "2026-09-01", overlap: "Nawah Docs" },
+    { id: "sub_5", name: "CapCut", plan: "Teams", monthly: 1200, seats: 4, used: 3, renew: "2026-09-30", lastUsed: "2026-09-04" },
+    { id: "sub_3", name: "ClickUp", plan: "Business", monthly: 3600, seats: 12, used: 3, renew: "2026-09-12", lastUsed: "2026-08-02", replacesHref: "/projects", replacesLabel: "Projects" },
+    { id: "sub_4", name: "Notion", plan: "Plus", monthly: 2400, seats: 12, used: 7, renew: "2026-09-28", lastUsed: "2026-09-01", replacesHref: "/docs", replacesLabel: "Docs" },
   ],
   reviewPins: [
     {

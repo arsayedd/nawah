@@ -18,7 +18,7 @@ Default language is **English** (LTR). Arabic is a header toggle inside the OS.
 
 ## Modules
 
-CRM, quotations, service catalog, clients, contracts, retainers, projects, people (hire, salary, role, module access), chat, internal mail, notifications, comments on work records, per-page customize (hide any block, remove any record), workload, docs, inbox, files, portal, public booking, time, finance, analytics, automations, Nawah AI, team, HR, settings.
+CRM, quotations, service catalog, clients, contracts, retainers, projects (board / table / gantt), people, chat, internal mail, docs wiki, notifications, comments, customize, workload, inbox, files, portal, booking, time, finance, analytics, automations, Nawah AI, team, HR, settings (editable SaaS seats — ClickUp/Notion open Projects/Docs instead of a fake Connect wall).
 
 ## Run locally
 
