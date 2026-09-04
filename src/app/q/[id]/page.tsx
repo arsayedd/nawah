@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { NawahLockup } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,9 @@ export default function PublicQuotePage() {
   const markQuoteViewed = useOS((s) => s.markQuoteViewed);
   const acceptQuote = useOS((s) => s.acceptQuote);
   const router = useRouter();
+  const hydrated = useOS((s) => s.hydrated);
   const dict = t(locale);
+  const [signing, setSigning] = useState(false);
 
   useEffect(() => {
     if (id) markQuoteViewed(id);
@@ -123,21 +125,70 @@ export default function PublicQuotePage() {
               <p className="rounded-[10px] bg-mint/15 p-3 text-sm">
                 {dict.acceptedBanner}
               </p>
+            ) : signing ? (
+              <div className="space-y-3 rounded-[12px] border border-navy/10 bg-paper p-4">
+                <p className="text-sm font-medium">
+                  {locale === "ar"
+                    ? "وقّع للقبول وتشغيل التسليم."
+                    : "Sign to accept and start delivery."}
+                </p>
+                <p className="text-xs text-navy/50">
+                  {locale === "ar"
+                    ? "هيتعمل عميل، مشروع، فاتورة دفعة، ودعوة للبوابة."
+                    : "This creates the client, project, deposit invoice, and portal invite."}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    disabled={!hydrated}
+                    onClick={() => {
+                      const res = acceptQuote(quote.id);
+                      if (!res) {
+                        toast.error(
+                          locale === "ar"
+                            ? "مقدرناش نقبل العرض. جرّب تاني بعد التحميل."
+                            : "Could not accept this quote. Wait for the workspace to load and try again.",
+                        );
+                        return;
+                      }
+                      toast.success(dict.acceptedBanner);
+                      router.push(`/portal?client=${res.clientId}`);
+                    }}
+                  >
+                    {locale === "ar" ? "تأكيد التوقيع" : "Confirm signature"}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setSigning(false)}>
+                    {locale === "ar" ? "رجوع" : "Back"}
+                  </Button>
+                </div>
+              </div>
             ) : (
               <div className="flex flex-wrap gap-2">
-                <Button
-                  onClick={() => {
-                    const res = acceptQuote(quote.id);
-                    toast.success(dict.acceptedBanner);
-                    if (res) router.push(`/portal?client=${res.clientId}`);
-                  }}
-                >
+                <Button type="button" onClick={() => setSigning(true)}>
                   {locale === "ar" ? "قبول وتوقيع" : "Accept & sign"}
                 </Button>
-                <Button variant="outline">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    toast.message(
+                      locale === "ar"
+                        ? "طلب التعديل اتسجل عند فريق المبيعات."
+                        : "Change request noted for the sales team.",
+                    )
+                  }
+                >
                   {locale === "ar" ? "طلب تعديل" : "Request changes"}
                 </Button>
-                <Button variant="coral">
+                <Button
+                  type="button"
+                  variant="coral"
+                  onClick={() =>
+                    toast.message(
+                      locale === "ar" ? "تم رفض العرض." : "Quote marked as declined.",
+                    )
+                  }
+                >
                   {locale === "ar" ? "رفض" : "Reject"}
                 </Button>
               </div>

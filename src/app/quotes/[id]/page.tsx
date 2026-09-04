@@ -50,12 +50,19 @@ export default function QuoteDetailPage() {
           </Button>
           {quote.status !== "accepted" ? (
             <Button
+              type="button"
               onClick={() => {
                 const res = acceptQuote(quote.id);
-                if (res) {
-                  toast.success(dict.acceptedBanner);
-                  router.push(`/projects/${res.projectId}`);
+                if (!res) {
+                  toast.error(
+                    locale === "ar"
+                      ? "مقدرناش نقبل العرض."
+                      : "Could not accept this quote.",
+                  );
+                  return;
                 }
+                toast.success(dict.acceptedBanner);
+                router.push(`/projects/${res.projectId}`);
               }}
             >
               {dict.acceptQuote}

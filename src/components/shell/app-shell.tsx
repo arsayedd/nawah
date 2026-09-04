@@ -220,18 +220,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             ) : null}
           </div>
           <button
+            type="button"
             onClick={() => {
               const next = locale === "ar" ? "en" : "ar";
               writeStoredLocale(next);
               setLocale(next);
             }}
-            className="hidden rounded-[10px] border border-navy/10 px-2.5 py-1.5 text-xs font-semibold sm:block"
+            className="rounded-[10px] border border-navy/10 px-2.5 py-1.5 text-xs font-semibold"
+            aria-label={locale === "ar" ? "Switch to English" : "Switch to Arabic"}
           >
             {locale === "ar" ? "EN" : "AR"}
           </button>
           <div className="hidden items-center gap-2 sm:flex">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-semibold text-white">
-              AR
+              Ah
             </div>
             <div className="leading-tight">
               <div className="text-sm font-semibold">Ahmed Raafat</div>
