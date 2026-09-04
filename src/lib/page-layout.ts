@@ -72,7 +72,6 @@ export const PAGE_SECTIONS: Record<string, PageSectionDef[]> = {
     { id: "thread", label: "Thread" },
   ],
   "/chat": [
-    { id: "create", label: "Create room" },
     { id: "rooms", label: "Rooms" },
     { id: "thread", label: "Messages" },
   ],

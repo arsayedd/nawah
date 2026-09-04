@@ -73,14 +73,6 @@ function specFor(pathname: string): Spec | null {
     return { kind: "space", label: "Add department", placeholder: "Space name" };
   if (pathname === "/docs")
     return { kind: "doc", label: "Add page", placeholder: "Page title", href: (id) => `/docs/${id}` };
-  if (pathname === "/inbox")
-    return { kind: "request", label: "Add client request", placeholder: "Request title" };
-  if (pathname === "/chat")
-    return { kind: "room", label: "Add chat room", placeholder: "Room name" };
-  if (pathname === "/mail")
-    return { kind: "mail", label: "Send mail", placeholder: "Subject" };
-  if (pathname === "/notifications")
-    return { kind: "notice", label: "Send notice", placeholder: "Title" };
   if (pathname === "/files")
     return { kind: "file", label: "Add file", placeholder: "File name" };
   if (pathname === "/portal")

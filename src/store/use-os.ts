@@ -121,6 +121,8 @@ type Store = OsState & {
   sendMail: (opts: { toId: string; subject: string; body: string }) => string;
   markMailRead: (id: string) => void;
   addChatRoom: (name: string, memberIds: string[]) => string;
+  startDirectMessage: (otherId: string) => string;
+  joinChatRoom: (roomId: string) => void;
   addEntityComment: (opts: Omit<EntityComment, "id" | "createdAt" | "authorId"> & { authorId?: string }) => void;
   toggleNavItem: (href: string) => void;
   toggleHomeWidget: (id: string) => void;
@@ -1266,6 +1268,43 @@ export const useOS = create<Store>()((set, get) => ({
           ],
         });
         return id;
+      },
+      startDirectMessage: (otherId) => {
+        const me = get().prefs.currentUserId;
+        if (!otherId || otherId === me) return "";
+        const existing = get().chatRooms.find(
+          (r) =>
+            r.kind === "dm" &&
+            r.memberIds.includes(me) &&
+            r.memberIds.includes(otherId) &&
+            r.memberIds.length === 2,
+        );
+        if (existing) return existing.id;
+        const other = get().employees.find((e) => e.id === otherId);
+        const self = get().employees.find((e) => e.id === me);
+        const id = uid("room");
+        set({
+          chatRooms: [
+            {
+              id,
+              name: `${self?.name.split(" ")[0] ?? "You"} × ${other?.name.split(" ")[0] ?? "Teammate"}`,
+              memberIds: [me, otherId],
+              kind: "dm",
+            },
+            ...get().chatRooms,
+          ],
+        });
+        return id;
+      },
+      joinChatRoom: (roomId) => {
+        const me = get().prefs.currentUserId;
+        set({
+          chatRooms: get().chatRooms.map((r) =>
+            r.id === roomId && !r.memberIds.includes(me)
+              ? { ...r, memberIds: [...r.memberIds, me] }
+              : r,
+          ),
+        });
       },
       addEntityComment: ({ entity, entityId, body, authorId }) =>
         set({
