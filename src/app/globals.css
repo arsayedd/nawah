@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-navy: #071b3a;
+  --color-cobalt: #2563eb;
+  --color-mint: #19d3ae;
+  --color-paper: #f6f4ef;
+  --color-coral: #ff7a59;
+  --font-sans: var(--font-inter);
+  --font-cairo: var(--font-cairo);
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--color-paper);
+  color: var(--color-navy);
+}
+
+body {
+  font-feature-settings: "ss01" on, "cv11" on;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-cobalt) 25%, white);
+}
+
+@media print {
+  aside,
+  header,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+}

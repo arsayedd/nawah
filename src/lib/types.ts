@@ -1,0 +1,309 @@
+export type Locale = "ar" | "en";
+
+export type PipelineStage =
+  | "new"
+  | "contacted"
+  | "qualified"
+  | "discovery"
+  | "brief"
+  | "proposal"
+  | "negotiation"
+  | "won"
+  | "lost"
+  | "followup";
+
+export type ProjectHealth = "healthy" | "at_risk" | "delayed" | "completed";
+export type TaskStatus = "todo" | "doing" | "review" | "client" | "done";
+export type QuoteStatus =
+  | "draft"
+  | "sent"
+  | "viewed"
+  | "accepted"
+  | "rejected"
+  | "changes";
+
+export type Employee = {
+  id: string;
+  name: string;
+  nameAr: string;
+  role: string;
+  roleAr: string;
+  department: string;
+  hourlyCost: number;
+  billRate: number;
+  skills: string[];
+  weeklyHours: number;
+};
+
+export type Lead = {
+  id: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  source: string;
+  utm?: string;
+  service: string;
+  budget?: number;
+  startDate?: string;
+  ownerId: string;
+  probability: number;
+  value: number;
+  lastContact?: string;
+  nextStep?: string;
+  notes?: string;
+  stage: PipelineStage;
+  winLossReason?: string;
+  createdAt: string;
+};
+
+export type Client = {
+  id: string;
+  name: string;
+  nameAr: string;
+  industry: string;
+  email: string;
+  phone: string;
+  taxId?: string;
+  address?: string;
+  health: number;
+  satisfaction: number;
+  risk?: string;
+  portalEnabled: boolean;
+  createdAt: string;
+};
+
+export type Contact = {
+  id: string;
+  clientId: string;
+  name: string;
+  role: string;
+  email: string;
+  phone: string;
+  canApprove: boolean;
+};
+
+export type CatalogLine = {
+  id: string;
+  name: string;
+  nameAr: string;
+  hours: number;
+  role: string;
+  hourlyCost: number;
+  sellPrice: number;
+  revisions: number;
+  days: number;
+  minMargin: number;
+  deliverables: string[];
+};
+
+export type ServiceCatalog = {
+  id: string;
+  name: string;
+  nameAr: string;
+  description: string;
+  descriptionAr: string;
+  items: CatalogLine[];
+};
+
+export type QuoteItem = {
+  id: string;
+  name: string;
+  nameAr: string;
+  qty: number;
+  hours: number;
+  role: string;
+  hourlyCost: number;
+  sellPrice: number;
+  toolsCost: number;
+  productionCost: number;
+  freelancerCost: number;
+  revisions: number;
+};
+
+export type Quote = {
+  id: string;
+  number: string;
+  clientId?: string;
+  leadId?: string;
+  title: string;
+  titleAr: string;
+  summary: string;
+  summaryAr: string;
+  lang: Locale;
+  status: QuoteStatus;
+  items: QuoteItem[];
+  discount: number;
+  taxRate: number;
+  depositPercent: number;
+  paymentTerms: string;
+  durationWeeks: number;
+  assumptions: string;
+  exclusions: string;
+  revisionPolicy: string;
+  expiry: string;
+  openedAt?: string;
+  viewSeconds?: number;
+  createdAt: string;
+  acceptedAt?: string;
+};
+
+export type Project = {
+  id: string;
+  clientId: string;
+  quoteId?: string;
+  name: string;
+  nameAr: string;
+  status: ProjectHealth;
+  startDate: string;
+  dueDate: string;
+  expectedRevenue: number;
+  expectedCost: number;
+  expectedHours: number;
+};
+
+export type ChecklistItem = { id: string; text: string; done: boolean };
+
+export type Task = {
+  id: string;
+  projectId: string;
+  milestone: string;
+  parentId?: string;
+  title: string;
+  titleAr: string;
+  status: TaskStatus;
+  priority: "low" | "med" | "high" | "urgent";
+  assigneeId?: string;
+  start?: string;
+  due?: string;
+  estimateHours: number;
+  actualHours: number;
+  billable: boolean;
+  checklist: ChecklistItem[];
+  revisionCount: number;
+  approvalStatus:
+    | "working"
+    | "internal"
+    | "client"
+    | "approved"
+    | "revision"
+    | "delivered";
+};
+
+export type Invoice = {
+  id: string;
+  number: string;
+  clientId: string;
+  projectId?: string;
+  quoteId?: string;
+  amount: number;
+  status: "draft" | "sent" | "paid" | "overdue" | "partial";
+  dueDate: string;
+  paidAmount: number;
+  issuedAt: string;
+  note?: string;
+};
+
+export type Payment = {
+  id: string;
+  invoiceId: string;
+  amount: number;
+  date: string;
+  method: string;
+};
+
+export type Expense = {
+  id: string;
+  projectId?: string;
+  category: "tools" | "production" | "ads" | "freelancer" | "other";
+  amount: number;
+  date: string;
+  note: string;
+};
+
+export type TimeEntry = {
+  id: string;
+  taskId: string;
+  userId: string;
+  hours: number;
+  billable: boolean;
+  date: string;
+};
+
+export type DocPage = {
+  id: string;
+  title: string;
+  titleAr: string;
+  parentId?: string;
+  body: string;
+  bodyAr: string;
+  clientId?: string;
+  projectId?: string;
+};
+
+export type Ticket = {
+  id: string;
+  clientId: string;
+  projectId?: string;
+  title: string;
+  titleAr: string;
+  priority: "low" | "med" | "high";
+  inScope: boolean;
+  status: "open" | "doing" | "waiting" | "done";
+};
+
+export type Meeting = {
+  id: string;
+  title: string;
+  titleAr: string;
+  clientId?: string;
+  projectId?: string;
+  when: string;
+  notes: string;
+};
+
+export type AlertItem = {
+  id: string;
+  title: string;
+  titleAr: string;
+  kind: "alert" | "info" | "success";
+  href: string;
+};
+
+export type Contract = {
+  id: string;
+  quoteId: string;
+  clientId: string;
+  projectId?: string;
+  status: "draft" | "ready" | "signed";
+  startDate: string;
+  endDate: string;
+};
+
+export type PortalInvite = {
+  id: string;
+  clientId: string;
+  email: string;
+  sentAt: string;
+};
+
+export type OsState = {
+  employees: Employee[];
+  leads: Lead[];
+  clients: Client[];
+  contacts: Contact[];
+  catalog: ServiceCatalog[];
+  quotes: Quote[];
+  projects: Project[];
+  tasks: Task[];
+  invoices: Invoice[];
+  payments: Payment[];
+  expenses: Expense[];
+  timeEntries: TimeEntry[];
+  docs: DocPage[];
+  tickets: Ticket[];
+  meetings: Meeting[];
+  alerts: AlertItem[];
+  contracts: Contract[];
+  portalInvites: PortalInvite[];
+};
