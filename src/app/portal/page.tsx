@@ -18,15 +18,15 @@ function PortalInner() {
   const selected =
     params.get("client") ?? clients.find((c) => c.portalEnabled)?.id ?? "";
   const client = clients.find((c) => c.id === selected) ?? clients[0];
-  const projects = useOS((s) =>
-    s.projects.filter((p) => p.clientId === client?.id),
-  );
+  const allProjects = useOS((s) => s.projects);
   const tasks = useOS((s) => s.tasks);
-  const quotes = useOS((s) => s.quotes.filter((q) => q.clientId === client?.id));
-  const invoices = useOS((s) =>
-    s.invoices.filter((i) => i.clientId === client?.id),
-  );
-  const tickets = useOS((s) => s.tickets.filter((t) => t.clientId === client?.id));
+  const allQuotes = useOS((s) => s.quotes);
+  const allInvoices = useOS((s) => s.invoices);
+  const allTickets = useOS((s) => s.tickets);
+  const projects = allProjects.filter((p) => p.clientId === client?.id);
+  const quotes = allQuotes.filter((q) => q.clientId === client?.id);
+  const invoices = allInvoices.filter((i) => i.clientId === client?.id);
+  const tickets = allTickets.filter((t) => t.clientId === client?.id);
   const approveDeliverable = useOS((s) => s.approveDeliverable);
   const requestRevision = useOS((s) => s.requestRevision);
   const dict = t(locale);

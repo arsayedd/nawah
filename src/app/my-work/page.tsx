@@ -9,9 +9,11 @@ import { useOS } from "@/store/use-os";
 
 export default function MyWorkPage() {
   const locale = useOS((s) => s.locale);
-  const employees = useOS((s) => s.employees.filter((e) => e.id !== "u_ahmed"));
+  const allEmployees = useOS((s) => s.employees);
+  const employees = allEmployees.filter((e) => e.id !== "u_ahmed");
   const [who, setWho] = useState("u_lina");
-  const tasks = useOS((s) => s.tasks.filter((t) => t.assigneeId === who));
+  const allTasks = useOS((s) => s.tasks);
+  const tasks = allTasks.filter((t) => t.assigneeId === who);
   const dict = t(locale);
   const person = employees.find((e) => e.id === who);
 

@@ -3,6 +3,8 @@
 import type { ReactNode } from "react";
 import { useOS } from "@/store/use-os";
 
+const EMPTY_HIDDEN: string[] = [];
+
 export function PageSection({
   page,
   id,
@@ -14,7 +16,8 @@ export function PageSection({
   label?: string;
   children: ReactNode;
 }) {
-  const hidden = useOS((s) => s.prefs.hiddenPageSections[page] ?? []);
+  const hiddenRaw = useOS((s) => s.prefs.hiddenPageSections[page]);
+  const hidden = hiddenRaw ?? EMPTY_HIDDEN;
   const homeHidden = useOS((s) => s.prefs.hiddenHomeWidgets);
   const editLayout = useOS((s) => s.prefs.editLayout);
   const togglePageSection = useOS((s) => s.togglePageSection);

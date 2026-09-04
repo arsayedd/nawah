@@ -149,6 +149,8 @@ export function pageKeyFromPath(pathname: string): string {
   return `/${parts[0]}/:id`;
 }
 
+const EMPTY_PAGE_SECTIONS: PageSectionDef[] = [];
+
 export function sectionsForPath(pathname: string): PageSectionDef[] {
-  return PAGE_SECTIONS[pageKeyFromPath(pathname)] ?? [];
+  return PAGE_SECTIONS[pageKeyFromPath(pathname)] ?? EMPTY_PAGE_SECTIONS;
 }

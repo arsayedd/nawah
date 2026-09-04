@@ -13,7 +13,8 @@ const hours = [9, 10, 11, 12, 13, 14, 15, 16];
 export default function CalendarPage() {
   const locale = useOS((s) => s.locale);
   const meetings = useOS((s) => s.meetings);
-  const tasks = useOS((s) => s.tasks.filter((t) => t.due));
+  const allTasks = useOS((s) => s.tasks);
+  const tasks = allTasks.filter((t) => t.due);
   const slots = useOS((s) => s.bookingSlots);
   const types = useOS((s) => s.bookingTypes);
   const employees = useOS((s) => s.employees);

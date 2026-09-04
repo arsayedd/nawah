@@ -11,7 +11,8 @@ import { useState } from "react";
 export default function ReviewPage() {
   const { taskId } = useParams<{ taskId: string }>();
   const task = useOS((s) => s.tasks.find((t) => t.id === taskId));
-  const pins = useOS((s) => s.reviewPins.filter((p) => p.taskId === taskId));
+  const allPins = useOS((s) => s.reviewPins);
+  const pins = allPins.filter((p) => p.taskId === taskId);
   const addReviewPin = useOS((s) => s.addReviewPin);
   const approveDeliverable = useOS((s) => s.approveDeliverable);
   const requestRevision = useOS((s) => s.requestRevision);

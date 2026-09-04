@@ -14,8 +14,10 @@ export default function LeadPage() {
   const locale = useOS((s) => s.locale);
   const lead = useOS((s) => s.leads.find((l) => l.id === id));
   const owner = useOS((s) => s.employees.find((e) => e.id === lead?.ownerId));
-  const quotes = useOS((s) => s.quotes.filter((q) => q.leadId === id));
-  const activities = useOS((s) => s.activities.filter((a) => a.leadId === id));
+  const allQuotes = useOS((s) => s.quotes);
+  const quotes = allQuotes.filter((q) => q.leadId === id);
+  const allActivities = useOS((s) => s.activities);
+  const activities = allActivities.filter((a) => a.leadId === id);
   const dict = t(locale);
 
   if (!lead) {

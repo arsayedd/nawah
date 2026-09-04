@@ -17,9 +17,8 @@ export function CommentThread({
 }) {
   const locale = useOS((s) => s.locale);
   const employees = useOS((s) => s.employees);
-  const comments = useOS((s) =>
-    s.entityComments.filter((c) => c.entity === entity && c.entityId === entityId),
-  );
+  const entityComments = useOS((s) => s.entityComments);
+  const comments = entityComments.filter((c) => c.entity === entity && c.entityId === entityId);
   const addEntityComment = useOS((s) => s.addEntityComment);
   const [body, setBody] = useState("");
   const [open, setOpen] = useState(!collapsed);

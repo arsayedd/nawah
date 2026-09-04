@@ -153,14 +153,17 @@ export const useOS = create<Store>()((set, get) => ({
         set({
           leads: get().leads.map((l) => (l.id === id ? { ...l, stage } : l)),
         }),
-      markQuoteViewed: (quoteId) =>
+      markQuoteViewed: (quoteId) => {
+        const current = get().quotes.find((q) => q.id === quoteId);
+        if (!current || current.status !== "sent") return;
         set({
           quotes: get().quotes.map((q) =>
-            q.id === quoteId && q.status === "sent"
-              ? { ...q, status: "viewed", openedAt: new Date().toISOString() }
+            q.id === quoteId
+              ? { ...q, status: "viewed" as const, openedAt: new Date().toISOString() }
               : q,
           ),
-        }),
+        });
+      },
       setQuoteStatus: (id, status) =>
         set({
           quotes: get().quotes.map((q) => (q.id === id ? { ...q, status } : q)),

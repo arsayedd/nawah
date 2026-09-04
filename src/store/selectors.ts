@@ -1,5 +1,6 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
 import { quoteTotals } from "@/data/seed";
 import type { OsState } from "@/lib/types";
 import { useOS } from "@/store/use-os";
@@ -64,7 +65,23 @@ export function computeKpis(state: Pick<OsState, "quotes" | "invoices" | "expens
 }
 
 export function useWorkspace() {
-  return useOS();
+  return useOS(
+    useShallow((s) => ({
+      alerts: s.alerts,
+      employees: s.employees,
+      tasks: s.tasks,
+      clients: s.clients,
+      leads: s.leads,
+      invoices: s.invoices,
+      contracts: s.contracts,
+      retainers: s.retainers,
+      meetings: s.meetings,
+      subscriptions: s.subscriptions,
+      catalog: s.catalog,
+      files: s.files,
+      automations: s.automations,
+    })),
+  );
 }
 
 export function useKpis() {

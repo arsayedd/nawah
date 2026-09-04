@@ -16,10 +16,13 @@ export default function ProjectDetailPage() {
   const locale = useOS((s) => s.locale);
   const project = useOS((s) => s.projects.find((p) => p.id === id));
   const client = useOS((s) => s.clients.find((c) => c.id === project?.clientId));
-  const tasks = useOS((s) => s.tasks.filter((t) => t.projectId === id));
+  const allTasks = useOS((s) => s.tasks);
+  const tasks = allTasks.filter((t) => t.projectId === id);
   const employees = useOS((s) => s.employees);
-  const expenses = useOS((s) => s.expenses.filter((e) => e.projectId === id));
-  const invoices = useOS((s) => s.invoices.filter((i) => i.projectId === id));
+  const allExpenses = useOS((s) => s.expenses);
+  const expenses = allExpenses.filter((e) => e.projectId === id);
+  const allInvoices = useOS((s) => s.invoices);
+  const invoices = allInvoices.filter((i) => i.projectId === id);
   const updateTaskStatus = useOS((s) => s.updateTaskStatus);
   const requestRevision = useOS((s) => s.requestRevision);
   const approveDeliverable = useOS((s) => s.approveDeliverable);

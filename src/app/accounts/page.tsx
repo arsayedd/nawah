@@ -12,15 +12,15 @@ const AM = "u_sara";
 
 export default function AccountsPage() {
   const locale = useOS((s) => s.locale);
-  const clients = useOS((s) => {
-    const mine = s.clients.filter((c) => c.accountManagerId === AM);
-    return mine.length ? mine : s.clients;
-  });
+  const allClients = useOS((s) => s.clients);
+  const mine = allClients.filter((c) => c.accountManagerId === AM);
+  const clients = mine.length ? mine : allClients;
   const quotes = useOS((s) => s.quotes);
   const invoices = useOS((s) => s.invoices);
   const meetings = useOS((s) => s.meetings);
   const tickets = useOS((s) => s.tickets);
-  const leads = useOS((s) => s.leads.filter((l) => l.ownerId === AM));
+  const allLeads = useOS((s) => s.leads);
+  const leads = allLeads.filter((l) => l.ownerId === AM);
   const dict = t(locale);
   const sara = useOS((s) => s.employees.find((e) => e.id === AM));
 
