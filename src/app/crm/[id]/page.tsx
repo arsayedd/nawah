@@ -43,6 +43,9 @@ export default function LeadPage() {
         ← {dict.nav.crm}
       </Link>
       <h1 className="text-2xl font-bold">{lead.company}</h1>
+      <Link href={`/crm/${id}/discover`} className="text-sm text-cobalt">
+        Discovery form
+      </Link>
       <Card>
         <dl className="grid gap-3 sm:grid-cols-2">
           {rows.map(([k, v]) => (

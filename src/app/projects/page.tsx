@@ -9,7 +9,7 @@ import type { TaskStatus } from "@/lib/types";
 import { egp } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
 
-const views = ["list", "board", "table"] as const;
+const views = ["board", "table", "gantt"] as const;
 
 export default function ProjectsPage() {
   const locale = useOS((s) => s.locale);
@@ -126,6 +126,27 @@ export default function ProjectsPage() {
             </div>
           ))}
         </div>
+      ) : view === "gantt" ? (
+        <Card className="space-y-3">
+          {tasks.map((task) => {
+            const start = task.start ?? "2026-09-01";
+            const due = task.due ?? "2026-09-20";
+            const day = (d: string) => Number(d.replace(/-/g, "").slice(6));
+            const left = Math.min(90, Math.max(0, (day(start) / 30) * 100));
+            const width = Math.min(100 - left, Math.max(8, ((day(due) - day(start) + 2) / 30) * 100));
+            return (
+              <div key={task.id}>
+                <div className="mb-1 text-xs text-navy/55">{task.title}</div>
+                <div className="relative h-6 rounded-full bg-navy/8">
+                  <div
+                    className="absolute top-0 h-6 rounded-full bg-cobalt/80"
+                    style={{ left: `${left}%`, width: `${width}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </Card>
       ) : (
         <Card className="overflow-x-auto p-0">
           <table className="w-full text-sm">

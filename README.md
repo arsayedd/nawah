@@ -1,5 +1,43 @@
 # Nawah — Agency OS
 
+Nawah is the operating system for agencies. One data core:
+
+`Lead → Quote → Project → Approval → Invoice → Profit`
+
+English is the default UI language. Arabic is a header toggle.
+
+## Modules in this workspace
+
+- Executive home
+- CRM / pipeline / discovery forms
+- Quotations with live margin
+- Client 360 and client portal
+- Projects (board, table, gantt), tasks, approvals
+- Docs / wiki / SOP → tasks
+- Inbox (project & client threads)
+- Files and creative review
+- Time & capacity
+- Finance & SaaS subscriptions
+- Analytics
+- Automations
+- Nawah AI (workspace data only)
+- Settings, roles, integrations
+
+## Run locally
+
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+Open [http://localhost:45217](http://localhost:45217).
+
+Accept **NW-1042** to watch quote → client → project → invoice → portal.
+
+⌘K searches the workspace.
+
+
 Nawah is the operating system for agencies: CRM, quotations, projects, client portal, invoices, and real profit in one core.
 
 Default language is **English** (LTR). Switch to Arabic from the header.

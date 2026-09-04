@@ -1,3 +1,4 @@
+import { seed } from "@/data/seed";
 import type { Locale, OsState } from "@/lib/types";
 
 export type OsPayload = {
@@ -24,12 +25,19 @@ const keys: (keyof OsState)[] = [
   "alerts",
   "contracts",
   "portalInvites",
+  "discoveries",
+  "messages",
+  "files",
+  "automations",
+  "automationLogs",
+  "subscriptions",
+  "reviewPins",
 ];
 
-export function pickOsState(input: OsState): OsState {
+export function pickOsState(input: Partial<OsState> | OsState): OsState {
   const out = {} as OsState;
   for (const key of keys) {
-    out[key] = input[key] as never;
+    out[key] = (input[key] ?? seed[key]) as never;
   }
   return out;
 }

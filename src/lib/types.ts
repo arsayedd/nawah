@@ -287,6 +287,82 @@ export type PortalInvite = {
   sentAt: string;
 };
 
+export type Discovery = {
+  id: string;
+  leadId: string;
+  goal: string;
+  problem: string;
+  audience: string;
+  competitors: string;
+  services: string;
+  deliverables: string;
+  timeline: string;
+  budget: string;
+  decisionMakers: string;
+  approval: string;
+  platforms: string;
+  kpis: string;
+};
+
+export type ChatMessage = {
+  id: string;
+  channelId: string;
+  authorId: string;
+  body: string;
+  createdAt: string;
+  internal: boolean;
+};
+
+export type FileAsset = {
+  id: string;
+  name: string;
+  clientId?: string;
+  projectId?: string;
+  taskId?: string;
+  kind: "file" | "design";
+  version: number;
+  status: "working" | "internal" | "client" | "approved";
+  note?: string;
+};
+
+export type AutomationRule = {
+  id: string;
+  name: string;
+  trigger: string;
+  condition: string;
+  action: string;
+  enabled: boolean;
+};
+
+export type AutomationLog = {
+  id: string;
+  automationId: string;
+  at: string;
+  detail: string;
+};
+
+export type SaasSub = {
+  id: string;
+  name: string;
+  plan: string;
+  monthly: number;
+  seats: number;
+  used: number;
+  renew: string;
+  lastUsed: string;
+  overlap?: string;
+};
+
+export type ReviewPin = {
+  id: string;
+  taskId: string;
+  x: number;
+  y: number;
+  body: string;
+  authorId: string;
+  createdAt: string;
+};
+
 export type OsState = {
   employees: Employee[];
   leads: Lead[];
@@ -306,4 +382,11 @@ export type OsState = {
   alerts: AlertItem[];
   contracts: Contract[];
   portalInvites: PortalInvite[];
+  discoveries: Discovery[];
+  messages: ChatMessage[];
+  files: FileAsset[];
+  automations: AutomationRule[];
+  automationLogs: AutomationLog[];
+  subscriptions: SaasSub[];
+  reviewPins: ReviewPin[];
 };

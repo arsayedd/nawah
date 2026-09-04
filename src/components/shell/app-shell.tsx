@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Bell,
   BookOpen,
+  Bot,
   Briefcase,
   CalendarDays,
   CheckSquare,
@@ -14,11 +15,16 @@ import {
   Globe,
   Home,
   Menu,
+  MessageSquare,
+  Paperclip,
   Plus,
   Settings,
+  Sparkles,
+  Timer,
   Users,
   Workflow,
   X,
+  Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NawahLockup } from "@/components/brand/logo";
@@ -39,6 +45,7 @@ const groups = [
       { href: "/my-work", key: "myWork", icon: CheckSquare },
       { href: "/projects", key: "projects", icon: FolderKanban },
       { href: "/calendar", key: "calendar", icon: CalendarDays },
+      { href: "/time", key: "time", icon: Timer },
     ],
   },
   {
@@ -55,6 +62,8 @@ const groups = [
     labelAr: "التسليم",
     items: [
       { href: "/docs", key: "docs", icon: BookOpen },
+      { href: "/inbox", key: "inbox", icon: MessageSquare },
+      { href: "/files", key: "files", icon: Paperclip },
       { href: "/portal", key: "portal", icon: Globe },
     ],
   },
@@ -63,6 +72,9 @@ const groups = [
     labelAr: "إدارة",
     items: [
       { href: "/finance", key: "finance", icon: CircleDollarSign },
+      { href: "/analytics", key: "analytics", icon: Sparkles },
+      { href: "/automations", key: "automations", icon: Zap },
+      { href: "/ai", key: "ai", icon: Bot },
       { href: "/team", key: "team", icon: Users },
       { href: "/settings", key: "settings", icon: Settings },
     ],

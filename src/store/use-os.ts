@@ -16,6 +16,7 @@ import type {
   Task,
   TaskStatus,
   Ticket,
+  Discovery,
 } from "@/lib/types";
 import { uid } from "@/lib/utils";
 
@@ -58,6 +59,16 @@ type Store = OsState & {
     catalogId: string;
   }) => string;
   hydrateFromRemote: (payload: { locale: Locale; state: OsState }) => void;
+  runningTimer: { taskId: string; startedAt: number } | null;
+  startTimer: (taskId: string) => void;
+  stopTimer: () => void;
+  sendMessage: (channelId: string, body: string, internal: boolean) => void;
+  saveDoc: (id: string, body: string) => void;
+  convertDocToTasks: (docId: string, projectId?: string) => void;
+  applySopToProject: (docId: string, projectId: string) => void;
+  submitDiscovery: (leadId: string, data: Omit<Discovery, "id" | "leadId">) => void;
+  addReviewPin: (taskId: string, x: number, y: number, body: string) => void;
+  toggleAutomation: (id: string) => void;
 };
 
 function pickAssignee(employees: OsState["employees"], role: string, load: Record<string, number>) {
@@ -78,7 +89,12 @@ export const useOS = create<Store>()((set, get) => ({
       hydrated: false,
       setHydrated: (v) => set({ hydrated: v }),
       hydrateFromRemote: ({ locale, state }) =>
-        set({ ...pickOsState(state), locale, hydrated: true }),
+        set({
+          ...pickOsState({ ...seed, ...state }),
+          locale,
+          hydrated: true,
+        }),
+      runningTimer: null,
       setLocale: (locale) => set({ locale }),
       resetDemo: () => {
         const locale = get().locale;
@@ -540,6 +556,111 @@ export const useOS = create<Store>()((set, get) => ({
         }
         return id;
       },
+      startTimer: (taskId) => set({ runningTimer: { taskId, startedAt: Date.now() } }),
+      stopTimer: () => {
+        const timer = get().runningTimer;
+        if (!timer) return;
+        const hours = Math.max(0.25, Math.round(((Date.now() - timer.startedAt) / 3600000) * 10) / 10);
+        get().logTime(timer.taskId, "u_lina", hours);
+        set({ runningTimer: null });
+      },
+      sendMessage: (channelId, body, internal) =>
+        set({
+          messages: [
+            {
+              id: uid("msg"),
+              channelId,
+              authorId: "u_ahmed",
+              body,
+              createdAt: new Date().toISOString(),
+              internal,
+            },
+            ...get().messages,
+          ],
+        }),
+      saveDoc: (id, body) =>
+        set({
+          docs: get().docs.map((d) =>
+            d.id === id ? { ...d, body, bodyAr: body } : d,
+          ),
+        }),
+      convertDocToTasks: (docId, projectId) => {
+        const doc = get().docs.find((d) => d.id === docId);
+        if (!doc) return;
+        const pid = projectId ?? doc.projectId ?? get().projects[0]?.id;
+        if (!pid) return;
+        const lines = `${doc.body}`
+          .split(/[\n→,]/)
+          .map((s) => s.trim())
+          .filter((s) => s.length > 3)
+          .slice(0, 8);
+        set({
+          tasks: [
+            ...lines.map((line) => ({
+              id: uid("t"),
+              projectId: pid,
+              milestone: "From doc",
+              title: line,
+              titleAr: line,
+              status: "todo" as const,
+              priority: "med" as const,
+              estimateHours: 2,
+              actualHours: 0,
+              billable: true,
+              checklist: [],
+              revisionCount: 0,
+              approvalStatus: "working" as const,
+            })),
+            ...get().tasks,
+          ],
+        });
+      },
+      applySopToProject: (docId, projectId) => {
+        get().convertDocToTasks(docId, projectId);
+      },
+      submitDiscovery: (leadId, data) => {
+        const id = uid("disc");
+        set({
+          discoveries: [{ id, leadId, ...data }, ...get().discoveries],
+          leads: get().leads.map((l) =>
+            l.id === leadId
+              ? { ...l, stage: "brief", notes: data.goal, nextStep: "Draft quotation" }
+              : l,
+          ),
+          docs: [
+            {
+              id: uid("d"),
+              title: `Brief — ${get().leads.find((l) => l.id === leadId)?.company ?? "Lead"}`,
+              titleAr: `بريف`,
+              body: Object.values(data).join("\n"),
+              bodyAr: Object.values(data).join("\n"),
+              clientId: undefined,
+            },
+            ...get().docs,
+          ],
+        });
+      },
+      addReviewPin: (taskId, x, y, body) =>
+        set({
+          reviewPins: [
+            {
+              id: uid("rp"),
+              taskId,
+              x,
+              y,
+              body,
+              authorId: "u_ahmed",
+              createdAt: new Date().toISOString(),
+            },
+            ...get().reviewPins,
+          ],
+        }),
+      toggleAutomation: (id) =>
+        set({
+          automations: get().automations.map((a) =>
+            a.id === id ? { ...a, enabled: !a.enabled } : a,
+          ),
+        }),
 }));
 
 export function useHydratedOS() {

@@ -6,17 +6,11 @@ import { Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
 
-const tools = [
-  { name: "Adobe CC", plan: "Team", cost: 9800, seats: 6, used: 4, renew: "2026-09-20" },
-  { name: "Figma", plan: "Org", cost: 4200, seats: 8, used: 5, renew: "2026-10-01" },
-  { name: "ClickUp", plan: "Business", cost: 3600, seats: 12, used: 3, renew: "2026-09-12" },
-  { name: "Notion", plan: "Plus", cost: 2400, seats: 12, used: 7, renew: "2026-09-28" },
-];
-
 export default function SettingsPage() {
   const locale = useOS((s) => s.locale);
   const resetDemo = useOS((s) => s.resetDemo);
   const dict = t(locale);
+  const subscriptions = useOS((s) => s.subscriptions);
 
   return (
     <div className="space-y-5">
@@ -46,20 +40,47 @@ export default function SettingsPage() {
             : "Nawah is meant to replace ClickUp and Notion for daily ops. Unused seats are flagged below."}
         </p>
         <div className="space-y-2">
-          {tools.map((tool) => (
+          {subscriptions.map((tool) => (
             <div
-              key={tool.name}
+              key={tool.id}
               className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] bg-paper px-3 py-2 text-sm"
             >
               <span className="font-medium">{tool.name}</span>
               <span className="text-navy/50">
-                {tool.used}/{tool.seats} seats · {tool.cost} EGP · {tool.renew}
+                {tool.used}/{tool.seats} seats · {tool.monthly} EGP · {tool.renew}
               </span>
-              {tool.used < tool.seats / 2 ? (
-                <span className="text-xs text-coral">
-                  {locale === "ar" ? "Downgrade مقترح" : "Suggest downgrade"}
-                </span>
+              {tool.overlap ? (
+                <span className="text-xs text-coral">Overlap: {tool.overlap}</span>
               ) : null}
+            </div>
+          ))}
+        </div>
+      </Card>
+      <Card>
+        <h2 className="mb-3 font-semibold">Integrations</h2>
+        <p className="mb-3 text-sm text-navy/55">
+          Operating layer stays in Nawah. Connect the specialist tools — ads, banks, Drive — when you need them.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {[
+            "Gmail",
+            "WhatsApp Business",
+            "Google Calendar",
+            "Google Drive",
+            "Figma",
+            "Slack",
+            "Meta Ads",
+            "Google Ads",
+            "Shopify",
+            "Stripe / Paymob",
+            "QuickBooks / Xero",
+          ].map((name) => (
+            <div
+              key={name}
+              className="flex items-center justify-between rounded-[10px] border border-navy/8 px-3 py-2 text-sm"
+            >
+              <span>{name}</span>
+              <span className="text-xs text-navy/40">Connect</span>
             </div>
           ))}
         </div>
