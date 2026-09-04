@@ -234,7 +234,7 @@ export default function LandingPage() {
             transition={{ delay: 0.15, duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
             style={{ animation: "nawah-float 6s ease-in-out infinite" }}
           >
-            <NawahMark className="h-52 w-52" variant="white" />
+            <NawahMark className="h-52 w-52" />
           </motion.div>
           {orbits.map((item) => (
             <span
