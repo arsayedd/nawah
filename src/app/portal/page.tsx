@@ -30,7 +30,19 @@ function PortalInner() {
   const requestRevision = useOS((s) => s.requestRevision);
   const dict = t(locale);
 
-  if (!client) return null;
+  if (!client) {
+    return (
+      <Card>
+        <h1 className="text-xl font-semibold">Client portal</h1>
+        <p className="mt-2 text-sm text-navy/55">
+          No portal-enabled client yet. Open Clients and turn on portal access.
+        </p>
+        <Link href="/clients" className="mt-3 inline-block text-sm text-cobalt">
+          Go to clients
+        </Link>
+      </Card>
+    );
+  }
 
   const clientTasks = tasks.filter((t) =>
     projects.some((p) => p.id === t.projectId),

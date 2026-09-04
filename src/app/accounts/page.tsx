@@ -11,7 +11,10 @@ const AM = "u_sara";
 
 export default function AccountsPage() {
   const locale = useOS((s) => s.locale);
-  const clients = useOS((s) => s.clients.filter((c) => c.accountManagerId === AM));
+  const clients = useOS((s) => {
+    const mine = s.clients.filter((c) => c.accountManagerId === AM);
+    return mine.length ? mine : s.clients;
+  });
   const quotes = useOS((s) => s.quotes);
   const invoices = useOS((s) => s.invoices);
   const meetings = useOS((s) => s.meetings);

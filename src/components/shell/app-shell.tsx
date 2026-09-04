@@ -28,6 +28,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { NawahLockup } from "@/components/brand/logo";
 import { CommandSearch } from "@/components/shell/command-search";
 import { QuickAdd } from "@/components/shell/quick-add";
@@ -93,7 +94,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const locale = useOS((s) => s.locale);
   const setLocale = useOS((s) => s.setLocale);
   const alerts = useOS((s) => s.alerts);
-  const hydrated = useOS((s) => s.hydrated);
   const dict = t(locale);
   const [quick, setQuick] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
@@ -148,10 +148,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div
       className={cn(
         "min-h-screen bg-paper text-navy",
-        locale === "ar" ? "font-cairo" : "font-sans",
+        locale === "ar" ? "[font-family:var(--font-cairo),var(--font-inter),sans-serif]" : "font-sans",
       )}
     >
-      <aside className="fixed inset-y-0 z-40 hidden w-[260px] flex-col bg-navy text-white lg:flex">
+      <aside className="fixed inset-y-0 start-0 z-40 hidden w-[260px] flex-col bg-navy text-white lg:flex">
         <div className="px-5 py-6">
           <Link href="/">
             <NawahLockup inverted />
@@ -249,18 +249,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <main className="px-4 py-7 md:px-8">
-          {hydrated ? (
-            children
-          ) : (
-            <div className="space-y-4">
-              <div className="h-8 w-64 animate-pulse rounded-lg bg-navy/8" />
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="h-24 animate-pulse rounded-[14px] bg-white" />
-                ))}
-              </div>
-            </div>
-          )}
+          <ErrorBoundary>{children}</ErrorBoundary>
         </main>
       </div>
       <QuickAdd open={quick} onOpenChange={setQuick} />

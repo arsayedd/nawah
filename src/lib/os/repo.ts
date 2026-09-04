@@ -1,6 +1,6 @@
 import { seed } from "@/data/seed";
 import { AGENCY_ID, createAdminClient, isMissingTable } from "@/lib/supabase/admin";
-import { pickOsState, type OsPayload } from "@/lib/os/payload";
+import { isSparseState, pickOsState, type OsPayload } from "@/lib/os/payload";
 import type { Locale, OsState } from "@/lib/types";
 
 const STORAGE_BUCKET = "nawah";
@@ -75,13 +75,32 @@ async function loadSnapshot(): Promise<
 }
 
 export async function readOs(): Promise<OsPayload & { backend: OsBackend }> {
-  const loaded = await loadSnapshot();
-  if ("empty" in loaded) {
+  try {
+    const loaded = await Promise.race([
+      loadSnapshot(),
+      new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error("os-timeout")), 6000);
+      }),
+    ]);
+    if ("empty" in loaded) {
+      const fresh = seeded("en");
+      await saveSnapshot(fresh.locale, fresh.state);
+      return { ...fresh, backend: loaded.backend, schemaVersion: 3 };
+    }
+    const merged = pickOsState(loaded.state);
+    if (isSparseState(loaded.state)) {
+      await saveSnapshot("en", merged);
+    }
+    return {
+      backend: loaded.backend,
+      locale: loaded.locale,
+      state: merged,
+      schemaVersion: 3,
+    };
+  } catch {
     const fresh = seeded("en");
-    await saveSnapshot(fresh.locale, fresh.state);
-    return { ...fresh, backend: loaded.backend };
+    return { ...fresh, backend: "storage", schemaVersion: 3 };
   }
-  return loaded;
 }
 
 export async function writeOs(payload: OsPayload): Promise<{ backend: OsBackend }> {

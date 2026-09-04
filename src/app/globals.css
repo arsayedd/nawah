@@ -7,7 +7,7 @@
   --color-paper: #f6f4ef;
   --color-coral: #ff7a59;
   --font-sans: var(--font-inter);
-  --font-cairo: var(--font-cairo);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 html,

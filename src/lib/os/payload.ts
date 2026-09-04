@@ -4,7 +4,10 @@ import type { Locale, OsState } from "@/lib/types";
 export type OsPayload = {
   locale: Locale;
   state: OsState;
+  schemaVersion?: number;
 };
+
+export const OS_SCHEMA = 3;
 
 const keys: (keyof OsState)[] = [
   "employees",
@@ -44,10 +47,41 @@ const keys: (keyof OsState)[] = [
   "docComments",
 ];
 
-export function pickOsState(input: Partial<OsState> | OsState): OsState {
+function fillCollection<K extends keyof OsState>(
+  remote: Partial<OsState> | OsState | null | undefined,
+  key: K,
+): OsState[K] {
+  const current = remote?.[key];
+  const fallback = seed[key];
+  if (Array.isArray(current) && Array.isArray(fallback)) {
+    if (current.length > 0) return current as OsState[K];
+    return fallback;
+  }
+  return (current ?? fallback) as OsState[K];
+}
+
+export function mergeOsState(remote?: Partial<OsState> | OsState | null): OsState {
   const out = {} as OsState;
   for (const key of keys) {
-    out[key] = (input[key] ?? seed[key]) as never;
+    out[key] = fillCollection(remote, key) as never;
   }
+  out.clients = out.clients.map((c) => ({
+    ...c,
+    accountManagerId: c.accountManagerId ?? "u_sara",
+    portalEnabled: c.portalEnabled ?? true,
+  }));
   return out;
+}
+
+export function pickOsState(input: Partial<OsState> | OsState): OsState {
+  return mergeOsState(input);
+}
+
+export function isSparseState(state: Partial<OsState> | null | undefined): boolean {
+  if (!state) return true;
+  return keys.some((key) => {
+    const fallback = seed[key];
+    const current = state[key];
+    return Array.isArray(fallback) && fallback.length > 0 && (!Array.isArray(current) || current.length === 0);
+  });
 }

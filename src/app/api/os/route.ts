@@ -21,7 +21,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Missing state" }, { status: 400 });
     }
     const saved = await writeOs({
-      locale: body.locale ?? "ar",
+      locale: body.locale ?? "en",
       state: pickOsState(body.state),
     });
     return NextResponse.json(saved);

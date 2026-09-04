@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge, Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
 
@@ -21,6 +22,14 @@ export default function FilesPage() {
         description="Every file sits on a client, a project, and often a deliverable. Design files open in Creative Review."
       />
       <div className="grid gap-3">
+        {files.length === 0 ? (
+          <EmptyState
+            title="No files in this workspace"
+            copy="Demo files sit on Lumin and Cairo Bites. Reset the demo from Settings if this list was wiped."
+            href="/settings"
+            action="Open settings"
+          />
+        ) : null}
         {files.map((f) => {
           const client = clients.find((c) => c.id === f.clientId);
           const project = projects.find((p) => p.id === f.projectId);

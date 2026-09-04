@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { EmptyState } from "@/components/ui/empty-state";
 import { t } from "@/lib/i18n";
 import { useOS } from "@/store/use-os";
 
@@ -76,6 +77,14 @@ export default function DocsPage() {
           ))}
         </Card>
         <div className="grid gap-3 sm:grid-cols-2">
+          {docs.length === 0 ? (
+            <EmptyState
+              title="Wiki is empty"
+              copy="The demo includes a company wiki, Shopify SOP, and a client-health database."
+              href="/settings"
+              action="Reset demo"
+            />
+          ) : null}
           {docs.map((doc) => (
             <Link key={doc.id} href={`/docs/${doc.id}`}>
               <Card className="h-full p-4">

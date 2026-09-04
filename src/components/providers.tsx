@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Toaster } from "sonner";
 import { AppShell } from "@/components/shell/app-shell";
 import { pickOsState } from "@/lib/os/payload";
@@ -14,34 +14,43 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const hydrateFromRemote = useOS((s) => s.hydrateFromRemote);
   const setHydrated = useOS((s) => s.setHydrated);
   const setLocale = useOS((s) => s.setLocale);
+  const persistReady = useRef(false);
 
   useEffect(() => {
     setLocale(readStoredLocale());
   }, [setLocale]);
 
   useEffect(() => {
-    let cancelled = false;
-    void fetch("/api/os")
+    const ac = new AbortController();
+    const timer = window.setTimeout(() => ac.abort(), 8000);
+
+    void fetch("/api/os", { signal: ac.signal })
       .then(async (res) => {
         if (!res.ok) throw new Error(await res.text());
         return res.json();
       })
       .then((data) => {
-        if (cancelled) return;
-        hydrateFromRemote({ locale: readStoredLocale(), state: data.state });
+        const next = pickOsState(data?.state);
+        persistReady.current = true;
+        hydrateFromRemote({ locale: readStoredLocale(), state: next });
       })
       .catch(() => {
-        if (!cancelled) setHydrated(true);
+        setHydrated(true);
+      })
+      .finally(() => {
+        window.clearTimeout(timer);
+        persistReady.current = true;
       });
+
     return () => {
-      cancelled = true;
+      window.clearTimeout(timer);
     };
   }, [hydrateFromRemote, setHydrated]);
 
   useEffect(() => {
     let timer: number | undefined;
     const unsub = useOS.subscribe((state) => {
-      if (!state.hydrated) return;
+      if (!persistReady.current) return;
       window.clearTimeout(timer);
       timer = window.setTimeout(() => {
         void fetch("/api/os", {
@@ -52,7 +61,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             state: pickOsState(state),
           }),
         });
-      }, 500);
+      }, 800);
     });
     return () => {
       unsub();

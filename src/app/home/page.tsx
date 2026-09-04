@@ -46,7 +46,6 @@ const osLinks = [
 
 export default function HomePage() {
   const locale = useOS((s) => s.locale);
-  const hydrated = useOS((s) => s.hydrated);
   const dict = t(locale);
   const alerts = useOS((s) => s.alerts);
   const employees = useOS((s) => s.employees);
@@ -94,19 +93,6 @@ export default function HomePage() {
       return { c, paid };
     })
     .sort((a, b) => a.paid - b.paid);
-
-  if (!hydrated) {
-    return (
-      <div className="space-y-4">
-        <div className="h-10 w-64 animate-pulse rounded-lg bg-navy/8" />
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-24 animate-pulse rounded-[16px] bg-white" />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-7">

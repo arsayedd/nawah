@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -32,10 +32,17 @@ export default function InboxPage() {
     ],
     [projects, clients, locale],
   );
-  const [channelId, setChannelId] = useState(channels[0]?.id ?? "");
+  const [channelId, setChannelId] = useState("");
   const [body, setBody] = useState("");
   const [internal, setInternal] = useState(true);
   const thread = messages.filter((m) => m.channelId === channelId);
+
+  useEffect(() => {
+    if (!channels.length) return;
+    if (!channels.some((c) => c.id === channelId)) {
+      setChannelId(channels[0].id);
+    }
+  }, [channels, channelId]);
 
   return (
     <div className="space-y-5">
@@ -46,6 +53,9 @@ export default function InboxPage() {
       />
       <div className="grid gap-4 lg:grid-cols-[240px_1fr]">
         <Card className="p-2">
+          {channels.length === 0 ? (
+            <p className="px-3 py-6 text-sm text-navy/45">No project or client channels yet.</p>
+          ) : null}
           {channels.map((ch) => (
             <button
               key={ch.id}
