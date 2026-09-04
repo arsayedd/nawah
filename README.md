@@ -2,49 +2,19 @@
 
 Nawah is the operating system for agencies. One data core:
 
-`Lead → Quote → Project → Approval → Invoice → Profit`
+`Lead → Quote → Scope → Hours → Team cost → Project → Approval → Invoice → Payment → Real profit → Renewal`
 
-English is the default UI language. Arabic is a header toggle.
+Default language is **English** (LTR). Arabic is a header toggle inside the OS.
 
-## Modules in this workspace
+## Surfaces
 
-- Executive home
-- CRM / pipeline / discovery forms
-- Quotations with live margin
-- Client 360 and client portal
-- Projects (board, table, gantt), tasks, approvals
-- Docs / wiki / SOP → tasks
-- Inbox (project & client threads)
-- Files and creative review
-- Time & capacity
-- Finance & SaaS subscriptions
-- Analytics
-- Automations
-- Nawah AI (workspace data only)
-- Settings, roles, integrations
+- `/` — English marketing home (animated product story)
+- `/home` — executive workspace
+- `/q/q_bloom` — public quotation (Bloom Café, NW-1042)
 
-## Run locally
+## Modules
 
-```bash
-npm install
-cp .env.example .env.local
-npm run dev
-```
-
-Open [http://localhost:45217](http://localhost:45217).
-
-Accept **NW-1042** to watch quote → client → project → invoice → portal.
-
-⌘K searches the workspace.
-
-
-Nawah is the operating system for agencies: CRM, quotations, projects, client portal, invoices, and real profit in one core.
-
-Default language is **English** (LTR). Switch to Arabic from the header.
-
-Core loop:
-
-`Lead → Quote → Project → Approval → Invoice → Profit`
+CRM, quotations, clients, projects (board / table / gantt), docs, inbox, files & review, portal, time, finance, analytics, automations, Nawah AI, team, calendar, my work, settings.
 
 ## Run locally
 
@@ -58,12 +28,13 @@ Open [http://localhost:45217](http://localhost:45217).
 
 ## Demo path
 
-1. Home — cash, pipeline, workload, and decisions.
-2. Pipeline — drag Bloom Café across stages.
-3. Quotations — open **NW-1042**, accept it (or use `/q/q_bloom`).
-4. Accepting a quote creates the client, project, tasks, deposit invoice, and portal invite.
-5. Client portal — approve work without seeing internal cost.
-6. Finance — invoices, expenses, project profit.
+1. Product story on `/`.
+2. Enter the OS on `/home`.
+3. Pipeline — drag Bloom Café across stages.
+4. Quotations — open **NW-1042**, accept it (or use `/q/q_bloom`).
+5. Accepting a quote creates the client, project, tasks, deposit invoice, and portal invite.
+6. Client portal — approve work without seeing internal cost.
+7. Finance — invoices, expenses, project profit.
 
 ⌘K searches clients, leads, projects, and quotes.
 
@@ -77,4 +48,4 @@ Inter (English UI) · Cairo (Arabic)
 
 ## Stack
 
-Next.js, TypeScript, Tailwind CSS, Zustand, Supabase.
+Next.js, TypeScript, Tailwind CSS, Framer Motion, Zustand, Supabase.

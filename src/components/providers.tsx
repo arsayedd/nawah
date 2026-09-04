@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import { AppShell } from "@/components/shell/app-shell";
@@ -8,6 +9,7 @@ import { readStoredLocale } from "@/lib/locale";
 import { useOS } from "@/store/use-os";
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const locale = useOS((s) => s.locale);
   const hydrateFromRemote = useOS((s) => s.hydrateFromRemote);
   const setHydrated = useOS((s) => s.setHydrated);
@@ -59,9 +61,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang = locale === "ar" ? "ar" : "en";
-    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
-  }, [locale]);
+    const englishSurface = pathname === "/" || pathname.startsWith("/q/");
+    document.documentElement.lang =
+      englishSurface || locale !== "ar" ? "en" : "ar";
+    document.documentElement.dir =
+      englishSurface || locale !== "ar" ? "ltr" : "rtl";
+  }, [locale, pathname]);
 
   return (
     <>

@@ -41,7 +41,7 @@ const groups = [
     label: "Operate",
     labelAr: "تشغيل",
     items: [
-      { href: "/", key: "home", icon: Home },
+      { href: "/home", key: "home", icon: Home },
       { href: "/my-work", key: "myWork", icon: CheckSquare },
       { href: "/projects", key: "projects", icon: FolderKanban },
       { href: "/calendar", key: "calendar", icon: CalendarDays },
@@ -97,7 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setNotesOpen(false);
   }, [pathname]);
 
-  if (pathname.startsWith("/q/")) {
+  if (pathname === "/" || pathname.startsWith("/q/")) {
     return <>{children}</>;
   }
 
@@ -111,8 +111,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col gap-0.5">
             {group.items.map((item) => {
               const active =
-                item.href === "/"
-                  ? pathname === "/"
+                item.href === "/home"
+                  ? pathname === "/home"
                   : pathname.startsWith(item.href);
               const Icon = item.icon;
               return (
@@ -146,7 +146,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     >
       <aside className="fixed inset-y-0 z-40 hidden w-[260px] flex-col bg-navy text-white lg:flex">
         <div className="px-5 py-6">
-          <NawahLockup inverted />
+          <Link href="/">
+            <NawahLockup inverted />
+          </Link>
           <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.16em] text-white/40">
             {dict.tagline}
           </p>
