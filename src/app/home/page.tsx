@@ -266,6 +266,48 @@ export default function HomePage() {
           ))}
         </div>
       </Card>
+
+      <Card>
+        <SectionTitle className="mb-4">
+          {locale === "ar" ? "كل النظام" : "The whole OS"}
+        </SectionTitle>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ["/crm", "Pipeline"],
+            ["/accounts", "Accounts"],
+            ["/clients", "Clients"],
+            ["/catalog", "Catalog"],
+            ["/quotes", "Quotations"],
+            ["/contracts", "Contracts"],
+            ["/projects", "Projects"],
+            ["/my-work", "My work"],
+            ["/workload", "Workload"],
+            ["/retainers", "Retainers"],
+            ["/docs", "Docs"],
+            ["/inbox", "Inbox"],
+            ["/files", "Files"],
+            ["/portal", "Portal"],
+            ["/calendar", "Calendar"],
+            ["/book", "Booking"],
+            ["/time", "Time"],
+            ["/finance", "Finance"],
+            ["/hr", "People"],
+            ["/team", "Team"],
+            ["/analytics", "Analytics"],
+            ["/automations", "Automations"],
+            ["/ai", "Nawah AI"],
+            ["/settings", "Settings"],
+          ].map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              className="rounded-[10px] border border-navy/8 bg-paper/70 px-3 py-2.5 text-sm font-medium hover:border-cobalt/40"
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 }

@@ -6,14 +6,21 @@ import {
   ArrowRight,
   BookOpen,
   Bot,
+  Briefcase,
+  CalendarDays,
   CheckCircle2,
+  CheckSquare,
   CircleDollarSign,
+  FileText,
   FolderKanban,
   Globe,
+  Home,
   MessageSquare,
   Paperclip,
+  Settings,
   Sparkles,
   Timer,
+  UserRound,
   Users,
   Workflow,
   Zap,
@@ -21,66 +28,31 @@ import {
 import { NawahLockup, NawahMark } from "@/components/brand/logo";
 
 const modules = [
-  {
-    icon: Workflow,
-    title: "CRM & sales",
-    copy: "Leads, pipeline, discovery, and forecast. A won deal becomes delivery — not a dead card.",
-  },
-  {
-    icon: Sparkles,
-    title: "Quotations",
-    copy: "Catalog, hours, team cost, and live margin. Branded PDF. Accept tracking from the client.",
-  },
-  {
-    icon: FolderKanban,
-    title: "Projects",
-    copy: "Board, table, and gantt. Approvals, retainers, revisions, and capacity-aware assignment.",
-  },
-  {
-    icon: BookOpen,
-    title: "Docs",
-    copy: "Wiki, briefs, and SOPs that turn into checklists so delivery does not live in a side doc.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Inbox",
-    copy: "Project and client threads next to the work. Status stays in Nawah, not WhatsApp.",
-  },
-  {
-    icon: Paperclip,
-    title: "Files & review",
-    copy: "Versions on the deliverable. Clients mark up without seeing internal cost or chatter.",
-  },
-  {
-    icon: Globe,
-    title: "Client portal",
-    copy: "Status, files, and approvals in one guest surface. Never internal rates or team notes.",
-  },
-  {
-    icon: Timer,
-    title: "Time & capacity",
-    copy: "Timers that know cost. Who is over booked this week, and what that does to margin.",
-  },
-  {
-    icon: CircleDollarSign,
-    title: "Finance",
-    copy: "Deposit invoices, expenses, SaaS burn, and real project P&L — not a spreadsheet after the fact.",
-  },
-  {
-    icon: Users,
-    title: "Team",
-    copy: "Roles, workload, and cost rates. The same people who appear on quotes and timesheets.",
-  },
-  {
-    icon: Zap,
-    title: "Automations",
-    copy: "Accept a quote and the OS spins: client, contract draft, project, tasks, invoice, portal invite.",
-  },
-  {
-    icon: Bot,
-    title: "Nawah AI",
-    copy: "Answers only from workspace data. No invented numbers, no generic chat pretending to be ops.",
-  },
+  { href: "/home", icon: Home, title: "Executive home", copy: "Cash, pipeline, risk, workload, and the decisions that need you today." },
+  { href: "/crm", icon: Workflow, title: "CRM & sales", copy: "Leads, pipeline, discovery, forecast. Won becomes delivery — not a dead card." },
+  { href: "/accounts", icon: UserRound, title: "Account managers", copy: "Sara’s book: health, overdue invoices, waiting quotes, upsell, next meeting." },
+  { href: "/clients", icon: Briefcase, title: "Client 360", copy: "Contacts, projects, contracts, profit, CSAT, and portal access on one page." },
+  { href: "/catalog", icon: Sparkles, title: "Service catalog", copy: "Hours, role, cost, sell, revisions, deliverables. Quotes assemble from here." },
+  { href: "/quotes", icon: FileText, title: "Quotations", copy: "Live margin, deposit, branded client link, open/accept tracking, PDF." },
+  { href: "/contracts", icon: FileText, title: "Contracts", copy: "Accepting a quote drafts the contract. Sign to lock dates." },
+  { href: "/projects", icon: FolderKanban, title: "Projects", copy: "ClickUp-class: board, table, gantt, list, calendar, portfolio. Drag tasks." },
+  { href: "/my-work", icon: CheckSquare, title: "My work", copy: "Personal queue with tags and blockers. Switch person to see assigned load." },
+  { href: "/workload", icon: Users, title: "Workload", copy: "Capacity by person. Auto-assign by skill, hours, and cost." },
+  { href: "/retainers", icon: Zap, title: "Retainers", copy: "Monthly hours, consumption, renewal. Generate the cycle: tasks + invoice." },
+  { href: "/docs", icon: BookOpen, title: "Docs", copy: "Notion-like wiki, templates, linked databases, comments. Lines become tasks." },
+  { href: "/inbox", icon: MessageSquare, title: "Inbox", copy: "Project and client threads. Turn a message into a task without WhatsApp." },
+  { href: "/files", icon: Paperclip, title: "Files & review", copy: "Versions on the deliverable. Pins on creative. Clients never see cost." },
+  { href: "/portal", icon: Globe, title: "Client portal", copy: "Status, files, approvals, invoices, requests. Internal chatter stays hidden." },
+  { href: "/book", icon: CalendarDays, title: "Booking", copy: "Calendly-style event types on the same calendar: discovery, kickoff, review." },
+  { href: "/calendar", icon: CalendarDays, title: "Calendar", copy: "Week grid of meetings, open slots, and deadlines — one agency week." },
+  { href: "/time", icon: Timer, title: "Time & capacity", copy: "Timers that know cost. Sold vs consumed hours. Overbooked vs idle." },
+  { href: "/finance", icon: CircleDollarSign, title: "Finance", copy: "Invoices, record payment, expenses, cash after costs, project P&L." },
+  { href: "/hr", icon: Users, title: "People / HR", copy: "Attendance, leave, payroll, commissions, freelancer vs staff, performance." },
+  { href: "/team", icon: Users, title: "Team", copy: "Cost rates, bill rates, skills, departments — the same people on quotes." },
+  { href: "/analytics", icon: Sparkles, title: "Analytics", copy: "Sales, ops, client health, service profit, people load — same numbers as Home." },
+  { href: "/automations", icon: Zap, title: "Automations", copy: "Quote accept already spins the OS. Toggle the rest as the agency grows." },
+  { href: "/ai", icon: Bot, title: "Nawah AI", copy: "Answers only from workspace data. No invented numbers." },
+  { href: "/settings", icon: Settings, title: "Settings", copy: "Roles, audit log, SaaS seats, integrations placeholders, demo reset." },
 ];
 
 const loop = [
@@ -98,11 +70,13 @@ const loop = [
 ];
 
 const replaces = [
-  { from: "Notion", for: "Docs, wiki, SOPs" },
-  { from: "ClickUp", for: "Projects, tasks, workload" },
+  { from: "Notion", for: "Docs, wiki, databases, SOPs" },
+  { from: "ClickUp", for: "Board, gantt, workload, my work" },
   { from: "HubSpot", for: "CRM that continues after Won" },
+  { from: "Calendly", for: "Booking types on the agency calendar" },
   { from: "Harvest", for: "Time that knows cost" },
   { from: "Drive", for: "Files on the deliverable" },
+  { from: "Slack", for: "Inbox next to the work" },
   { from: "Zapier", for: "Agency automations" },
 ];
 
@@ -115,6 +89,15 @@ const acceptCascade = [
   "Create the deposit invoice",
   "Invite them to the portal",
   "Show expected profit",
+  "Start reminders and automations",
+];
+
+const walk = [
+  { href: "/crm", title: "1. Pipeline", copy: "Drag Bloom Café across stages." },
+  { href: "/q/q_bloom", title: "2. Quote", copy: "Open NW-1042 and accept & sign." },
+  { href: "/projects", title: "3. Delivery", copy: "Board, assign, approve, log time." },
+  { href: "/portal", title: "4. Portal", copy: "Client sees status — never cost." },
+  { href: "/finance", title: "5. Cash", copy: "Deposit invoice and real P&L." },
 ];
 
 const orbits = [
@@ -138,15 +121,15 @@ export default function LandingPage() {
 
       <header className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
         <NawahLockup inverted />
-        <nav className="flex items-center gap-5">
-          <a href="#modules" className="hidden text-sm text-white/55 hover:text-white md:inline">
+        <nav className="flex items-center gap-4">
+          <a href="#modules" className="hidden text-sm text-white/55 hover:text-white lg:inline">
             Product
           </a>
-          <a href="#loop" className="hidden text-sm text-white/55 hover:text-white md:inline">
+          <a href="#loop" className="hidden text-sm text-white/55 hover:text-white lg:inline">
             Spine
           </a>
-          <a href="#accept" className="hidden text-sm text-white/55 hover:text-white md:inline">
-            Quote accept
+          <a href="#tour" className="hidden text-sm text-white/55 hover:text-white lg:inline">
+            Demo
           </a>
           <Link
             href="/home"
@@ -165,7 +148,7 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-[11px] font-semibold uppercase tracking-[0.22em] text-mint"
           >
-            Agency operating system
+            نواة · Agency operating system
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
@@ -183,9 +166,9 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="mt-5 max-w-lg text-lg leading-8 text-white/65"
           >
-            Nawah is not another task list. It is the spine from first lead to
-            cash in the bank — CRM, quotes, projects, docs, portal, time, and
-            finance sharing one source of truth.
+            CRM, quotations, ClickUp-class projects, Notion-like docs, account
+            managers, calendar, client booking, portal, time, finance, HR, and
+            AI — one data spine from first lead to real profit.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -204,17 +187,15 @@ export default function LandingPage() {
               href="/q/q_bloom"
               className="inline-flex h-12 items-center rounded-[10px] border border-white/15 px-5 text-sm text-white/80 hover:border-white/35"
             >
-              See a live quotation
+              Live quotation
+            </Link>
+            <Link
+              href="/book"
+              className="inline-flex h-12 items-center rounded-[10px] border border-white/15 px-5 text-sm text-white/80 hover:border-white/35"
+            >
+              Book a meeting
             </Link>
           </motion.div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-6 text-xs text-white/40"
-          >
-            Demo workspace · Masar Digital · English first
-          </motion.p>
         </div>
 
         <motion.div
@@ -286,9 +267,7 @@ export default function LandingPage() {
               className="flex shrink-0 items-center gap-2"
             >
               <span className="rounded-full bg-white/10 px-3 py-1.5 text-sm">{step}</span>
-              {i < loop.length - 1 ? (
-                <ArrowRight className="h-3.5 w-3.5 text-mint/80" />
-              ) : null}
+              {i < loop.length - 1 ? <ArrowRight className="h-3.5 w-3.5 text-mint/80" /> : null}
             </motion.div>
           ))}
         </div>
@@ -301,16 +280,14 @@ export default function LandingPage() {
               Quote accept
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-              One click should start the agency — not a checklist in Slack.
+              One click starts the agency.
             </h2>
             <p className="mt-4 text-sm leading-7 text-white/55">
-              When a client accepts a quotation, Nawah does the work owners
-              usually chase by hand. The demo path is Bloom Café, quote NW-1042.
+              Bloom Café quotation NW-1042 is live. Accept it and Nawah registers
+              the client, drafts the contract, opens the project, assigns the
+              team, invoices the deposit, and invites them to the portal.
             </p>
-            <Link
-              href="/q/q_bloom"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-mint"
-            >
+            <Link href="/q/q_bloom" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-mint">
               Open NW-1042
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -322,7 +299,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, x: 24 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
+                transition={{ delay: i * 0.06 }}
                 className="flex items-center gap-3 rounded-[12px] border border-white/8 bg-white/[0.03] px-4 py-3"
               >
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-mint" />
@@ -333,21 +310,29 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section id="tour" className="relative z-10 mx-auto max-w-6xl px-5 pb-16">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">Demo path</p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight">Walk the core in five clicks.</h2>
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {walk.map((s, i) => (
+            <motion.div key={s.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+              <Link href={s.href} className="block h-full rounded-[16px] border border-white/10 bg-white/[0.04] p-4 hover:border-mint/40">
+                <div className="text-sm font-semibold">{s.title}</div>
+                <p className="mt-2 text-sm text-white/55">{s.copy}</p>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       <section id="modules" className="relative z-10 mx-auto max-w-6xl px-5 py-8 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">
-            Everything in the OS
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-            Not another task app.
-            <br />
-            The operating system.
-          </h2>
-        </motion.div>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">Everything in the OS</p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+          Nothing lives in another tab.
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm text-white/50">
+          Every card opens the live workspace. Same data. English first.
+        </p>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {modules.map((m, i) => {
             const Icon = m.icon;
@@ -357,13 +342,16 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
-                whileHover={{ y: -4, borderColor: "rgba(25,211,174,0.45)" }}
-                className="rounded-[18px] border border-white/10 bg-white/[0.04] p-5"
+                transition={{ delay: (i % 9) * 0.04 }}
               >
-                <Icon className="h-5 w-5 text-mint" />
-                <h3 className="mt-4 font-semibold">{m.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-white/55">{m.copy}</p>
+                <Link
+                  href={m.href}
+                  className="block h-full rounded-[18px] border border-white/10 bg-white/[0.04] p-5 hover:border-mint/45"
+                >
+                  <Icon className="h-5 w-5 text-mint" />
+                  <h3 className="mt-4 font-semibold">{m.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/55">{m.copy}</p>
+                </Link>
               </motion.div>
             );
           })}
@@ -382,8 +370,8 @@ export default function LandingPage() {
             <h2 className="mt-4 text-2xl font-semibold">The difference is money</h2>
             <p className="mt-3 text-sm leading-7 text-white/65">
               Nawah does not try to beat Notion at writing or ClickUp at feature
-              count. It tells the owner: is this project still profitable, who
-              is over capacity, which service is underpriced, and what needs a
+              count. It tells the owner: is this project still profitable, who is
+              over capacity, which service is underpriced, and what needs a
               decision today.
             </p>
           </motion.div>
@@ -394,7 +382,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: i * 0.04 }}
                 className="rounded-[16px] border border-white/10 p-4"
               >
                 <div className="text-[11px] uppercase tracking-[0.14em] text-white/35">
@@ -421,29 +409,44 @@ export default function LandingPage() {
             Open the core and run the agency from here.
           </h2>
           <p className="mt-3 max-w-xl text-navy/60">
-            Demo workspace is live: pipeline, Bloom Café quotation NW-1042,
-            client portal, and profitability — in English.
+            Demo workspace: Masar Digital. English first. Arabic toggle inside the OS.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/home"
-              className="inline-flex h-12 items-center gap-2 rounded-[10px] bg-navy px-6 text-sm font-semibold text-white"
-            >
+            <Link href="/home" className="inline-flex h-12 items-center gap-2 rounded-[10px] bg-navy px-6 text-sm font-semibold text-white">
               Launch Nawah
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link
-              href="/q/q_bloom"
-              className="inline-flex h-12 items-center rounded-[10px] border border-navy/15 px-6 text-sm font-medium text-navy/70"
-            >
-              Client-facing quote
+            <Link href="/portal" className="inline-flex h-12 items-center rounded-[10px] border border-navy/15 px-6 text-sm font-medium text-navy/70">
+              Client portal
+            </Link>
+            <Link href="/docs" className="inline-flex h-12 items-center rounded-[10px] border border-navy/15 px-6 text-sm font-medium text-navy/70">
+              Wiki
             </Link>
           </div>
         </motion.div>
       </section>
 
-      <footer className="relative z-10 border-t border-white/8 px-5 py-8 text-center text-xs text-white/35">
-        Nawah · نواة · All-in-one operating system for modern agencies
+      <footer className="relative z-10 border-t border-white/8 px-5 py-10">
+        <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { t: "Win work", l: [["/crm", "Pipeline"], ["/accounts", "Accounts"], ["/quotes", "Quotes"], ["/catalog", "Catalog"]] },
+            { t: "Deliver", l: [["/projects", "Projects"], ["/docs", "Docs"], ["/inbox", "Inbox"], ["/portal", "Portal"]] },
+            { t: "Run", l: [["/finance", "Finance"], ["/time", "Time"], ["/hr", "People"], ["/analytics", "Analytics"]] },
+            { t: "Schedule", l: [["/calendar", "Calendar"], ["/book", "Booking"], ["/workload", "Workload"], ["/ai", "Nawah AI"]] },
+          ].map((col) => (
+            <div key={col.t}>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/35">{col.t}</div>
+              <div className="mt-3 space-y-2">
+                {col.l.map(([href, label]) => (
+                  <Link key={href} href={href} className="block text-sm text-white/70 hover:text-white">
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-10 text-center text-xs text-white/35">Nawah · نواة · All-in-one operating system for modern agencies</p>
       </footer>
     </div>
   );
