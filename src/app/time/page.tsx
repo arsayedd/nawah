@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/shell/page-header";
 import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
@@ -28,9 +29,12 @@ export default function TimePage() {
         description="Timers post billable hours onto the task, the timesheet, and the project P&L."
         actions={
           runningTimer ? (
-            <Button variant="coral" onClick={() => stopTimer()}>
-              Stop timer
-            </Button>
+            <div className="flex items-center gap-2">
+              <LiveElapsed startedAt={runningTimer.startedAt} />
+              <Button variant="coral" onClick={() => stopTimer()}>
+                Stop timer
+              </Button>
+            </div>
           ) : null
         }
       />
@@ -86,9 +90,12 @@ export default function TimePage() {
                 +0.5h
               </Button>
               {runningTimer?.taskId === task.id ? (
-                <Button size="sm" variant="coral" onClick={() => stopTimer()}>
-                  Stop
-                </Button>
+                <div className="flex items-center gap-2">
+                  <LiveElapsed startedAt={runningTimer.startedAt} />
+                  <Button size="sm" variant="coral" onClick={() => stopTimer()}>
+                    Stop
+                  </Button>
+                </div>
               ) : (
                 <Button size="sm" onClick={() => startTimer(task.id)}>
                   Start
@@ -117,5 +124,22 @@ export default function TimePage() {
       </Card>
       </PageSection>
     </div>
+  );
+}
+
+function LiveElapsed({ startedAt }: { startedAt: number }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+  const sec = Math.max(0, Math.floor((now - startedAt) / 1000));
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return (
+    <span className="font-mono text-sm tabular-nums">
+      {String(h).padStart(2, "0")}:{String(m).padStart(2, "0")}:{String(s).padStart(2, "0")}
+    </span>
   );
 }

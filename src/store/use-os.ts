@@ -62,6 +62,9 @@ type AcceptResult = {
 type Store = OsState & {
   locale: Locale;
   hydrated: boolean;
+  revision: number;
+  saveStatus: "idle" | "saving" | "saved" | "error" | "conflict";
+  sessionKind: "staff" | "client" | null;
   setHydrated: (v: boolean) => void;
   setLocale: (locale: Locale) => void;
   resetDemo: () => void;
@@ -93,7 +96,10 @@ type Store = OsState & {
     clientId?: string;
     catalogId: string;
   }) => string;
-  hydrateFromRemote: (payload: { locale: Locale; state: OsState }) => void;
+  hydrateFromRemote: (payload: { locale: Locale; state: OsState; revision?: number }) => void;
+  setSaveStatus: (status: Store["saveStatus"]) => void;
+  setRevision: (revision: number) => void;
+  setSessionKind: (kind: Store["sessionKind"]) => void;
   runningTimer: { taskId: string; startedAt: number } | null;
   startTimer: (taskId: string) => void;
   stopTimer: () => void;
@@ -162,14 +168,22 @@ export const useOS = create<Store>()((set, get) => ({
       ...seed,
       locale: "en",
       hydrated: true,
+      revision: 1,
+      saveStatus: "idle",
+      sessionKind: null,
       setHydrated: (v) => set({ hydrated: v }),
-      hydrateFromRemote: ({ locale, state }) =>
+      hydrateFromRemote: ({ locale, state, revision }) =>
         set({
           ...pickOsState(state ?? seed),
           locale,
           hydrated: true,
+          revision: revision ?? 1,
+          saveStatus: "saved",
         }),
       runningTimer: null,
+      setSaveStatus: (status) => set({ saveStatus: status }),
+      setRevision: (revision) => set({ revision }),
+      setSessionKind: (kind) => set({ sessionKind: kind }),
       setLocale: (locale) => set({ locale }),
       resetDemo: () => {
         const locale = get().locale;
@@ -907,7 +921,7 @@ export const useOS = create<Store>()((set, get) => ({
         const timer = get().runningTimer;
         if (!timer) return;
         const hours = Math.max(0.25, Math.round(((Date.now() - timer.startedAt) / 3600000) * 10) / 10);
-        get().logTime(timer.taskId, "u_lina", hours);
+        get().logTime(timer.taskId, get().prefs.currentUserId, hours);
         set({ runningTimer: null });
       },
       sendMessage: (channelId, body, internal) =>

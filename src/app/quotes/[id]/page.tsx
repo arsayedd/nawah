@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { quoteTotals } from "@/data/seed";
 import { t } from "@/lib/i18n";
+import { canSeeCost } from "@/lib/scope";
 import { egp, pct } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
 
@@ -17,6 +18,9 @@ export default function QuoteDetailPage() {
   const locale = useOS((s) => s.locale);
   const quote = useOS((s) => s.quotes.find((q) => q.id === id));
   const acceptQuote = useOS((s) => s.acceptQuote);
+  const meId = useOS((s) => s.prefs.currentUserId);
+  const employees = useOS((s) => s.employees);
+  const showCost = canSeeCost(employees.find((e) => e.id === meId));
   const router = useRouter();
   const dict = t(locale);
 
@@ -79,13 +83,19 @@ export default function QuoteDetailPage() {
         </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-4">
-        {[
-          [locale === "ar" ? "التكلفة الداخلية" : "Internal cost", egp(tot.cost, locale)],
-          [locale === "ar" ? "سعر البيع" : "Sell price", egp(tot.afterDiscount, locale)],
-          [locale === "ar" ? "هامش الربح" : "Margin", pct(tot.margin, locale)],
-          [locale === "ar" ? "الدفعة المقدمة" : "Deposit", egp(deposit, locale)],
-        ].map(([k, v]) => (
+      <div className={`grid gap-3 ${showCost ? "md:grid-cols-4" : "md:grid-cols-2"}`}>
+        {(showCost
+          ? [
+              [locale === "ar" ? "التكلفة الداخلية" : "Internal cost", egp(tot.cost, locale)],
+              [locale === "ar" ? "سعر البيع" : "Sell price", egp(tot.afterDiscount, locale)],
+              [locale === "ar" ? "هامش الربح" : "Margin", pct(tot.margin, locale)],
+              [locale === "ar" ? "الدفعة المقدمة" : "Deposit", egp(deposit, locale)],
+            ]
+          : [
+              [locale === "ar" ? "سعر البيع" : "Sell price", egp(tot.afterDiscount, locale)],
+              [locale === "ar" ? "الدفعة المقدمة" : "Deposit", egp(deposit, locale)],
+            ]
+        ).map(([k, v]) => (
           <Card key={k} className="p-4">
             <div className="text-xs text-navy/50">{k}</div>
             <div className="mt-1 text-xl font-semibold">{v}</div>
@@ -103,9 +113,9 @@ export default function QuoteDetailPage() {
               <tr>
                 <th className="pb-2">{locale === "ar" ? "البند" : "Item"}</th>
                 <th>{locale === "ar" ? "ساعات" : "Hours"}</th>
-                <th>{locale === "ar" ? "تكلفة" : "Cost"}</th>
+                {showCost ? <th>{locale === "ar" ? "تكلفة" : "Cost"}</th> : null}
                 <th>{locale === "ar" ? "بيع" : "Sell"}</th>
-                <th>{locale === "ar" ? "ربح" : "Profit"}</th>
+                {showCost ? <th>{locale === "ar" ? "ربح" : "Profit"}</th> : null}
               </tr>
             </thead>
             <tbody>
@@ -121,13 +131,15 @@ export default function QuoteDetailPage() {
                       {locale === "ar" ? i.nameAr : i.name}
                     </td>
                     <td>{i.hours * i.qty}</td>
-                    <td>{egp(cost, locale)}</td>
+                    {showCost ? <td>{egp(cost, locale)}</td> : null}
                     <td>{egp(i.sellPrice, locale)}</td>
+                    {showCost ? (
                     <td>
                       <Badge tone={i.sellPrice - cost > 0 ? "mint" : "coral"}>
                         {egp(i.sellPrice - cost, locale)}
                       </Badge>
                     </td>
+                    ) : null}
                   </tr>
                 );
               })}
@@ -138,9 +150,11 @@ export default function QuoteDetailPage() {
           <div>
             {locale === "ar" ? "ساعات الفريق" : "Team hours"}: {tot.hours}
           </div>
+          {showCost ? (
           <div>
             {locale === "ar" ? "نقطة التعادل" : "Break-even"}: {egp(tot.breakEven, locale)}
           </div>
+          ) : null}
           <div>
             {locale === "ar" ? "ضريبة" : "VAT"}: {egp(tot.tax, locale)}
           </div>

@@ -10,6 +10,7 @@ import { Badge, Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { t } from "@/lib/i18n";
 import type { Employee, Locale, Task, TaskStatus } from "@/lib/types";
+import { canSeeCost } from "@/lib/scope";
 import { egp, pct } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
 
@@ -21,6 +22,8 @@ export default function ProjectDetailPage() {
   const allTasks = useOS((s) => s.tasks);
   const tasks = allTasks.filter((t) => t.projectId === id);
   const employees = useOS((s) => s.employees);
+  const meId = useOS((s) => s.prefs.currentUserId);
+  const showCost = canSeeCost(employees.find((e) => e.id === meId));
   const allExpenses = useOS((s) => s.expenses);
   const expenses = allExpenses.filter((e) => e.projectId === id);
   const allInvoices = useOS((s) => s.invoices);
@@ -86,12 +89,18 @@ export default function ProjectDetailPage() {
       ) : null}
 
       <div className="grid gap-3 md:grid-cols-4">
-        {[
+        {(showCost
+          ? [
           [locale === "ar" ? "إيراد متوقع" : "Planned revenue", egp(project.expectedRevenue, locale)],
           [locale === "ar" ? "تكلفة متوقعة" : "Planned cost", egp(project.expectedCost, locale)],
           [locale === "ar" ? "هامش مخطط" : "Planned margin", pct(margin, locale)],
           [locale === "ar" ? "ربح فعلي حتى الآن" : "Profit so far", egp(actualProfit, locale)],
-        ].map(([k, v]) => (
+            ]
+          : [
+          [locale === "ar" ? "إيراد متوقع" : "Planned revenue", egp(project.expectedRevenue, locale)],
+          [locale === "ar" ? "التسليمات" : "Deliverables", String(tasks.length)],
+            ]
+        ).map(([k, v]) => (
           <Card key={k} className="p-4">
             <div className="text-xs text-navy/50">{k}</div>
             <div className="mt-1 text-xl font-semibold">{v}</div>

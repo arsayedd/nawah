@@ -16,6 +16,8 @@ export default function ReviewPage() {
   const addReviewPin = useOS((s) => s.addReviewPin);
   const approveDeliverable = useOS((s) => s.approveDeliverable);
   const requestRevision = useOS((s) => s.requestRevision);
+  const files = useOS((s) => s.files);
+  const file = files.find((f) => f.taskId === taskId);
   const [note, setNote] = useState("");
 
   if (!task) return <p>Deliverable not found.</p>;
@@ -43,6 +45,14 @@ export default function ReviewPage() {
           setNote("");
         }}
       >
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="rounded-[12px] bg-white/10 px-4 py-3 text-center text-white">
+            <div className="text-sm font-medium">{file?.name ?? "Working file"}</div>
+            <div className="mt-1 text-[11px] text-white/60">
+              {file ? `v${file.version} · ${file.status}` : "No file attached yet"}
+            </div>
+          </div>
+        </div>
         {pins.map((p) => (
           <div
             key={p.id}

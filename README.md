@@ -30,10 +30,19 @@ npm run dev
 
 Open [http://localhost:45217](http://localhost:45217).
 
+## Sign in
+
+OS routes require a session. Open `/login`.
+
+- Team: `ahmed@nawah.agency` / `nawah` (also Sara, Lina, Maya)
+- Client portal: `hello@luminhome.eg` / `portal`
+
+`GET/PUT /api/os` is cookie-locked. Clients cannot write the workspace snapshot; approvals go through `/api/os/action`.
+
 ## Demo path
 
 1. Product story on `/`.
-2. Enter the OS on `/home`.
+2. Sign in on `/login`, then `/home`.
 3. Pipeline — drag Bloom Café across stages.
 4. Quotations — open **NW-1042**, accept it (or use `/q/q_bloom`).
 5. Accepting a quote creates the client, project, tasks, deposit invoice, and portal invite.

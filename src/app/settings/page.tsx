@@ -6,6 +6,7 @@ import { PageSection } from "@/components/shell/page-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ROLE_MODULES } from "@/lib/access";
 import { AGENCY_NAME } from "@/lib/brand";
 import { t } from "@/lib/i18n";
 import type { SaasSub } from "@/lib/types";
@@ -51,33 +52,27 @@ export default function SettingsPage() {
       <Card>
         <h2 className="font-semibold">Roles</h2>
         <p className="mt-1 text-sm text-navy/55">
-          Field-level finance lock is enforced in the portal (clients never see cost). Workspace roles below are the operating model.
+          These are the same module maps enforced in the sidebar and by the session. Assign them on{" "}
+          <Link href="/people" className="text-cobalt">
+            People
+          </Link>
+          . Clients never receive this OS — they sign in on the portal.
         </p>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
               <tr className="text-navy/40">
                 <th className="py-2 text-start">Role</th>
-                <th className="text-start">CRM</th>
-                <th className="text-start">Delivery</th>
-                <th className="text-start">Money</th>
+                <th className="text-start">Modules</th>
+                <th className="text-start">Cost visible</th>
               </tr>
             </thead>
             <tbody>
-              {[
-                ["Owner", "Full", "Full", "Full"],
-                ["Account Manager", "Clients", "Comments", "Invoices send"],
-                ["Project Manager", "Read", "Full", "Hidden cost"],
-                ["Finance", "Read", "Read", "Full"],
-                ["Freelancer", "None", "Assigned tasks", "None"],
-                ["Client", "None", "Portal only", "Pay / approve"],
-              ].map((row) => (
-                <tr key={row[0]} className="border-t border-navy/6">
-                  {row.map((c, i) => (
-                    <td key={`${row[0]}-${i}`} className="py-2">
-                      {c}
-                    </td>
-                  ))}
+              {(Object.keys(ROLE_MODULES) as Array<keyof typeof ROLE_MODULES>).map((role) => (
+                <tr key={role} className="border-t border-navy/6">
+                  <td className="py-2 font-medium">{role}</td>
+                  <td className="py-2 text-navy/60">{ROLE_MODULES[role].length} surfaces</td>
+                  <td className="py-2">{role === "owner" || role === "admin" || role === "finance" ? "Yes" : "No"}</td>
                 </tr>
               ))}
             </tbody>

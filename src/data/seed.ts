@@ -1117,6 +1117,22 @@ export const seed: OsState = {
       action: "Create follow-up lead and reminder",
       enabled: true,
     },
+    {
+      id: "auto_5",
+      name: "Late task → owner alert",
+      trigger: "task.late",
+      condition: "due < today and not done",
+      action: "Notify owner",
+      enabled: true,
+    },
+    {
+      id: "auto_6",
+      name: "Retainer ending → renewal",
+      trigger: "retainer.ending",
+      condition: "status is ending",
+      action: "Notify owner",
+      enabled: true,
+    },
   ],
   automationLogs: [
     {

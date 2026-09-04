@@ -1,14 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { PageSection } from "@/components/shell/page-section";
 import { Card } from "@/components/ui/card";
 import { t } from "@/lib/i18n";
+import { dayKey, parseDay } from "@/lib/utils";
 import { useOS } from "@/store/use-os";
 
-const days = ["2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-12"];
 const hours = [9, 10, 11, 12, 13, 14, 15, 16];
+
+function weekdays(anchor: string) {
+  const d = parseDay(anchor);
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+  return Array.from({ length: 5 }, (_, i) => {
+    const x = new Date(monday);
+    x.setDate(monday.getDate() + i);
+    return dayKey(x);
+  });
+}
 
 export default function CalendarPage() {
   const locale = useOS((s) => s.locale);
@@ -19,6 +30,13 @@ export default function CalendarPage() {
   const types = useOS((s) => s.bookingTypes);
   const employees = useOS((s) => s.employees);
   const dict = t(locale);
+  const days = useMemo(() => {
+    const stamps = [
+      ...meetings.map((m) => m.when.slice(0, 10)),
+      ...slots.map((s) => s.start.slice(0, 10)),
+    ].sort();
+    return weekdays(stamps[Math.floor(stamps.length / 2)] ?? "2026-09-04");
+  }, [meetings, slots]);
 
   function eventsOn(day: string, hour: number) {
     const stamp = `${day}T${String(hour).padStart(2, "0")}`;
@@ -33,7 +51,7 @@ export default function CalendarPage() {
         <div>
           <h1 className="text-2xl font-bold">{dict.nav.calendar}</h1>
           <p className="text-sm text-navy/55">
-            Agency week plus the public booking types — one calendar, not Calendly on the side.
+            Agency week of {days[0]} — derived from meetings and booking slots, not a frozen demo range.
           </p>
         </div>
         <Link href="/book" className="text-sm text-cobalt">

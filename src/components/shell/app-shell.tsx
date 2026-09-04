@@ -29,7 +29,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const alerts = useOS((s) => s.alerts);
   const employees = useOS((s) => s.employees);
   const meId = useOS((s) => s.prefs.currentUserId);
-  const setCurrentUser = useOS((s) => s.setCurrentUser);
+  const saveStatus = useOS((s) => s.saveStatus);
   const notices = useOS((s) => s.notices);
   const markNoticeRead = useOS((s) => s.markNoticeRead);
   const editLayout = useOS((s) => s.prefs.editLayout);
@@ -46,7 +46,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setNotesOpen(false);
   }, [pathname]);
 
-  if (pathname === "/" || pathname.startsWith("/q/") || pathname.startsWith("/book")) {
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/q/") ||
+    pathname.startsWith("/book") ||
+    pathname === "/login" ||
+    pathname.startsWith("/portal")
+  ) {
     return <>{children}</>;
   }
 
@@ -153,6 +159,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             ) : null}
           </div>
+          <span className="hidden text-[11px] text-navy/40 sm:inline">
+            {saveStatus === "saving"
+              ? "Saving…"
+              : saveStatus === "saved"
+                ? "Saved"
+                : saveStatus === "conflict"
+                  ? "Newer copy on server"
+                  : saveStatus === "error"
+                    ? "Save failed"
+                    : ""}
+          </span>
           <button
             type="button"
             onClick={() => {
@@ -165,18 +182,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             {locale === "ar" ? "EN" : "AR"}
           </button>
-          <select
-            className="hidden h-9 max-w-[140px] rounded-[10px] border border-navy/10 bg-white px-2 text-xs sm:block"
-            value={meId}
-            onChange={(e) => setCurrentUser(e.target.value)}
-            aria-label="Act as employee"
+          <Link href="/login" className="text-xs text-navy/50 hover:text-navy">
+            Switch account
+          </Link>
+          <button
+            type="button"
+            className="text-xs text-navy/50 hover:text-coral"
+            onClick={() => {
+              void fetch("/api/session", { method: "DELETE" }).then(() => {
+                window.location.href = "/login";
+              });
+            }}
           >
-            {employees.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.name.split(" ")[0]}
-              </option>
-            ))}
-          </select>
+            Log out
+          </button>
           <div className="hidden items-center gap-2 sm:flex">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-semibold text-white">
               {(me?.name ?? "Ah").slice(0, 2)}

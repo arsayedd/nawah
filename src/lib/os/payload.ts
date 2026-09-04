@@ -5,9 +5,10 @@ export type OsPayload = {
   locale: Locale;
   state: OsState;
   schemaVersion?: number;
+  revision?: number;
 };
 
-export const OS_SCHEMA = 3;
+export const OS_SCHEMA = 4;
 
 const keys: (keyof OsState)[] = [
   "prefs",

@@ -35,7 +35,7 @@ export const ALL_MODULES = [
   "/customize",
 ] as const;
 
-const ROLE_MODULES: Record<AccessRole, readonly string[]> = {
+export const ROLE_MODULES: Record<AccessRole, readonly string[]> = {
   owner: ALL_MODULES,
   admin: ALL_MODULES,
   sales: ["/home", "/map", "/my-work", "/crm", "/clients", "/accounts", "/quotes", "/catalog", "/calendar", "/chat", "/mail", "/notifications", "/inbox"],

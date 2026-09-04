@@ -14,9 +14,11 @@ import { useOS } from "@/store/use-os";
 function PortalInner() {
   const params = useSearchParams();
   const locale = useOS((s) => s.locale);
+  const sessionKind = useOS((s) => s.sessionKind);
   const clients = useOS((s) => s.clients);
+  const lockedClient = sessionKind === "client" ? clients[0]?.id : undefined;
   const selected =
-    params.get("client") ?? clients.find((c) => c.portalEnabled)?.id ?? "";
+    lockedClient ?? params.get("client") ?? clients.find((c) => c.portalEnabled)?.id ?? "";
   const client = clients.find((c) => c.id === selected) ?? clients[0];
   const allProjects = useOS((s) => s.projects);
   const tasks = useOS((s) => s.tasks);
@@ -53,9 +55,28 @@ function PortalInner() {
   const done = clientTasks.filter((t) => t.status === "done");
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-[18px] border border-navy/8 bg-white p-6">
+    <div className="min-h-screen bg-paper px-4 py-8 text-navy">
+    <div className="mx-auto max-w-4xl space-y-6">
+      <div className="flex items-center justify-between">
         <NawahLockup />
+        <button
+          type="button"
+          className="text-sm text-navy/50 hover:text-coral"
+          onClick={() => {
+            void fetch("/api/session", { method: "DELETE" }).then(() => {
+              window.location.href = "/login";
+            });
+          }}
+        >
+          Log out
+        </button>
+        {sessionKind === "staff" ? (
+          <Link href="/home" className="text-sm text-cobalt">
+            Back to OS
+          </Link>
+        ) : null}
+      </div>
+      <div className="rounded-[18px] border border-navy/8 bg-white p-6">
         <h1 className="mt-4 text-2xl font-bold">
           {locale === "ar"
             ? `أهلاً بيك في بوابة ${client.nameAr}`
@@ -67,7 +88,9 @@ function PortalInner() {
             : "Track progress, share files, and approve deliverables. Internal cost and team chatter stay hidden."}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {clients.map((c) => (
+          {sessionKind === "client"
+            ? null
+            : clients.map((c) => (
             <Link
               key={c.id}
               href={`/portal?client=${c.id}`}
@@ -127,10 +150,36 @@ function PortalInner() {
                 {Math.max(0, 2 - task.revisionCount)}
               </div>
               <div className="mt-3 flex gap-2">
-                <Button size="sm" variant="mint" onClick={() => approveDeliverable(task.id)}>
+                <Button
+                  size="sm"
+                  variant="mint"
+                  onClick={() => {
+                    approveDeliverable(task.id);
+                    if (sessionKind === "client") {
+                      void fetch("/api/os/action", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ type: "approveDeliverable", taskId: task.id }),
+                      });
+                    }
+                  }}
+                >
                   {locale === "ar" ? "اعتماد" : "Approve"}
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => requestRevision(task.id)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    requestRevision(task.id);
+                    if (sessionKind === "client") {
+                      void fetch("/api/os/action", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ type: "requestRevision", taskId: task.id }),
+                      });
+                    }
+                  }}
+                >
                   {locale === "ar" ? "طلب تعديل" : "Request changes"}
                 </Button>
               </div>
@@ -194,6 +243,7 @@ function PortalInner() {
         </Link>
       </Card>
       </PageSection>
+    </div>
     </div>
   );
 }
