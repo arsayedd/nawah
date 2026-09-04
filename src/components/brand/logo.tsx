@@ -10,11 +10,14 @@ export function NawahMark({
   variant?: "color" | "white" | "navy";
 }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/brand/nawah-mark.png"
-      alt=""
-      className={cn("h-9 w-9 shrink-0 object-contain", className)}
+    <span
+      role="img"
+      aria-label={AGENCY_NAME}
+      className={cn(
+        "inline-block h-9 w-9 shrink-0 bg-contain bg-center bg-no-repeat",
+        className,
+      )}
+      style={{ backgroundImage: "url(/brand/nawah-mark.png)" }}
     />
   );
 }
