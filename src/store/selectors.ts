@@ -1,12 +1,10 @@
 "use client";
 
-import { useShallow } from "zustand/react/shallow";
-import { quoteTotals, seed } from "@/data/seed";
-import { pickOsState } from "@/lib/os/payload";
+import { quoteTotals } from "@/data/seed";
 import type { OsState } from "@/lib/types";
 import { useOS } from "@/store/use-os";
 
-export function computeKpis(state: OsState) {
+export function computeKpis(state: Pick<OsState, "quotes" | "invoices" | "expenses" | "leads" | "tasks" | "projects">) {
   const quotes = state.quotes ?? [];
   const invoices = state.invoices ?? [];
   const expenses = state.expenses ?? [];
@@ -66,15 +64,15 @@ export function computeKpis(state: OsState) {
 }
 
 export function useWorkspace() {
-  return useOS(
-    useShallow((s) => {
-      const merged = pickOsState(s);
-      return merged.leads.length ? merged : pickOsState(seed);
-    }),
-  );
+  return useOS();
 }
 
 export function useKpis() {
-  const state = useWorkspace();
-  return computeKpis(state);
+  const quotes = useOS((s) => s.quotes);
+  const invoices = useOS((s) => s.invoices);
+  const expenses = useOS((s) => s.expenses);
+  const leads = useOS((s) => s.leads);
+  const tasks = useOS((s) => s.tasks);
+  const projects = useOS((s) => s.projects);
+  return computeKpis({ quotes, invoices, expenses, leads, tasks, projects });
 }

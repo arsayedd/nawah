@@ -16,8 +16,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const persistReady = useRef(false);
 
   useEffect(() => {
-    setLocale(readStoredLocale());
-    setHydrated(true);
+    const stored = readStoredLocale();
+    const now = useOS.getState();
+    if (now.locale !== stored) setLocale(stored);
+    if (!now.hydrated) setHydrated(true);
     persistReady.current = true;
   }, [setLocale, setHydrated]);
 
